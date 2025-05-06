@@ -1,0 +1,17 @@
+---
+description: "CursorRIPER Framework - State Management"
+globs: 
+alwaysApply: true
+---
+*This file automatically tracks the current state of the project. It should never be edited manually.*
+
+   - Reset START_PHASE_STEP to 1
+
+---
+
+*This file automatically tracks the current state of the project. It should never be edited manually.*
+
+PROJECT_PHASE: "INITIALIZING"
+START_PHASE_STATUS: "IN_PROGRESS"
+START_PHASE_STEP: 4
+LAST_UPDATE: "2024-06-09T00:00:00Z"
