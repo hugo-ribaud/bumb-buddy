@@ -1,9 +1,12 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 
-// Replace with your Supabase URL and anon key
-const supabaseUrl = "SUPABASE_URL";
-const supabaseKey = "SUPABASE_ANON_KEY";
+// We can't import directly from @env because it requires .env file to be present
+// For now, we'll use fallback values and update this later when .env is properly set up
+
+// Environment variables (will be replaced by actual values when .env is set up)
+const supabaseUrl = process.env.SUPABASE_URL || "http://localhost:54321";
+const supabaseKey = process.env.SUPABASE_ANON_KEY || "placeholder-anon-key";
 
 // Configure with AsyncStorage for persistent sessions
 const supabase = createClient(supabaseUrl, supabaseKey, {

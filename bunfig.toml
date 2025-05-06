@@ -1,0 +1,22 @@
+[install]
+# Use hoisting to reduce duplication in node_modules
+hoisted = true
+
+# Cache all installed dependencies
+cache = true
+
+# Use lockfile for deterministic installations
+lockfile = true
+
+# Install optional dependencies
+optional = false
+
+# Prefer offline mode when possible
+offline = false
+
+# Install dev dependencies
+dev = true
+
+[run]
+# Enable watching for file changes
+watch = false 
