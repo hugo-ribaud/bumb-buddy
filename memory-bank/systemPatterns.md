@@ -38,6 +38,67 @@ BumpBuddy follows a modern client-server architecture using React Native for the
 - **Adapter Pattern**: For handling offline/online mode transitions seamlessly
 - **Service Pattern**: Used for Realtime subscriptions, abstracted in `realtimeService.ts`
 
+## Data Models and Relationships
+
+### Core Data Models
+
+1. **User Model**
+
+   - Central entity representing the pregnant user
+   - Connected to all personal data (health logs, appointments, etc.)
+   - Stores pregnancy details (due date, week) and app preferences
+
+2. **Food Safety System**
+
+   - Two-tiered structure with categories and individual foods
+   - Enumerated safety ratings (safe, caution, avoid)
+   - Rich text descriptions and nutritional data in JSON format
+
+3. **Health Tracking Models**
+
+   - Multiple specialized trackers (symptoms, kicks, contractions, weight)
+   - Consistent user linking and timestamp patterns
+   - Severity scales for comparative analysis
+
+4. **Appointment System**
+
+   - Date-time based events with reminder capabilities
+   - Location and notes for comprehensive planning
+   - Integration with device calendar planned
+
+5. **Pregnancy Journey**
+   - Reference data for fetal development by week
+   - Curated content for each stage of pregnancy
+   - Personal journal entries linked to pregnancy weeks
+
+### Database Relationships
+
+```mermaid
+flowchart TD
+    User[User] --- Profile[Profile Info]
+    User --- Settings[App Settings]
+    User --> Health[Health Data]
+    User --> Calendar[Calendar Events]
+    User --> Journal[Personal Journal]
+
+    Health --> Symptoms[Symptom Tracker]
+    Health --> Kicks[Kick Counter]
+    Health --> Contractions[Contraction Timer]
+    Health --> Weight[Weight Tracker]
+
+    Calendar --> Appointments[Medical Appointments]
+    Calendar --> Reminders[Health Reminders]
+
+    FoodDB[Food Database] --> Categories[Food Categories]
+    Categories --> Foods[Food Items]
+    Foods --> SafetyInfo[Safety Ratings]
+
+    PregnancyData[Pregnancy Data] --> WeeklyInfo[Weekly Development]
+    WeeklyInfo --> FetalDev[Fetal Development]
+    WeeklyInfo --> MaternalChanges[Maternal Changes]
+    WeeklyInfo --> Tips[Health Tips]
+```
+
 ## Data Flow
 
 ```mermaid
@@ -66,6 +127,31 @@ flowchart TD
     SyncQueue -.-> API
 ```
 
+## Data Access Patterns
+
+1. **Authentication-Based Isolation**
+
+   - Row-Level Security (RLS) enforces data ownership
+   - All user-specific tables include RLS policies that check `auth.uid() = user_id`
+   - Prevents unauthorized access to sensitive health information
+
+2. **Reference Data Access**
+
+   - Food database and pregnancy information are read-only for all users
+   - No user-specific preferences or modifications stored in reference tables
+   - Common data shared across all users to reduce duplication
+
+3. **Offline Data Persistence**
+
+   - Local-first operations with optimistic UI updates
+   - Data changes stored in AsyncStorage during offline periods
+   - Background synchronization when connectivity resumes
+
+4. **Real-time Data Updates**
+   - Realtime subscriptions for personal data changes
+   - Immediate UI reflection of database changes
+   - Subscription management abstracted behind realtimeService
+
 ## Key Technical Decisions
 
 - **Cross-Platform Framework**: React Native + Expo chosen for faster development across iOS and Android
@@ -75,6 +161,7 @@ flowchart TD
 - **Navigation**: React Navigation for intuitive user flow and deep linking support
 - **Testing Strategy**: Jest and React Testing Library for comprehensive test coverage
 - **Realtime Implementation**: Supabase Realtime enabled with Metro bundler workarounds for Expo compatibility
+- **Database Schema**: Structured with a focus on security, flexibility, and future extensibility
 
 ## Component Relationships
 
