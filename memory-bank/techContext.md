@@ -16,33 +16,11 @@ _Last Updated: 2024-06-09_
 
 ## Development Environment Setup
 
-```bash
-# Install Node.js (v16+) and npm
-
-# Install Expo CLI
-npm install -g expo-cli
-
-# Create project
-npx create-expo-app bumpbuddy --template blank-typescript
-
-# Navigate to project directory
-cd bumpbuddy
-
-# Install dependencies
-npm install @reduxjs/toolkit react-redux
-npm install @react-navigation/native @react-navigation/stack @react-navigation/bottom-tabs
-npm install @supabase/supabase-js
-npm install expo-notifications
-npm install react-native-safe-area-context
-npm install react-native-gesture-handler
-npm install expo-barcode-scanner
-npm install expo-image-picker
-npm install react-native-reanimated
-npm install react-native-svg
-
-# Install dev dependencies
-npm install --save-dev jest @testing-library/react-native @testing-library/jest-native
-```
+- Project uses Expo SDK 53 and Bun as the package manager
+- Supabase client configured for Expo/React Native with AsyncStorage for session persistence
+- Metro bundler workaround (`metro.config.js`) disables package exports to avoid Node.js dependency issues with Supabase Realtime
+- Babel config updated to whitelist correct environment variables for Supabase
+- Realtime enabled and implemented with dedicated `realtimeService.ts` for subscription management
 
 ## Dependencies
 
@@ -51,7 +29,7 @@ npm install --save-dev jest @testing-library/react-native @testing-library/jest-
 - **@react-navigation/native**: ^6.1.0 - Navigation container
 - **@react-navigation/stack**: ^6.3.0 - Stack navigation
 - **@react-navigation/bottom-tabs**: ^6.5.0 - Tab navigation
-- **@supabase/supabase-js**: ^2.20.0 - Supabase client
+- **@supabase/supabase-js**: ^2.49.4 - Supabase client (Realtime enabled)
 - **expo-notifications**: ^0.18.0 - Push notifications
 - **react-native-safe-area-context**: ^4.5.0 - Safe area utilities
 - **react-native-gesture-handler**: ^2.9.0 - Gesture handling
@@ -85,7 +63,7 @@ npm install --save-dev jest @testing-library/react-native @testing-library/jest-
 - **E2E Testing**: Detox for end-to-end testing on real devices or emulators
 - **Manual Testing**: Focus on usability testing with actual expectant mothers
 
-## Database Schema (Initial)
+## Database Schema (Initial, to be finalized)
 
 ```
 Users
@@ -126,6 +104,14 @@ KickCounts
   - end_time (Timestamp)
   - count (Integer)
 ```
+
+## Realtime Implementation
+
+- **Publication**: Supabase Realtime configured with `supabase_realtime` publication
+- **Tables**: Users table enabled for Realtime updates with appropriate RLS policies
+- **Service**: `realtimeService.ts` manages subscriptions with typed interfaces
+- **UI Integration**: ProfileScreen demonstrates real-time updates with status indicators
+- **Testing**: Utility functions for simulating database changes during development
 
 ---
 

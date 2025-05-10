@@ -9,7 +9,12 @@ module.exports = function (api) {
           moduleName: "@env",
           path: ".env",
           blacklist: null,
-          whitelist: null,
+          whitelist: [
+            "EXPO_PUBLIC_SUPABASE_URL",
+            "EXPO_PUBLIC_SUPABASE_ANON_KEY",
+            "APP_ENV",
+            "API_URL",
+          ],
           safe: false,
           allowUndefined: true,
         },

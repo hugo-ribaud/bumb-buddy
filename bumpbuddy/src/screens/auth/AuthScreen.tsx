@@ -1,16 +1,75 @@
 import React, { useState } from "react";
 import {
+  ActivityIndicator,
+  Alert,
   StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { useDispatch } from "react-redux";
+import {
+  authFailure,
+  authRequest,
+  authSuccess,
+} from "../../redux/slices/authSlice";
+import authService from "../../services/authService";
 
 const AuthScreen = () => {
   const [isLogin, setIsLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const dispatch = useDispatch();
+
+  const handleAuth = async () => {
+    // Validate inputs
+    if (!email || !password) {
+      Alert.alert("Error", "Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
+    dispatch(authRequest());
+
+    try {
+      const result = isLogin
+        ? await authService.signIn({ email, password })
+        : await authService.signUp({ email, password });
+
+      if (result.error) {
+        dispatch(authFailure(result.error));
+        Alert.alert("Error", result.error);
+      } else {
+        if (result.data?.user && result.data?.session) {
+          dispatch(
+            authSuccess({
+              user: {
+                id: result.data.user.id,
+                email: result.data.user.email || "",
+                createdAt:
+                  result.data.user.created_at || new Date().toISOString(),
+              },
+              session: result.data.session,
+            })
+          );
+        } else if (!isLogin) {
+          // If signing up, show confirmation message
+          Alert.alert(
+            "Success",
+            "Registration successful! Please check your email for confirmation."
+          );
+        }
+      }
+    } catch (error: any) {
+      dispatch(authFailure(error.message));
+      Alert.alert("Error", error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -29,6 +88,7 @@ const AuthScreen = () => {
           onChangeText={setEmail}
           keyboardType="email-address"
           autoCapitalize="none"
+          editable={!loading}
         />
 
         <TextInput
@@ -37,15 +97,27 @@ const AuthScreen = () => {
           value={password}
           onChangeText={setPassword}
           secureTextEntry
+          editable={!loading}
         />
 
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText}>
-            {isLogin ? "Sign In" : "Sign Up"}
-          </Text>
+        <TouchableOpacity
+          style={[styles.button, loading && styles.buttonDisabled]}
+          onPress={handleAuth}
+          disabled={loading}
+        >
+          {loading ? (
+            <ActivityIndicator color="white" />
+          ) : (
+            <Text style={styles.buttonText}>
+              {isLogin ? "Sign In" : "Sign Up"}
+            </Text>
+          )}
         </TouchableOpacity>
 
-        <TouchableOpacity onPress={() => setIsLogin(!isLogin)}>
+        <TouchableOpacity
+          onPress={() => setIsLogin(!isLogin)}
+          disabled={loading}
+        >
           <Text style={styles.switchText}>
             {isLogin
               ? "New user? Create an account"
@@ -99,6 +171,9 @@ const styles = StyleSheet.create({
     padding: 15,
     alignItems: "center",
     marginTop: 10,
+  },
+  buttonDisabled: {
+    backgroundColor: "#7fb7f5",
   },
   buttonText: {
     color: "white",

@@ -6,7 +6,7 @@ _Last Updated: 2024-06-09_
 
 ## Architecture Overview
 
-BumpBuddy follows a modern client-server architecture using React Native for the mobile client and Supabase as the backend service. The application implements a hybrid offline-first approach, allowing core functionality to work without an internet connection while syncing data when connectivity is restored.
+BumpBuddy follows a modern client-server architecture using React Native for the mobile client and Supabase as the backend service. The application implements a hybrid offline-first approach, allowing core functionality to work without an internet connection while syncing data when connectivity is restored. Supabase Realtime is enabled and implemented for live updates, providing immediate feedback when data changes.
 
 ## Key Components
 
@@ -25,7 +25,7 @@ BumpBuddy follows a modern client-server architecture using React Native for the
 - **PostgreSQL Database**: Stores all application data with proper relations
 - **Supabase Storage**: Manages user-uploaded images and media
 - **Supabase Functions**: Handles server-side logic and scheduled tasks
-- **Supabase Realtime**: Provides real-time updates for collaborative features
+- **Supabase Realtime**: Provides real-time updates for collaborative features and live data synchronization
 
 ## Design Patterns in Use
 
@@ -33,9 +33,10 @@ BumpBuddy follows a modern client-server architecture using React Native for the
 - **Repository Pattern**: Abstraction layer over data sources (API, localStorage)
 - **Provider Pattern**: Context providers for theme, authentication, and configurations
 - **Container/Presentational Pattern**: Separation of logic and UI components
-- **Observer Pattern**: For real-time updates and notifications
+- **Observer Pattern**: For real-time updates and notifications via Supabase Realtime subscriptions
 - **Strategy Pattern**: For flexible feature implementations based on user preferences
 - **Adapter Pattern**: For handling offline/online mode transitions seamlessly
+- **Service Pattern**: Used for Realtime subscriptions, abstracted in `realtimeService.ts`
 
 ## Data Flow
 
@@ -51,6 +52,9 @@ flowchart TD
 
     API --> Supabase[Supabase]
     Supabase --> Database[(PostgreSQL)]
+
+    Supabase -->|Realtime| RealtimeService[Realtime Service]
+    RealtimeService --> Actions
 
     API --> Reducer[Redux Reducer]
     LocalCache --> Reducer
@@ -70,6 +74,7 @@ flowchart TD
 - **State Management**: Redux Toolkit for predictable state management and easier debugging
 - **Navigation**: React Navigation for intuitive user flow and deep linking support
 - **Testing Strategy**: Jest and React Testing Library for comprehensive test coverage
+- **Realtime Implementation**: Supabase Realtime enabled with Metro bundler workarounds for Expo compatibility
 
 ## Component Relationships
 
@@ -89,6 +94,15 @@ flowchart TD
 4. If offline, changes queued for synchronization
 5. When connection restored, queued changes sent to server
 6. Conflict resolution strategy applied if server has newer data
+
+### Realtime Update Flow
+
+1. Component mounts and subscribes to relevant channel/table
+2. Supabase Realtime listens for PostgreSQL changes
+3. When database change occurs, Realtime notifies subscribed clients
+4. React component receives update and dispatches Redux action
+5. Redux store updates with new data
+6. UI automatically re-renders with latest data
 
 ### Feature Module Relationships
 
