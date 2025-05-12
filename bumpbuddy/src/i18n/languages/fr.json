@@ -1,0 +1,146 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Enregistrer",
+      "cancel": "Annuler",
+      "delete": "Supprimer",
+      "edit": "Modifier",
+      "add": "Ajouter",
+      "confirm": "Confirmer",
+      "back": "Retour"
+    },
+    "validation": {
+      "required": "Ce champ est obligatoire",
+      "email": "Veuillez saisir une adresse e-mail valide",
+      "minLength": "Ce champ doit comporter au moins {{count}} caractères",
+      "maxLength": "Ce champ doit comporter moins de {{count}} caractères",
+      "passwordMatch": "Les mots de passe ne correspondent pas",
+      "invalidDate": "Veuillez saisir une date valide"
+    },
+    "placeholders": {
+      "search": "Rechercher...",
+      "email": "Entrez votre e-mail",
+      "password": "Entrez votre mot de passe",
+      "date": "Sélectionnez une date"
+    },
+    "errors": {
+      "generic": "Une erreur s'est produite. Veuillez réessayer.",
+      "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+      "unauthorized": "Vous n'êtes pas autorisé à accéder à cette fonctionnalité.",
+      "notFound": "La ressource demandée n'a pas été trouvée."
+    },
+    "labels": {
+      "loading": "Chargement...",
+      "today": "Aujourd'hui",
+      "yesterday": "Hier",
+      "tomorrow": "Demain"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Connexion",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Mot de passe",
+      "forgotPassword": "Mot de passe oublié ?",
+      "submitButton": "Se connecter",
+      "noAccount": "Vous n'avez pas de compte ?",
+      "signupLink": "S'inscrire"
+    },
+    "signup": {
+      "title": "Inscription",
+      "emailLabel": "E-mail",
+      "passwordLabel": "Mot de passe",
+      "confirmPasswordLabel": "Confirmer le mot de passe",
+      "dueDateLabel": "Date d'accouchement prévue",
+      "submitButton": "Créer un compte",
+      "hasAccount": "Vous avez déjà un compte ?",
+      "loginLink": "Se connecter"
+    },
+    "forgotPassword": {
+      "title": "Mot de passe oublié",
+      "emailLabel": "E-mail",
+      "submitButton": "Réinitialiser le mot de passe",
+      "instructions": "Entrez votre adresse e-mail et nous vous enverrons un lien pour réinitialiser votre mot de passe.",
+      "backToLogin": "Retour à la connexion"
+    }
+  },
+  "profile": {
+    "title": "Mon Profil",
+    "personalInfo": "Informations personnelles",
+    "dueDate": "Date d'accouchement",
+    "pregnancyWeek": "Semaine de grossesse",
+    "editProfile": "Modifier le profil",
+    "changePassword": "Changer le mot de passe",
+    "logOut": "Se déconnecter",
+    "settings": "Paramètres"
+  },
+  "home": {
+    "welcome": "Bienvenue, {{name}} !",
+    "journeyTitle": "Votre parcours de grossesse",
+    "weekTitle": "Semaine {{week}}",
+    "trimesterLabel": "{{trimester}} Trimestre",
+    "progressLabel": "{{percent}}% Complété",
+    "developmentTitle": "Développement Semaine {{week}}",
+    "bodyChangesTitle": "Votre corps cette semaine",
+    "nutritionTipsTitle": "Conseils nutritionnels",
+    "sizeLabel": "Taille",
+    "lengthLabel": "Longueur",
+    "weightLabel": "Poids",
+    "trackSymptomsButton": "Suivi des symptômes",
+    "foodGuideButton": "Guide alimentaire"
+  },
+  "foodGuide": {
+    "title": "Guide de sécurité alimentaire",
+    "searchPlaceholder": "Rechercher des aliments...",
+    "categories": "Catégories",
+    "safeToEat": "Sans danger",
+    "cautionNeeded": "À consommer avec précaution",
+    "avoid": "À éviter",
+    "alternativesLabel": "Alternatives sûres",
+    "nutritionalInfoLabel": "Informations nutritionnelles"
+  },
+  "healthTracker": {
+    "title": "Suivi de santé",
+    "symptomsTitle": "Suivi des symptômes",
+    "kickCountTitle": "Compteur de mouvements",
+    "contractionsTitle": "Minuteur de contractions",
+    "weightTitle": "Suivi du poids",
+    "addEntryButton": "Ajouter une entrée",
+    "dateLabel": "Date",
+    "timeLabel": "Heure",
+    "notesLabel": "Notes",
+    "severityLabel": "Intensité",
+    "durationLabel": "Durée",
+    "frequencyLabel": "Fréquence",
+    "startTrackingButton": "Commencer le suivi",
+    "stopTrackingButton": "Arrêter le suivi"
+  },
+  "appointments": {
+    "title": "Rendez-vous",
+    "upcomingTitle": "À venir",
+    "pastTitle": "Passés",
+    "addButton": "Ajouter un rendez-vous",
+    "dateTimeLabel": "Date et heure",
+    "locationLabel": "Lieu",
+    "typeLabel": "Type",
+    "descriptionLabel": "Description",
+    "reminderLabel": "Définir un rappel",
+    "noAppointments": "Aucun rendez-vous programmé"
+  },
+  "settings": {
+    "title": "Paramètres",
+    "languageSection": "Langue",
+    "languageLabel": "Langue de l'application",
+    "unitsSection": "Unités",
+    "unitsLabel": "Unités de mesure",
+    "themeSection": "Apparence",
+    "themeLabel": "Thème",
+    "notificationsSection": "Notifications",
+    "notificationsLabel": "Activer les notifications",
+    "aboutSection": "À propos",
+    "versionLabel": "Version de l'application",
+    "privacyPolicyLabel": "Politique de confidentialité",
+    "termsOfServiceLabel": "Conditions d'utilisation",
+    "feedbackLabel": "Envoyer des commentaires"
+  }
+}

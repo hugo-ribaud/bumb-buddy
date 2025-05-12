@@ -1,15 +1,19 @@
 import React from "react";
 import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    ScrollView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from "react-native";
 import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
+x";
+import LanguageSwitcher from "../components/LanguageSwitcher";
+import { RootState } from "../redux/store";
 
 const HomeScreen = () => {
+  const { t } = useTranslation();
   const { user } = useSelector((state: RootState) => state.auth);
 
   // Get current pregnancy week from user data or default to week 1
@@ -17,7 +21,7 @@ const HomeScreen = () => {
 
   // Mock data for weekly content - in a real app, this would come from a database
   const weeklyContent = {
-    title: `Week ${pregnancyWeek}`,
+    title: t("home.weekTitle", { week: pregnancyWeek }),
     babySize:
       pregnancyWeek < 8
         ? "Blueberry"
@@ -72,11 +76,11 @@ const HomeScreen = () => {
   };
 
   // Calculate trimester
-  let trimester = "First";
+  let trimester = t("home.trimesterLabel", { trimester: t("First") });
   if (pregnancyWeek > 13 && pregnancyWeek <= 26) {
-    trimester = "Second";
+    trimester = t("home.trimesterLabel", { trimester: t("Second") });
   } else if (pregnancyWeek > 26) {
-    trimester = "Third";
+    trimester = t("home.trimesterLabel", { trimester: t("Third") });
   }
 
   // Calculate progress percentage (out of 40 weeks)
@@ -87,15 +91,20 @@ const HomeScreen = () => {
       <View style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.welcomeText}>
-            Welcome, {user?.email?.split("@")[0] || "Mom"}!
+            {t("home.welcome", { name: user?.email?.split("@")[0] || "Mom" })}
           </Text>
-          <Text style={styles.subtitle}>Your Pregnancy Journey</Text>
+          <Text style={styles.subtitle}>{t("home.journeyTitle")}</Text>
+
+          {/* Add Language Switcher */}
+          <LanguageSwitcher />
         </View>
 
         <View style={styles.progressCard}>
           <View style={styles.weekContainer}>
-            <Text style={styles.currentWeek}>Week {pregnancyWeek}</Text>
-            <Text style={styles.trimester}>{trimester} Trimester</Text>
+            <Text style={styles.currentWeek}>
+              {t("home.weekTitle", { week: pregnancyWeek })}
+            </Text>
+            <Text style={styles.trimester}>{trimester}</Text>
           </View>
 
           <View style={styles.progressBarContainer}>
@@ -104,29 +113,31 @@ const HomeScreen = () => {
             />
           </View>
           <Text style={styles.progressText}>
-            {progressPercentage.toFixed(0)}% Complete
+            {t("home.progressLabel", {
+              percent: progressPercentage.toFixed(0),
+            })}
           </Text>
         </View>
 
         <View style={styles.infoCard}>
           <Text style={styles.cardTitle}>
-            {weeklyContent.title} Development
+            {t("home.developmentTitle", { week: pregnancyWeek })}
           </Text>
 
           <View style={styles.babyInfoContainer}>
             <View style={styles.babyMetrics}>
-              <Text style={styles.infoLabel}>Size</Text>
+              <Text style={styles.infoLabel}>{t("home.sizeLabel")}</Text>
               <Text style={styles.infoValue}>{weeklyContent.babySize}</Text>
 
-              <Text style={styles.infoLabel}>Length</Text>
+              <Text style={styles.infoLabel}>{t("home.lengthLabel")}</Text>
               <Text style={styles.infoValue}>{weeklyContent.babyLength}</Text>
 
-              <Text style={styles.infoLabel}>Weight</Text>
+              <Text style={styles.infoLabel}>{t("home.weightLabel")}</Text>
               <Text style={styles.infoValue}>{weeklyContent.babyWeight}</Text>
             </View>
           </View>
 
-          <Text style={styles.sectionTitle}>Development Highlights</Text>
+          <Text style={styles.sectionTitle}>{t("Development Highlights")}</Text>
           {weeklyContent.developmentHighlights.map((highlight, index) => (
             <Text key={index} style={styles.bulletPoint}>
               • {highlight}
@@ -135,7 +146,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.infoCard}>
-          <Text style={styles.cardTitle}>Your Body This Week</Text>
+          <Text style={styles.cardTitle}>{t("home.bodyChangesTitle")}</Text>
 
           {weeklyContent.maternalChanges.map((change, index) => (
             <Text key={index} style={styles.bulletPoint}>
@@ -145,7 +156,7 @@ const HomeScreen = () => {
         </View>
 
         <View style={styles.infoCard}>
-          <Text style={styles.cardTitle}>Nutrition Tips</Text>
+          <Text style={styles.cardTitle}>{t("home.nutritionTipsTitle")}</Text>
 
           {weeklyContent.nutritionTips.map((tip, index) => (
             <Text key={index} style={styles.bulletPoint}>
@@ -155,11 +166,15 @@ const HomeScreen = () => {
         </View>
 
         <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Track Symptoms</Text>
+          <Text style={styles.actionButtonText}>
+            {t("home.trackSymptomsButton")}
+          </Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>Food Safety Guide</Text>
+          <Text style={styles.actionButtonText}>
+            {t("home.foodGuideButton")}
+          </Text>
         </TouchableOpacity>
       </View>
     </ScrollView>

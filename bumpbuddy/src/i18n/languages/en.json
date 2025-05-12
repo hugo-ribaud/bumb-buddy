@@ -1,0 +1,146 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Save",
+      "cancel": "Cancel",
+      "delete": "Delete",
+      "edit": "Edit",
+      "add": "Add",
+      "confirm": "Confirm",
+      "back": "Back"
+    },
+    "validation": {
+      "required": "This field is required",
+      "email": "Please enter a valid email",
+      "minLength": "This field must be at least {{count}} characters",
+      "maxLength": "This field must be less than {{count}} characters",
+      "passwordMatch": "Passwords do not match",
+      "invalidDate": "Please enter a valid date"
+    },
+    "placeholders": {
+      "search": "Search...",
+      "email": "Enter your email",
+      "password": "Enter your password",
+      "date": "Select a date"
+    },
+    "errors": {
+      "generic": "Something went wrong. Please try again.",
+      "network": "Network error. Please check your connection.",
+      "unauthorized": "You are not authorized to access this feature.",
+      "notFound": "The requested resource was not found."
+    },
+    "labels": {
+      "loading": "Loading...",
+      "today": "Today",
+      "yesterday": "Yesterday",
+      "tomorrow": "Tomorrow"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Log In",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "forgotPassword": "Forgot Password?",
+      "submitButton": "Log In",
+      "noAccount": "Don't have an account?",
+      "signupLink": "Sign Up"
+    },
+    "signup": {
+      "title": "Sign Up",
+      "emailLabel": "Email",
+      "passwordLabel": "Password",
+      "confirmPasswordLabel": "Confirm Password",
+      "dueDateLabel": "Expected Due Date",
+      "submitButton": "Create Account",
+      "hasAccount": "Already have an account?",
+      "loginLink": "Log In"
+    },
+    "forgotPassword": {
+      "title": "Forgot Password",
+      "emailLabel": "Email",
+      "submitButton": "Reset Password",
+      "instructions": "Enter your email address and we'll send you a link to reset your password.",
+      "backToLogin": "Back to Login"
+    }
+  },
+  "profile": {
+    "title": "My Profile",
+    "personalInfo": "Personal Information",
+    "dueDate": "Due Date",
+    "pregnancyWeek": "Pregnancy Week",
+    "editProfile": "Edit Profile",
+    "changePassword": "Change Password",
+    "logOut": "Log Out",
+    "settings": "Settings"
+  },
+  "home": {
+    "welcome": "Welcome, {{name}}!",
+    "journeyTitle": "Your Pregnancy Journey",
+    "weekTitle": "Week {{week}}",
+    "trimesterLabel": "{{trimester}} Trimester",
+    "progressLabel": "{{percent}}% Complete",
+    "developmentTitle": "Week {{week}} Development",
+    "bodyChangesTitle": "Your Body This Week",
+    "nutritionTipsTitle": "Nutrition Tips",
+    "sizeLabel": "Size",
+    "lengthLabel": "Length",
+    "weightLabel": "Weight",
+    "trackSymptomsButton": "Track Symptoms",
+    "foodGuideButton": "Food Safety Guide"
+  },
+  "foodGuide": {
+    "title": "Food Safety Guide",
+    "searchPlaceholder": "Search foods...",
+    "categories": "Categories",
+    "safeToEat": "Safe to Eat",
+    "cautionNeeded": "Eat with Caution",
+    "avoid": "Foods to Avoid",
+    "alternativesLabel": "Safe Alternatives",
+    "nutritionalInfoLabel": "Nutritional Information"
+  },
+  "healthTracker": {
+    "title": "Health Tracker",
+    "symptomsTitle": "Symptom Tracker",
+    "kickCountTitle": "Kick Counter",
+    "contractionsTitle": "Contraction Timer",
+    "weightTitle": "Weight Tracker",
+    "addEntryButton": "Add Entry",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
+    "notesLabel": "Notes",
+    "severityLabel": "Severity",
+    "durationLabel": "Duration",
+    "frequencyLabel": "Frequency",
+    "startTrackingButton": "Start Tracking",
+    "stopTrackingButton": "Stop Tracking"
+  },
+  "appointments": {
+    "title": "Appointments",
+    "upcomingTitle": "Upcoming",
+    "pastTitle": "Past",
+    "addButton": "Add Appointment",
+    "dateTimeLabel": "Date & Time",
+    "locationLabel": "Location",
+    "typeLabel": "Type",
+    "descriptionLabel": "Description",
+    "reminderLabel": "Set Reminder",
+    "noAppointments": "No appointments scheduled"
+  },
+  "settings": {
+    "title": "Settings",
+    "languageSection": "Language",
+    "languageLabel": "App Language",
+    "unitsSection": "Units",
+    "unitsLabel": "Measurement Units",
+    "themeSection": "Appearance",
+    "themeLabel": "Theme",
+    "notificationsSection": "Notifications",
+    "notificationsLabel": "Enable Notifications",
+    "aboutSection": "About",
+    "versionLabel": "App Version",
+    "privacyPolicyLabel": "Privacy Policy",
+    "termsOfServiceLabel": "Terms of Service",
+    "feedbackLabel": "Send Feedback"
+  }
+}

@@ -1,0 +1,146 @@
+{
+  "common": {
+    "buttons": {
+      "save": "Guardar",
+      "cancel": "Cancelar",
+      "delete": "Eliminar",
+      "edit": "Editar",
+      "add": "Añadir",
+      "confirm": "Confirmar",
+      "back": "Atrás"
+    },
+    "validation": {
+      "required": "Este campo es obligatorio",
+      "email": "Por favor, introduce un email válido",
+      "minLength": "Este campo debe tener al menos {{count}} caracteres",
+      "maxLength": "Este campo debe tener menos de {{count}} caracteres",
+      "passwordMatch": "Las contraseñas no coinciden",
+      "invalidDate": "Por favor, introduce una fecha válida"
+    },
+    "placeholders": {
+      "search": "Buscar...",
+      "email": "Introduce tu email",
+      "password": "Introduce tu contraseña",
+      "date": "Selecciona una fecha"
+    },
+    "errors": {
+      "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
+      "network": "Error de red. Por favor, comprueba tu conexión.",
+      "unauthorized": "No estás autorizado para acceder a esta función.",
+      "notFound": "El recurso solicitado no se encontró."
+    },
+    "labels": {
+      "loading": "Cargando...",
+      "today": "Hoy",
+      "yesterday": "Ayer",
+      "tomorrow": "Mañana"
+    }
+  },
+  "auth": {
+    "login": {
+      "title": "Iniciar Sesión",
+      "emailLabel": "Email",
+      "passwordLabel": "Contraseña",
+      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "submitButton": "Iniciar Sesión",
+      "noAccount": "¿No tienes cuenta?",
+      "signupLink": "Regístrate"
+    },
+    "signup": {
+      "title": "Registrarse",
+      "emailLabel": "Email",
+      "passwordLabel": "Contraseña",
+      "confirmPasswordLabel": "Confirmar Contraseña",
+      "dueDateLabel": "Fecha Prevista de Parto",
+      "submitButton": "Crear Cuenta",
+      "hasAccount": "¿Ya tienes una cuenta?",
+      "loginLink": "Iniciar Sesión"
+    },
+    "forgotPassword": {
+      "title": "Contraseña Olvidada",
+      "emailLabel": "Email",
+      "submitButton": "Restablecer Contraseña",
+      "instructions": "Introduce tu dirección de email y te enviaremos un enlace para restablecer tu contraseña.",
+      "backToLogin": "Volver a Iniciar Sesión"
+    }
+  },
+  "profile": {
+    "title": "Mi Perfil",
+    "personalInfo": "Información Personal",
+    "dueDate": "Fecha de Parto",
+    "pregnancyWeek": "Semana de Embarazo",
+    "editProfile": "Editar Perfil",
+    "changePassword": "Cambiar Contraseña",
+    "logOut": "Cerrar Sesión",
+    "settings": "Configuración"
+  },
+  "home": {
+    "welcome": "¡Bienvenida, {{name}}!",
+    "journeyTitle": "Tu Viaje de Embarazo",
+    "weekTitle": "Semana {{week}}",
+    "trimesterLabel": "{{trimester}} Trimestre",
+    "progressLabel": "{{percent}}% Completado",
+    "developmentTitle": "Desarrollo Semana {{week}}",
+    "bodyChangesTitle": "Tu Cuerpo Esta Semana",
+    "nutritionTipsTitle": "Consejos Nutricionales",
+    "sizeLabel": "Tamaño",
+    "lengthLabel": "Longitud",
+    "weightLabel": "Peso",
+    "trackSymptomsButton": "Seguimiento de Síntomas",
+    "foodGuideButton": "Guía de Seguridad Alimentaria"
+  },
+  "foodGuide": {
+    "title": "Guía de Seguridad Alimentaria",
+    "searchPlaceholder": "Buscar alimentos...",
+    "categories": "Categorías",
+    "safeToEat": "Seguro para Comer",
+    "cautionNeeded": "Comer con Precaución",
+    "avoid": "Alimentos a Evitar",
+    "alternativesLabel": "Alternativas Seguras",
+    "nutritionalInfoLabel": "Información Nutricional"
+  },
+  "healthTracker": {
+    "title": "Seguimiento de Salud",
+    "symptomsTitle": "Seguimiento de Síntomas",
+    "kickCountTitle": "Contador de Patadas",
+    "contractionsTitle": "Temporizador de Contracciones",
+    "weightTitle": "Seguimiento de Peso",
+    "addEntryButton": "Añadir Entrada",
+    "dateLabel": "Fecha",
+    "timeLabel": "Hora",
+    "notesLabel": "Notas",
+    "severityLabel": "Gravedad",
+    "durationLabel": "Duración",
+    "frequencyLabel": "Frecuencia",
+    "startTrackingButton": "Comenzar Seguimiento",
+    "stopTrackingButton": "Detener Seguimiento"
+  },
+  "appointments": {
+    "title": "Citas",
+    "upcomingTitle": "Próximas",
+    "pastTitle": "Pasadas",
+    "addButton": "Añadir Cita",
+    "dateTimeLabel": "Fecha y Hora",
+    "locationLabel": "Ubicación",
+    "typeLabel": "Tipo",
+    "descriptionLabel": "Descripción",
+    "reminderLabel": "Establecer Recordatorio",
+    "noAppointments": "No hay citas programadas"
+  },
+  "settings": {
+    "title": "Configuración",
+    "languageSection": "Idioma",
+    "languageLabel": "Idioma de la Aplicación",
+    "unitsSection": "Unidades",
+    "unitsLabel": "Unidades de Medida",
+    "themeSection": "Apariencia",
+    "themeLabel": "Tema",
+    "notificationsSection": "Notificaciones",
+    "notificationsLabel": "Activar Notificaciones",
+    "aboutSection": "Acerca de",
+    "versionLabel": "Versión de la Aplicación",
+    "privacyPolicyLabel": "Política de Privacidad",
+    "termsOfServiceLabel": "Términos de Servicio",
+    "feedbackLabel": "Enviar Comentarios"
+  }
+}
