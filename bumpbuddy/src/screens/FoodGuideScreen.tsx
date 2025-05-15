@@ -1,7 +1,9 @@
-import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
+import { Food, FoodCategory, SafetyRating } from "food-types";
+import React, { useEffect, useState } from "react";
 import {
+  ActivityIndicator,
   FlatList,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,113 +11,24 @@ import {
   View,
 } from "react-native";
 
-// Define type for food item
-interface FoodItem {
-  id: string;
-  name: string;
-  category: string;
-  safety: "safe" | "caution" | "avoid";
-  description: string;
-  alternatives: string;
-}
-
-// Mock data for food safety items
-const FOOD_DATA: FoodItem[] = [
-  {
-    id: "1",
-    name: "Cheese (Soft)",
-    category: "Dairy",
-    safety: "caution",
-    description:
-      "Avoid unpasteurized soft cheeses like brie, camembert, and blue cheese as they may contain harmful bacteria. Pasteurized versions are safe.",
-    alternatives:
-      "Hard cheeses like cheddar, swiss, and parmesan are safe options.",
-  },
-  {
-    id: "2",
-    name: "Eggs",
-    category: "Protein",
-    safety: "caution",
-    description:
-      "Ensure eggs are fully cooked until both whites and yolks are firm. Raw or undercooked eggs may contain salmonella.",
-    alternatives:
-      "Hard-boiled eggs, thoroughly cooked scrambled eggs, or omelets.",
-  },
-  {
-    id: "3",
-    name: "Salmon",
-    category: "Seafood",
-    safety: "safe",
-    description:
-      "Salmon is low in mercury and high in omega-3 fatty acids, which are beneficial for baby's brain development. Ensure it's fully cooked.",
-    alternatives:
-      "No alternatives needed as this is a safe option when properly cooked.",
-  },
-  {
-    id: "4",
-    name: "Deli Meats",
-    category: "Meat",
-    safety: "avoid",
-    description:
-      "Deli meats can harbor listeria, a bacteria that can be harmful during pregnancy. Avoid unless heated until steaming hot.",
-    alternatives:
-      "Freshly cooked meats or heat deli meats until steaming hot before consumption.",
-  },
-  {
-    id: "5",
-    name: "Spinach",
-    category: "Vegetables",
-    safety: "safe",
-    description:
-      "Spinach is rich in folate, iron, and other nutrients beneficial during pregnancy. Wash thoroughly before consumption.",
-    alternatives: "No alternatives needed as this is a safe option.",
-  },
-  {
-    id: "6",
-    name: "Sushi (Raw)",
-    category: "Seafood",
-    safety: "avoid",
-    description:
-      "Raw fish may contain parasites or bacteria that could be harmful during pregnancy.",
-    alternatives:
-      "Cooked sushi rolls like California rolls, tempura rolls, or vegetable rolls.",
-  },
-  {
-    id: "7",
-    name: "Coffee",
-    category: "Beverages",
-    safety: "caution",
-    description:
-      "Limit caffeine intake to 200mg per day (about one 12oz cup of coffee).",
-    alternatives:
-      "Decaffeinated coffee, herbal teas (check which ones are safe), or fruit-infused water.",
-  },
-  {
-    id: "8",
-    name: "Avocado",
-    category: "Fruit",
-    safety: "safe",
-    description:
-      "Avocados are rich in folate, potassium, vitamin C, and vitamin B6, all beneficial during pregnancy.",
-    alternatives: "No alternatives needed as this is a safe option.",
-  },
-];
+import { useTranslation } from "react-i18next";
+import foodService from "../services/foodService";
 
 // Component to render each food item
 const FoodItem = ({
   item,
   onPress,
 }: {
-  item: FoodItem;
-  onPress: (item: FoodItem) => void;
+  item: Food;
+  onPress: (item: Food) => void;
 }) => {
   const { t } = useTranslation();
 
   // Determine color based on safety rating
   const safetyColor =
-    item.safety === "safe"
+    item.safety_rating === "safe"
       ? "#28a745"
-      : item.safety === "caution"
+      : item.safety_rating === "caution"
       ? "#ffc107"
       : "#dc3545";
 
@@ -126,11 +39,10 @@ const FoodItem = ({
       />
       <View style={styles.foodItemContent}>
         <Text style={styles.foodName}>{item.name}</Text>
-        <Text style={styles.foodCategory}>{item.category}</Text>
         <Text style={[styles.safetyRating, { color: safetyColor }]}>
-          {item.safety === "safe"
+          {item.safety_rating === "safe"
             ? t("foodGuide.safeToEat")
-            : item.safety === "caution"
+            : item.safety_rating === "caution"
             ? t("foodGuide.cautionNeeded")
             : t("foodGuide.avoid")}
         </Text>
@@ -144,16 +56,16 @@ const FoodDetails = ({
   item,
   onClose,
 }: {
-  item: FoodItem;
+  item: Food;
   onClose: () => void;
 }) => {
   const { t } = useTranslation();
 
   // Determine color based on safety rating
   const safetyColor =
-    item.safety === "safe"
+    item.safety_rating === "safe"
       ? "#28a745"
-      : item.safety === "caution"
+      : item.safety_rating === "caution"
       ? "#ffc107"
       : "#dc3545";
 
@@ -170,42 +82,141 @@ const FoodDetails = ({
         style={[styles.safetySummary, { backgroundColor: safetyColor + "20" }]}
       >
         <Text style={[styles.safetyText, { color: safetyColor }]}>
-          {item.safety === "safe"
+          {item.safety_rating === "safe"
             ? t("foodGuide.safeToEat")
-            : item.safety === "caution"
+            : item.safety_rating === "caution"
             ? t("foodGuide.cautionNeeded")
             : t("foodGuide.avoid")}
         </Text>
       </View>
 
       <Text style={styles.detailsLabel}>{t("foodGuide.description")}</Text>
-      <Text style={styles.detailsText}>{item.description}</Text>
+      <Text style={styles.detailsText}>{item.description || ""}</Text>
 
       <Text style={styles.detailsLabel}>
         {t("foodGuide.alternativesLabel")}
       </Text>
-      <Text style={styles.detailsText}>{item.alternatives}</Text>
+      <Text style={styles.detailsText}>{item.alternatives || ""}</Text>
     </View>
+  );
+};
+
+// Category pill component
+const CategoryPill = ({
+  category,
+  isSelected,
+  onPress,
+}: {
+  category: FoodCategory;
+  isSelected: boolean;
+  onPress: () => void;
+}) => {
+  return (
+    <TouchableOpacity
+      style={[styles.categoryPill, isSelected && styles.selectedCategoryPill]}
+      onPress={onPress}
+    >
+      <Text
+        style={[
+          styles.categoryPillText,
+          isSelected && styles.selectedCategoryPillText,
+        ]}
+      >
+        {category.name}
+      </Text>
+    </TouchableOpacity>
   );
 };
 
 const FoodGuideScreen = () => {
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
-  const [activeFilter, setActiveFilter] = useState<
-    "all" | "safe" | "caution" | "avoid"
-  >("all");
+  const [selectedFood, setSelectedFood] = useState<Food | null>(null);
+  const [safetyFilter, setSafetyFilter] = useState<"all" | SafetyRating>("all");
+  const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
+    null
+  );
+  const [foods, setFoods] = useState<Food[]>([]);
+  const [categories, setCategories] = useState<FoodCategory[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Filter food data based on search query and active filter
-  const filteredData = FOOD_DATA.filter((item) => {
-    const matchesSearch =
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.category.toLowerCase().includes(searchQuery.toLowerCase());
+  // Load categories
+  useEffect(() => {
+    const loadCategories = async () => {
+      try {
+        const data = await foodService.getCategories();
+        setCategories(data);
+      } catch (err) {
+        console.error("Error loading categories:", err);
+      }
+    };
 
-    if (activeFilter === "all") return matchesSearch;
-    return matchesSearch && item.safety === activeFilter;
-  });
+    loadCategories();
+  }, []);
+
+  // Load foods with filtering
+  useEffect(() => {
+    const loadFoods = async () => {
+      setLoading(true);
+      setError(null);
+      try {
+        const filter = {
+          searchTerm: searchQuery,
+          category_id: selectedCategoryId || undefined,
+          safety_rating: safetyFilter !== "all" ? safetyFilter : undefined,
+        };
+
+        const data = await foodService.filterFoods(filter);
+        setFoods(data);
+      } catch (err) {
+        console.error("Error loading foods:", err);
+        setError(t("foodGuide.errorLoading"));
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadFoods();
+  }, [searchQuery, safetyFilter, selectedCategoryId, t]);
+
+  // Set up realtime subscription
+  useEffect(() => {
+    const subscription = foodService.subscribeToFoods(() => {
+      // Reload foods when there's a change
+      const filter = {
+        searchTerm: searchQuery,
+        category_id: selectedCategoryId || undefined,
+        safety_rating: safetyFilter !== "all" ? safetyFilter : undefined,
+      };
+
+      foodService.filterFoods(filter).then((data) => {
+        setFoods(data);
+      });
+    });
+
+    return () => {
+      foodService.unsubscribe(subscription);
+    };
+  }, [safetyFilter, selectedCategoryId, searchQuery]);
+
+  // Reset category when safety filter changes
+  useEffect(() => {
+    if (safetyFilter !== "all") {
+      setSelectedCategoryId(null);
+    }
+  }, [safetyFilter]);
+
+  // Handle category selection
+  const handleCategoryPress = (categoryId: string) => {
+    if (selectedCategoryId === categoryId) {
+      setSelectedCategoryId(null);
+    } else {
+      setSelectedCategoryId(categoryId);
+      // Reset safety filter when selecting a category
+      setSafetyFilter("all");
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -218,18 +229,37 @@ const FoodGuideScreen = () => {
         onChangeText={setSearchQuery}
       />
 
+      {/* Categories horizontal scroll */}
+      {categories.length > 0 && (
+        <ScrollView
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          style={styles.categoriesContainer}
+          contentContainerStyle={styles.categoriesContent}
+        >
+          {categories.map((category) => (
+            <CategoryPill
+              key={category.id}
+              category={category}
+              isSelected={selectedCategoryId === category.id}
+              onPress={() => handleCategoryPress(category.id)}
+            />
+          ))}
+        </ScrollView>
+      )}
+
       <View style={styles.filtersContainer}>
         <TouchableOpacity
           style={[
             styles.filterButton,
-            activeFilter === "all" && styles.activeFilter,
+            safetyFilter === "all" && styles.activeFilter,
           ]}
-          onPress={() => setActiveFilter("all")}
+          onPress={() => setSafetyFilter("all")}
         >
           <Text
             style={[
               styles.filterText,
-              activeFilter === "all" && styles.activeFilterText,
+              safetyFilter === "all" && styles.activeFilterText,
             ]}
           >
             {t("foodGuide.all")}
@@ -239,14 +269,14 @@ const FoodGuideScreen = () => {
         <TouchableOpacity
           style={[
             styles.filterButton,
-            activeFilter === "safe" && styles.activeFilterSafe,
+            safetyFilter === "safe" && styles.activeFilterSafe,
           ]}
-          onPress={() => setActiveFilter("safe")}
+          onPress={() => setSafetyFilter("safe")}
         >
           <Text
             style={[
               styles.filterText,
-              activeFilter === "safe" && styles.activeFilterText,
+              safetyFilter === "safe" && styles.activeFilterText,
             ]}
           >
             {t("foodGuide.safe")}
@@ -256,14 +286,14 @@ const FoodGuideScreen = () => {
         <TouchableOpacity
           style={[
             styles.filterButton,
-            activeFilter === "caution" && styles.activeFilterCaution,
+            safetyFilter === "caution" && styles.activeFilterCaution,
           ]}
-          onPress={() => setActiveFilter("caution")}
+          onPress={() => setSafetyFilter("caution")}
         >
           <Text
             style={[
               styles.filterText,
-              activeFilter === "caution" && styles.activeFilterText,
+              safetyFilter === "caution" && styles.activeFilterText,
             ]}
           >
             {t("foodGuide.caution")}
@@ -273,14 +303,14 @@ const FoodGuideScreen = () => {
         <TouchableOpacity
           style={[
             styles.filterButton,
-            activeFilter === "avoid" && styles.activeFilterAvoid,
+            safetyFilter === "avoid" && styles.activeFilterAvoid,
           ]}
-          onPress={() => setActiveFilter("avoid")}
+          onPress={() => setSafetyFilter("avoid")}
         >
           <Text
             style={[
               styles.filterText,
-              activeFilter === "avoid" && styles.activeFilterText,
+              safetyFilter === "avoid" && styles.activeFilterText,
             ]}
           >
             {t("foodGuide.avoid")}
@@ -293,9 +323,27 @@ const FoodGuideScreen = () => {
           item={selectedFood}
           onClose={() => setSelectedFood(null)}
         />
+      ) : loading ? (
+        <View style={styles.centerContainer}>
+          <ActivityIndicator size="large" color="#007bff" />
+        </View>
+      ) : error ? (
+        <View style={styles.centerContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity
+            style={styles.retryButton}
+            onPress={() => setSafetyFilter(safetyFilter)} // Trigger reload
+          >
+            <Text style={styles.retryButtonText}>{t("common.retry")}</Text>
+          </TouchableOpacity>
+        </View>
+      ) : foods.length === 0 ? (
+        <View style={styles.centerContainer}>
+          <Text style={styles.noResultsText}>{t("foodGuide.noResults")}</Text>
+        </View>
       ) : (
         <FlatList
-          data={filteredData}
+          data={foods}
           renderItem={({ item }) => (
             <FoodItem item={item} onPress={setSelectedFood} />
           )}
@@ -326,6 +374,32 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     borderWidth: 1,
     borderColor: "#ced4da",
+  },
+  categoriesContainer: {
+    marginBottom: 15,
+  },
+  categoriesContent: {
+    paddingRight: 20,
+  },
+  categoryPill: {
+    paddingVertical: 8,
+    paddingHorizontal: 16,
+    borderRadius: 20,
+    backgroundColor: "#e9ecef",
+    marginRight: 10,
+    borderWidth: 1,
+    borderColor: "#ced4da",
+  },
+  selectedCategoryPill: {
+    backgroundColor: "#007bff",
+    borderColor: "#0069d9",
+  },
+  categoryPillText: {
+    color: "#495057",
+    fontWeight: "500",
+  },
+  selectedCategoryPillText: {
+    color: "white",
   },
   filtersContainer: {
     flexDirection: "row",
@@ -443,6 +517,32 @@ const styles = StyleSheet.create({
     color: "#343a40",
     lineHeight: 20,
     marginBottom: 10,
+  },
+  centerContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  errorText: {
+    color: "#dc3545",
+    fontSize: 16,
+    marginBottom: 15,
+    textAlign: "center",
+  },
+  noResultsText: {
+    color: "#6c757d",
+    fontSize: 16,
+    textAlign: "center",
+  },
+  retryButton: {
+    backgroundColor: "#007bff",
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 5,
+  },
+  retryButtonText: {
+    color: "white",
+    fontWeight: "500",
   },
 });
 

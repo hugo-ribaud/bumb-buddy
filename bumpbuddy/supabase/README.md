@@ -19,6 +19,48 @@ After enabling Realtime:
 2. Verify that `supabase_realtime` publication exists and includes the `users` table
 3. Run the app and check the Profile screen for the "Realtime: Connected" status
 
+## Setting Up the Food Safety Database
+
+The food safety database is a critical feature of the BumpBuddy app, providing pregnant users with information about which foods are safe, require caution, or should be avoided during pregnancy.
+
+### Database Structure
+
+The food safety database uses two main tables:
+
+1. **food_categories**: Organizes foods into logical categories (e.g., Dairy, Seafood, Fruits)
+2. **foods**: Contains individual food items with safety ratings and detailed information
+
+### Seeding the Database
+
+To populate the food safety database with initial data:
+
+1. **Navigate to your Supabase project** and open the **SQL Editor**
+2. **Create a new query** and paste the contents of `migrations/seed_food_safety_data.sql`
+3. **Run the query** to populate the database with common food items
+
+The seed script will:
+
+- Create food categories (Dairy, Protein, Seafood, etc.)
+- Add common food items to each category
+- Include safety ratings, descriptions, alternatives, and nutritional information
+
+### Viewing the Food Data
+
+After running the seed script:
+
+1. Go to **Database** > **Table editor**
+2. Select the `food_categories` table to view the categories
+3. Select the `foods` table to view the food items
+4. Verify that the data appears correctly
+
+### Updating Food Safety Information
+
+To update food safety information:
+
+1. Use the Supabase Table Editor to modify existing records
+2. Or create a new SQL script for batch updates
+3. The changes will automatically reflect in the app through Realtime
+
 ## Testing Realtime
 
 To test that Realtime is working correctly:
