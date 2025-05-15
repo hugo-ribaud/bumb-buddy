@@ -7,7 +7,9 @@
       "edit": "Edit",
       "add": "Add",
       "confirm": "Confirm",
-      "back": "Back"
+      "back": "Back",
+      "editProfile": "Edit Profile",
+      "logout": "Log Out"
     },
     "validation": {
       "required": "This field is required",
@@ -33,8 +35,11 @@
       "loading": "Loading...",
       "today": "Today",
       "yesterday": "Yesterday",
-      "tomorrow": "Tomorrow"
-    }
+      "tomorrow": "Tomorrow",
+      "success": "Success"
+    },
+    "yes": "Yes",
+    "no": "No"
   },
   "auth": {
     "login": {
@@ -44,7 +49,8 @@
       "forgotPassword": "Forgot Password?",
       "submitButton": "Log In",
       "noAccount": "Don't have an account?",
-      "signupLink": "Sign Up"
+      "signupLink": "Sign Up",
+      "pleaseLoginFirst": "Please log in to view your profile."
     },
     "signup": {
       "title": "Sign Up",
@@ -72,7 +78,14 @@
     "editProfile": "Edit Profile",
     "changePassword": "Change Password",
     "logOut": "Log Out",
-    "settings": "Settings"
+    "settings": "Settings",
+    "profileUpdated": "Profile updated at",
+    "realtimeConnected": "Connected to Realtime",
+    "realtimeConnectionFailed": "Failed to connect to Realtime",
+    "realtimeError": "Error connecting to Realtime",
+    "profileUpdateSuccess": "Profile updated successfully",
+    "profileUpdateError": "Failed to update profile",
+    "realtime": "Realtime"
   },
   "home": {
     "welcome": "Welcome, {{name}}!",
@@ -93,11 +106,15 @@
     "title": "Food Safety Guide",
     "searchPlaceholder": "Search foods...",
     "categories": "Categories",
-    "safeToEat": "Safe to Eat",
-    "cautionNeeded": "Eat with Caution",
-    "avoid": "Foods to Avoid",
-    "alternativesLabel": "Safe Alternatives",
-    "nutritionalInfoLabel": "Nutritional Information"
+    "safeToEat": "Safe to eat",
+    "cautionNeeded": "Eat with caution",
+    "avoid": "Avoid during pregnancy",
+    "alternativesLabel": "Alternatives",
+    "nutritionalInfoLabel": "Nutritional Information",
+    "description": "Description",
+    "all": "All",
+    "safe": "Safe",
+    "caution": "Caution"
   },
   "healthTracker": {
     "title": "Health Tracker",
@@ -123,9 +140,19 @@
     "dateTimeLabel": "Date & Time",
     "locationLabel": "Location",
     "typeLabel": "Type",
+    "titleLabel": "Title",
+    "dateLabel": "Date",
+    "timeLabel": "Time",
     "descriptionLabel": "Description",
+    "notesLabel": "Notes",
     "reminderLabel": "Set Reminder",
-    "noAppointments": "No appointments scheduled"
+    "noAppointments": "No appointments scheduled",
+    "tapToAddAppointment": "Tap the button above to add your first appointment",
+    "editAppointment": "Edit Appointment",
+    "addNewAppointment": "New Appointment",
+    "titleRequired": "Please enter an appointment title",
+    "titlePlaceholder": "Enter appointment title",
+    "notesPlaceholder": "Enter any notes for this appointment"
   },
   "settings": {
     "title": "Settings",

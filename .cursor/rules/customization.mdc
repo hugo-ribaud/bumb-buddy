@@ -2,12 +2,6 @@
 description: "CursorRIPER Framework - Customization"
 globs: 
 alwaysApply: false
-version: "1.0.1"
-date_created: "2025-04-05"
-last_updated: "2025-04-06"
-framework_component: "customization"
-priority: "medium"
-scope: "optional"
 ---
 <!-- Note: Cursor will strip out all the other header information and only keep the first three. -->
 # CursorRIPER Framework - Customization
@@ -38,7 +32,7 @@ EXPLANATION_LEVEL: "MEDIUM"
 SUGGEST_MODE_TRANSITIONS: true
 # If true, AI can suggest when a mode transition might be appropriate
 
-AUTO_MODE_TRANSITION: false
+AUTO_MODE_TRANSITION: true
 # If true, AI can automatically transition between modes (except to EXECUTE)
 # EXECUTE mode always requires explicit user authorization
 

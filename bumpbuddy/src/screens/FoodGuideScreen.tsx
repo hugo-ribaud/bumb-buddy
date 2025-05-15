@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FlatList,
   StyleSheet,
@@ -108,6 +109,8 @@ const FoodItem = ({
   item: FoodItem;
   onPress: (item: FoodItem) => void;
 }) => {
+  const { t } = useTranslation();
+
   // Determine color based on safety rating
   const safetyColor =
     item.safety === "safe"
@@ -126,10 +129,10 @@ const FoodItem = ({
         <Text style={styles.foodCategory}>{item.category}</Text>
         <Text style={[styles.safetyRating, { color: safetyColor }]}>
           {item.safety === "safe"
-            ? "Safe to eat"
+            ? t("foodGuide.safeToEat")
             : item.safety === "caution"
-            ? "Eat with caution"
-            : "Avoid during pregnancy"}
+            ? t("foodGuide.cautionNeeded")
+            : t("foodGuide.avoid")}
         </Text>
       </View>
     </TouchableOpacity>
@@ -144,6 +147,8 @@ const FoodDetails = ({
   item: FoodItem;
   onClose: () => void;
 }) => {
+  const { t } = useTranslation();
+
   // Determine color based on safety rating
   const safetyColor =
     item.safety === "safe"
@@ -166,23 +171,26 @@ const FoodDetails = ({
       >
         <Text style={[styles.safetyText, { color: safetyColor }]}>
           {item.safety === "safe"
-            ? "Safe to eat"
+            ? t("foodGuide.safeToEat")
             : item.safety === "caution"
-            ? "Eat with caution"
-            : "Avoid during pregnancy"}
+            ? t("foodGuide.cautionNeeded")
+            : t("foodGuide.avoid")}
         </Text>
       </View>
 
-      <Text style={styles.detailsLabel}>Description</Text>
+      <Text style={styles.detailsLabel}>{t("foodGuide.description")}</Text>
       <Text style={styles.detailsText}>{item.description}</Text>
 
-      <Text style={styles.detailsLabel}>Alternatives</Text>
+      <Text style={styles.detailsLabel}>
+        {t("foodGuide.alternativesLabel")}
+      </Text>
       <Text style={styles.detailsText}>{item.alternatives}</Text>
     </View>
   );
 };
 
 const FoodGuideScreen = () => {
+  const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFood, setSelectedFood] = useState<FoodItem | null>(null);
   const [activeFilter, setActiveFilter] = useState<
@@ -201,11 +209,11 @@ const FoodGuideScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Food Safety Guide</Text>
+      <Text style={styles.title}>{t("foodGuide.title")}</Text>
 
       <TextInput
         style={styles.searchInput}
-        placeholder="Search foods..."
+        placeholder={t("foodGuide.searchPlaceholder")}
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
@@ -224,7 +232,7 @@ const FoodGuideScreen = () => {
               activeFilter === "all" && styles.activeFilterText,
             ]}
           >
-            All
+            {t("foodGuide.all")}
           </Text>
         </TouchableOpacity>
 
@@ -241,7 +249,7 @@ const FoodGuideScreen = () => {
               activeFilter === "safe" && styles.activeFilterText,
             ]}
           >
-            Safe
+            {t("foodGuide.safe")}
           </Text>
         </TouchableOpacity>
 
@@ -258,7 +266,7 @@ const FoodGuideScreen = () => {
               activeFilter === "caution" && styles.activeFilterText,
             ]}
           >
-            Caution
+            {t("foodGuide.caution")}
           </Text>
         </TouchableOpacity>
 
@@ -275,7 +283,7 @@ const FoodGuideScreen = () => {
               activeFilter === "avoid" && styles.activeFilterText,
             ]}
           >
-            Avoid
+            {t("foodGuide.avoid")}
           </Text>
         </TouchableOpacity>
       </View>

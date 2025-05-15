@@ -1,5 +1,6 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -16,12 +17,15 @@ import authService from "../services/authService";
 import realtimeService from "../services/realtimeService";
 
 const ProfileScreen = () => {
+  const { t } = useTranslation();
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [realtimeStatus, setRealtimeStatus] = useState("Setting up...");
+  const [realtimeStatus, setRealtimeStatus] = useState(
+    t("common.labels.loading")
+  );
   const [lastUpdate, setLastUpdate] = useState<string | null>(null);
   const [dueDate, setDueDate] = useState(
     user?.dueDate ? new Date(user.dueDate) : new Date()
@@ -33,7 +37,7 @@ const ProfileScreen = () => {
     if (!user) return;
 
     console.log("Setting up Realtime subscription for Users table...");
-    setRealtimeStatus("Connecting...");
+    setRealtimeStatus(t("common.labels.loading"));
 
     const subscription = realtimeService.subscribeToUsers({
       onUpdate: (payload) => {
@@ -41,7 +45,7 @@ const ProfileScreen = () => {
         if (payload.new && payload.new.id === user.id) {
           console.log("Current user updated:", payload.new);
           setLastUpdate(
-            `Profile updated at ${new Date().toLocaleTimeString()}`
+            `${t("profile.profileUpdated")} ${new Date().toLocaleTimeString()}`
           );
 
           // Update the Redux store with the new data from Realtime
@@ -56,14 +60,14 @@ const ProfileScreen = () => {
       },
       onError: (error) => {
         console.error("Realtime subscription error:", error);
-        setRealtimeStatus("Error connecting to Realtime");
+        setRealtimeStatus(t("profile.realtimeError"));
       },
     });
 
     if (subscription) {
-      setRealtimeStatus("Connected to Realtime");
+      setRealtimeStatus(t("profile.realtimeConnected"));
     } else {
-      setRealtimeStatus("Failed to connect to Realtime");
+      setRealtimeStatus(t("profile.realtimeConnectionFailed"));
     }
 
     // Clean up subscription when component unmounts
@@ -73,7 +77,7 @@ const ProfileScreen = () => {
         console.log("Cleaned up Realtime subscription");
       }
     };
-  }, [user, dispatch]);
+  }, [user, dispatch, t]);
 
   const handleLogout = async () => {
     setLoading(true);
@@ -118,11 +122,16 @@ const ProfileScreen = () => {
       );
 
       setEditing(false);
-      setLastUpdate(`Profile updated at ${new Date().toLocaleTimeString()}`);
-      Alert.alert("Success", "Profile updated successfully");
+      setLastUpdate(
+        `${t("profile.profileUpdated")} ${new Date().toLocaleTimeString()}`
+      );
+      Alert.alert(
+        t("common.labels.success"),
+        t("profile.profileUpdateSuccess")
+      );
     } catch (error) {
       console.error("Error updating profile:", error);
-      Alert.alert("Error", "Failed to update profile");
+      Alert.alert(t("common.errors.generic"), t("profile.profileUpdateError"));
     } finally {
       setLoading(false);
     }
@@ -138,7 +147,7 @@ const ProfileScreen = () => {
   if (!user) {
     return (
       <View style={styles.container}>
-        <Text>Please log in to view your profile.</Text>
+        <Text>{t("auth.login.pleaseLoginFirst")}</Text>
       </View>
     );
   }
@@ -146,21 +155,23 @@ const ProfileScreen = () => {
   return (
     <ScrollView style={styles.scrollContainer}>
       <View style={styles.container}>
-        <Text style={styles.title}>My Profile</Text>
+        <Text style={styles.title}>{t("profile.title")}</Text>
 
         {/* Realtime Status Indicator */}
         <View style={styles.realtimeCard}>
-          <Text style={styles.realtimeStatus}>Realtime: {realtimeStatus}</Text>
+          <Text style={styles.realtimeStatus}>
+            {t("profile.realtime")}: {realtimeStatus}
+          </Text>
           {lastUpdate && <Text style={styles.lastUpdate}>{lastUpdate}</Text>}
         </View>
 
         <View style={styles.infoCard}>
-          <Text style={styles.label}>Email</Text>
+          <Text style={styles.label}>{t("auth.login.emailLabel")}</Text>
           <Text style={styles.value}>{user.email}</Text>
 
           {editing ? (
             <>
-              <Text style={styles.label}>Due Date</Text>
+              <Text style={styles.label}>{t("profile.dueDate")}</Text>
               <TouchableOpacity
                 style={styles.dateInput}
                 onPress={() => setShowDatePicker(true)}
@@ -182,7 +193,9 @@ const ProfileScreen = () => {
                   style={[styles.button, styles.cancelButton]}
                   onPress={() => setEditing(false)}
                 >
-                  <Text style={styles.buttonText}>Cancel</Text>
+                  <Text style={styles.buttonText}>
+                    {t("common.buttons.cancel")}
+                  </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                   style={styles.button}
@@ -192,21 +205,23 @@ const ProfileScreen = () => {
                   {loading ? (
                     <ActivityIndicator color="white" size="small" />
                   ) : (
-                    <Text style={styles.buttonText}>Save</Text>
+                    <Text style={styles.buttonText}>
+                      {t("common.buttons.save")}
+                    </Text>
                   )}
                 </TouchableOpacity>
               </View>
             </>
           ) : (
             <>
-              <Text style={styles.label}>Due Date</Text>
+              <Text style={styles.label}>{t("profile.dueDate")}</Text>
               <Text style={styles.value}>
                 {user.dueDate
                   ? new Date(user.dueDate).toLocaleDateString()
                   : "Not set"}
               </Text>
 
-              <Text style={styles.label}>Pregnancy Week</Text>
+              <Text style={styles.label}>{t("profile.pregnancyWeek")}</Text>
               <Text style={styles.value}>
                 {user.pregnancyWeek !== undefined
                   ? `Week ${user.pregnancyWeek}`
@@ -217,7 +232,9 @@ const ProfileScreen = () => {
                 style={styles.button}
                 onPress={() => setEditing(true)}
               >
-                <Text style={styles.buttonText}>Edit Profile</Text>
+                <Text style={styles.buttonText}>
+                  {t("common.buttons.editProfile")}
+                </Text>
               </TouchableOpacity>
             </>
           )}
@@ -230,7 +247,9 @@ const ProfileScreen = () => {
             {loading ? (
               <ActivityIndicator color="white" size="small" />
             ) : (
-              <Text style={styles.buttonText}>Log Out</Text>
+              <Text style={styles.buttonText}>
+                {t("common.buttons.logout")}
+              </Text>
             )}
           </TouchableOpacity>
         </View>

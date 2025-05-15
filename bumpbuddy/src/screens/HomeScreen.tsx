@@ -1,14 +1,14 @@
-import React from "react";
 import {
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from "react-native";
+
+import React from "react";
+import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-x";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import { RootState } from "../redux/store";
 

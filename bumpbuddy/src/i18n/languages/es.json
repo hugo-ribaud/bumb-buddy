@@ -7,11 +7,13 @@
       "edit": "Editar",
       "add": "Añadir",
       "confirm": "Confirmar",
-      "back": "Atrás"
+      "back": "Atrás",
+      "editProfile": "Editar Perfil",
+      "logout": "Cerrar Sesión"
     },
     "validation": {
       "required": "Este campo es obligatorio",
-      "email": "Por favor, introduce un email válido",
+      "email": "Por favor, introduce un correo electrónico válido",
       "minLength": "Este campo debe tener al menos {{count}} caracteres",
       "maxLength": "Este campo debe tener menos de {{count}} caracteres",
       "passwordMatch": "Las contraseñas no coinciden",
@@ -19,36 +21,40 @@
     },
     "placeholders": {
       "search": "Buscar...",
-      "email": "Introduce tu email",
+      "email": "Introduce tu correo electrónico",
       "password": "Introduce tu contraseña",
       "date": "Selecciona una fecha"
     },
     "errors": {
       "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
       "network": "Error de red. Por favor, comprueba tu conexión.",
-      "unauthorized": "No estás autorizado para acceder a esta función.",
-      "notFound": "El recurso solicitado no se encontró."
+      "unauthorized": "No estás autorizado a acceder a esta función.",
+      "notFound": "No se encontró el recurso solicitado."
     },
     "labels": {
       "loading": "Cargando...",
       "today": "Hoy",
       "yesterday": "Ayer",
-      "tomorrow": "Mañana"
-    }
+      "tomorrow": "Mañana",
+      "success": "Éxito"
+    },
+    "yes": "Sí",
+    "no": "No"
   },
   "auth": {
     "login": {
       "title": "Iniciar Sesión",
-      "emailLabel": "Email",
+      "emailLabel": "Correo Electrónico",
       "passwordLabel": "Contraseña",
-      "forgotPassword": "¿Olvidaste tu contraseña?",
+      "forgotPassword": "¿Olvidaste tu Contraseña?",
       "submitButton": "Iniciar Sesión",
-      "noAccount": "¿No tienes cuenta?",
-      "signupLink": "Regístrate"
+      "noAccount": "¿No tienes una cuenta?",
+      "signupLink": "Registrarse",
+      "pleaseLoginFirst": "Por favor, inicia sesión para ver tu perfil."
     },
     "signup": {
       "title": "Registrarse",
-      "emailLabel": "Email",
+      "emailLabel": "Correo Electrónico",
       "passwordLabel": "Contraseña",
       "confirmPasswordLabel": "Confirmar Contraseña",
       "dueDateLabel": "Fecha Prevista de Parto",
@@ -58,9 +64,9 @@
     },
     "forgotPassword": {
       "title": "Contraseña Olvidada",
-      "emailLabel": "Email",
+      "emailLabel": "Correo Electrónico",
       "submitButton": "Restablecer Contraseña",
-      "instructions": "Introduce tu dirección de email y te enviaremos un enlace para restablecer tu contraseña.",
+      "instructions": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
       "backToLogin": "Volver a Iniciar Sesión"
     }
   },
@@ -72,35 +78,46 @@
     "editProfile": "Editar Perfil",
     "changePassword": "Cambiar Contraseña",
     "logOut": "Cerrar Sesión",
-    "settings": "Configuración"
+    "settings": "Configuración",
+    "profileUpdated": "Perfil actualizado a las",
+    "realtimeConnected": "Conectado a Tiempo Real",
+    "realtimeConnectionFailed": "Error al conectar a Tiempo Real",
+    "realtimeError": "Error al conectar a Tiempo Real",
+    "profileUpdateSuccess": "Perfil actualizado correctamente",
+    "profileUpdateError": "Error al actualizar el perfil",
+    "realtime": "Tiempo Real"
   },
   "home": {
     "welcome": "¡Bienvenida, {{name}}!",
-    "journeyTitle": "Tu Viaje de Embarazo",
+    "journeyTitle": "Tu Camino de Embarazo",
     "weekTitle": "Semana {{week}}",
     "trimesterLabel": "{{trimester}} Trimestre",
     "progressLabel": "{{percent}}% Completado",
-    "developmentTitle": "Desarrollo Semana {{week}}",
+    "developmentTitle": "Desarrollo en la Semana {{week}}",
     "bodyChangesTitle": "Tu Cuerpo Esta Semana",
-    "nutritionTipsTitle": "Consejos Nutricionales",
+    "nutritionTipsTitle": "Consejos de Nutrición",
     "sizeLabel": "Tamaño",
     "lengthLabel": "Longitud",
     "weightLabel": "Peso",
-    "trackSymptomsButton": "Seguimiento de Síntomas",
+    "trackSymptomsButton": "Rastrear Síntomas",
     "foodGuideButton": "Guía de Seguridad Alimentaria"
   },
   "foodGuide": {
     "title": "Guía de Seguridad Alimentaria",
     "searchPlaceholder": "Buscar alimentos...",
     "categories": "Categorías",
-    "safeToEat": "Seguro para Comer",
-    "cautionNeeded": "Comer con Precaución",
-    "avoid": "Alimentos a Evitar",
-    "alternativesLabel": "Alternativas Seguras",
-    "nutritionalInfoLabel": "Información Nutricional"
+    "safeToEat": "Seguro para comer",
+    "cautionNeeded": "Comer con precaución",
+    "avoid": "Evitar durante el embarazo",
+    "alternativesLabel": "Alternativas",
+    "nutritionalInfoLabel": "Información Nutricional",
+    "description": "Descripción",
+    "all": "Todos",
+    "safe": "Seguro",
+    "caution": "Precaución"
   },
   "healthTracker": {
-    "title": "Seguimiento de Salud",
+    "title": "Registro de Salud",
     "symptomsTitle": "Seguimiento de Síntomas",
     "kickCountTitle": "Contador de Patadas",
     "contractionsTitle": "Temporizador de Contracciones",
@@ -109,7 +126,7 @@
     "dateLabel": "Fecha",
     "timeLabel": "Hora",
     "notesLabel": "Notas",
-    "severityLabel": "Gravedad",
+    "severityLabel": "Severidad",
     "durationLabel": "Duración",
     "frequencyLabel": "Frecuencia",
     "startTrackingButton": "Comenzar Seguimiento",
@@ -123,14 +140,24 @@
     "dateTimeLabel": "Fecha y Hora",
     "locationLabel": "Ubicación",
     "typeLabel": "Tipo",
+    "titleLabel": "Título",
+    "dateLabel": "Fecha",
+    "timeLabel": "Hora",
     "descriptionLabel": "Descripción",
+    "notesLabel": "Notas",
     "reminderLabel": "Establecer Recordatorio",
-    "noAppointments": "No hay citas programadas"
+    "noAppointments": "No hay citas programadas",
+    "tapToAddAppointment": "Toca el botón de arriba para añadir tu primera cita",
+    "editAppointment": "Editar Cita",
+    "addNewAppointment": "Nueva Cita",
+    "titleRequired": "Por favor, introduce un título para la cita",
+    "titlePlaceholder": "Introduce el título de la cita",
+    "notesPlaceholder": "Introduce cualquier nota para esta cita"
   },
   "settings": {
     "title": "Configuración",
     "languageSection": "Idioma",
-    "languageLabel": "Idioma de la Aplicación",
+    "languageLabel": "Idioma de la App",
     "unitsSection": "Unidades",
     "unitsLabel": "Unidades de Medida",
     "themeSection": "Apariencia",
@@ -138,7 +165,7 @@
     "notificationsSection": "Notificaciones",
     "notificationsLabel": "Activar Notificaciones",
     "aboutSection": "Acerca de",
-    "versionLabel": "Versión de la Aplicación",
+    "versionLabel": "Versión de la App",
     "privacyPolicyLabel": "Política de Privacidad",
     "termsOfServiceLabel": "Términos de Servicio",
     "feedbackLabel": "Enviar Comentarios"

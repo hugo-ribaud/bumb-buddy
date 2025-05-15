@@ -7,15 +7,17 @@
       "edit": "Modifier",
       "add": "Ajouter",
       "confirm": "Confirmer",
-      "back": "Retour"
+      "back": "Retour",
+      "editProfile": "Modifier le Profil",
+      "logout": "Déconnexion"
     },
     "validation": {
       "required": "Ce champ est obligatoire",
-      "email": "Veuillez saisir une adresse e-mail valide",
-      "minLength": "Ce champ doit comporter au moins {{count}} caractères",
-      "maxLength": "Ce champ doit comporter moins de {{count}} caractères",
+      "email": "Veuillez entrer un e-mail valide",
+      "minLength": "Ce champ doit contenir au moins {{count}} caractères",
+      "maxLength": "Ce champ doit contenir moins de {{count}} caractères",
       "passwordMatch": "Les mots de passe ne correspondent pas",
-      "invalidDate": "Veuillez saisir une date valide"
+      "invalidDate": "Veuillez entrer une date valide"
     },
     "placeholders": {
       "search": "Rechercher...",
@@ -25,7 +27,7 @@
     },
     "errors": {
       "generic": "Une erreur s'est produite. Veuillez réessayer.",
-      "network": "Erreur réseau. Veuillez vérifier votre connexion.",
+      "network": "Erreur de réseau. Veuillez vérifier votre connexion.",
       "unauthorized": "Vous n'êtes pas autorisé à accéder à cette fonctionnalité.",
       "notFound": "La ressource demandée n'a pas été trouvée."
     },
@@ -33,8 +35,11 @@
       "loading": "Chargement...",
       "today": "Aujourd'hui",
       "yesterday": "Hier",
-      "tomorrow": "Demain"
-    }
+      "tomorrow": "Demain",
+      "success": "Succès"
+    },
+    "yes": "Oui",
+    "no": "Non"
   },
   "auth": {
     "login": {
@@ -42,9 +47,10 @@
       "emailLabel": "E-mail",
       "passwordLabel": "Mot de passe",
       "forgotPassword": "Mot de passe oublié ?",
-      "submitButton": "Se connecter",
+      "submitButton": "Se Connecter",
       "noAccount": "Vous n'avez pas de compte ?",
-      "signupLink": "S'inscrire"
+      "signupLink": "S'inscrire",
+      "pleaseLoginFirst": "Veuillez vous connecter pour voir votre profil."
     },
     "signup": {
       "title": "Inscription",
@@ -71,33 +77,44 @@
     "pregnancyWeek": "Semaine de grossesse",
     "editProfile": "Modifier le profil",
     "changePassword": "Changer le mot de passe",
-    "logOut": "Se déconnecter",
-    "settings": "Paramètres"
+    "logOut": "Déconnexion",
+    "settings": "Paramètres",
+    "profileUpdated": "Profil mis à jour à",
+    "realtimeConnected": "Connecté en temps réel",
+    "realtimeConnectionFailed": "Échec de la connexion en temps réel",
+    "realtimeError": "Erreur de connexion en temps réel",
+    "profileUpdateSuccess": "Profil mis à jour avec succès",
+    "profileUpdateError": "Échec de la mise à jour du profil",
+    "realtime": "Temps réel"
   },
   "home": {
     "welcome": "Bienvenue, {{name}} !",
     "journeyTitle": "Votre parcours de grossesse",
     "weekTitle": "Semaine {{week}}",
     "trimesterLabel": "{{trimester}} Trimestre",
-    "progressLabel": "{{percent}}% Complété",
-    "developmentTitle": "Développement Semaine {{week}}",
+    "progressLabel": "{{percent}}% Complet",
+    "developmentTitle": "Développement à la semaine {{week}}",
     "bodyChangesTitle": "Votre corps cette semaine",
     "nutritionTipsTitle": "Conseils nutritionnels",
     "sizeLabel": "Taille",
     "lengthLabel": "Longueur",
     "weightLabel": "Poids",
-    "trackSymptomsButton": "Suivi des symptômes",
-    "foodGuideButton": "Guide alimentaire"
+    "trackSymptomsButton": "Suivre les symptômes",
+    "foodGuideButton": "Guide de sécurité alimentaire"
   },
   "foodGuide": {
     "title": "Guide de sécurité alimentaire",
     "searchPlaceholder": "Rechercher des aliments...",
     "categories": "Catégories",
-    "safeToEat": "Sans danger",
-    "cautionNeeded": "À consommer avec précaution",
-    "avoid": "À éviter",
-    "alternativesLabel": "Alternatives sûres",
-    "nutritionalInfoLabel": "Informations nutritionnelles"
+    "safeToEat": "Sûr à consommer",
+    "cautionNeeded": "Consommer avec précaution",
+    "avoid": "À éviter pendant la grossesse",
+    "alternativesLabel": "Alternatives",
+    "nutritionalInfoLabel": "Informations nutritionnelles",
+    "description": "Description",
+    "all": "Tous",
+    "safe": "Sûr",
+    "caution": "Précaution"
   },
   "healthTracker": {
     "title": "Suivi de santé",
@@ -109,7 +126,7 @@
     "dateLabel": "Date",
     "timeLabel": "Heure",
     "notesLabel": "Notes",
-    "severityLabel": "Intensité",
+    "severityLabel": "Sévérité",
     "durationLabel": "Durée",
     "frequencyLabel": "Fréquence",
     "startTrackingButton": "Commencer le suivi",
@@ -123,9 +140,19 @@
     "dateTimeLabel": "Date et heure",
     "locationLabel": "Lieu",
     "typeLabel": "Type",
+    "titleLabel": "Titre",
+    "dateLabel": "Date",
+    "timeLabel": "Heure",
     "descriptionLabel": "Description",
+    "notesLabel": "Notes",
     "reminderLabel": "Définir un rappel",
-    "noAppointments": "Aucun rendez-vous programmé"
+    "noAppointments": "Aucun rendez-vous programmé",
+    "tapToAddAppointment": "Appuyez sur le bouton ci-dessus pour ajouter votre premier rendez-vous",
+    "editAppointment": "Modifier le rendez-vous",
+    "addNewAppointment": "Nouveau rendez-vous",
+    "titleRequired": "Veuillez entrer un titre pour le rendez-vous",
+    "titlePlaceholder": "Entrez le titre du rendez-vous",
+    "notesPlaceholder": "Entrez des notes pour ce rendez-vous"
   },
   "settings": {
     "title": "Paramètres",

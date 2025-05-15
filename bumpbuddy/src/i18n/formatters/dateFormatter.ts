@@ -4,17 +4,16 @@
  */
 
 import {
-    format,
-    formatDistance,
-    formatRelative,
-    isToday,
-    isTomorrow,
-    isYesterday,
-    Locale,
+  format,
+  formatDistance,
+  formatRelative,
+  isToday,
+  isTomorrow,
+  isYesterday,
+  Locale,
 } from "date-fns";
 import { enUS, es, fr } from "date-fns/locale";
 import i18next from "i18next";
-mport i18next from "i18next";
 
 // Map of supported locales
 const locales: { [key: string]: Locale } = {

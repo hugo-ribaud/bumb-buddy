@@ -1,9 +1,9 @@
 import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   FlatList,
   Modal,
-  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -21,6 +21,8 @@ interface Appointment {
 }
 
 const AppointmentsScreen = () => {
+  const { t } = useTranslation();
+
   // State for appointments
   const [appointments, setAppointments] = useState<Appointment[]>([
     {
@@ -80,7 +82,7 @@ const AppointmentsScreen = () => {
   // Handler for saving appointment
   const handleSaveAppointment = () => {
     if (!appointmentTitle.trim()) {
-      alert("Please enter an appointment title");
+      alert(t("appointments.titleRequired"));
       return;
     }
 
@@ -171,39 +173,51 @@ const AppointmentsScreen = () => {
               style={[styles.actionButton, styles.editButton]}
               onPress={() => handleEditAppointment(item)}
             >
-              <Text style={styles.actionButtonText}>Edit</Text>
+              <Text style={styles.actionButtonText}>
+                {t("common.buttons.edit")}
+              </Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[styles.actionButton, styles.deleteButton]}
               onPress={() => handleDeleteAppointment(item.id)}
             >
-              <Text style={styles.actionButtonText}>Delete</Text>
+              <Text style={styles.actionButtonText}>
+                {t("common.buttons.delete")}
+              </Text>
             </TouchableOpacity>
           </View>
         </View>
 
         <View style={styles.appointmentDetails}>
           <View style={styles.appointmentDetail}>
-            <Text style={styles.detailLabel}>Date:</Text>
+            <Text style={styles.detailLabel}>
+              {t("appointments.dateTimeLabel")}:
+            </Text>
             <Text style={styles.detailValue}>{formatDate(item.dateTime)}</Text>
           </View>
 
           <View style={styles.appointmentDetail}>
-            <Text style={styles.detailLabel}>Time:</Text>
+            <Text style={styles.detailLabel}>
+              {t("appointments.timeLabel")}:
+            </Text>
             <Text style={styles.detailValue}>{formatTime(item.dateTime)}</Text>
           </View>
 
           {item.notes && (
             <View style={styles.appointmentDetail}>
-              <Text style={styles.detailLabel}>Notes:</Text>
+              <Text style={styles.detailLabel}>
+                {t("appointments.notesLabel")}:
+              </Text>
               <Text style={styles.detailValue}>{item.notes}</Text>
             </View>
           )}
 
           <View style={styles.appointmentDetail}>
-            <Text style={styles.detailLabel}>Reminder:</Text>
+            <Text style={styles.detailLabel}>
+              {t("appointments.reminderLabel")}:
+            </Text>
             <Text style={styles.detailValue}>
-              {item.reminder ? "On" : "Off"}
+              {item.reminder ? t("common.yes") : t("common.no")}
             </Text>
           </View>
         </View>
@@ -213,53 +227,60 @@ const AppointmentsScreen = () => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Appointments</Text>
+      <Text style={styles.title}>{t("appointments.title")}</Text>
 
       <TouchableOpacity style={styles.addButton} onPress={handleAddAppointment}>
-        <Text style={styles.addButtonText}>+ Add Appointment</Text>
+        <Text style={styles.addButtonText}>
+          + {t("appointments.addButton")}
+        </Text>
       </TouchableOpacity>
 
       {appointments.length > 0 ? (
         <FlatList
-          data={appointments.sort(
-            (a, b) => a.dateTime.getTime() - b.dateTime.getTime()
-          )}
+          data={appointments}
           renderItem={renderAppointmentItem}
           keyExtractor={(item) => item.id}
-          style={styles.appointmentList}
+          style={styles.appointmentsList}
         />
       ) : (
         <View style={styles.emptyState}>
-          <Text style={styles.emptyStateText}>No appointments scheduled</Text>
+          <Text style={styles.emptyStateText}>
+            {t("appointments.noAppointments")}
+          </Text>
           <Text style={styles.emptyStateSubtext}>
-            Tap the button above to add your first appointment
+            {t("appointments.tapToAddAppointment")}
           </Text>
         </View>
       )}
 
+      {/* Appointment Modal */}
       <Modal
         animationType="slide"
         transparent={true}
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalContainer}>
-          <ScrollView style={styles.modalContent}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>
-              {editingAppointment ? "Edit Appointment" : "New Appointment"}
+              {editingAppointment
+                ? t("appointments.editAppointment")
+                : t("appointments.addNewAppointment")}
             </Text>
 
-            <Text style={styles.inputLabel}>Title</Text>
+            <Text style={styles.inputLabel}>
+              {t("appointments.titleLabel")}
+            </Text>
             <TextInput
-              style={styles.textInput}
+              style={styles.input}
               value={appointmentTitle}
               onChangeText={setAppointmentTitle}
-              placeholder="Enter appointment title"
+              placeholder={t("appointments.titlePlaceholder")}
             />
 
-            <Text style={styles.inputLabel}>Date</Text>
+            <Text style={styles.inputLabel}>{t("appointments.dateLabel")}</Text>
             <TouchableOpacity
-              style={styles.dateInput}
+              style={styles.dateTimeButton}
               onPress={() => setShowDatePicker(true)}
             >
               <Text>{formatDate(appointmentDate)}</Text>
@@ -274,9 +295,9 @@ const AppointmentsScreen = () => {
               />
             )}
 
-            <Text style={styles.inputLabel}>Time</Text>
+            <Text style={styles.inputLabel}>{t("appointments.timeLabel")}</Text>
             <TouchableOpacity
-              style={styles.dateInput}
+              style={styles.dateTimeButton}
               onPress={() => setShowTimePicker(true)}
             >
               <Text>{formatTime(appointmentDate)}</Text>
@@ -291,48 +312,39 @@ const AppointmentsScreen = () => {
               />
             )}
 
-            <Text style={styles.inputLabel}>Notes</Text>
+            <Text style={styles.inputLabel}>
+              {t("appointments.notesLabel")}
+            </Text>
             <TextInput
-              style={[styles.textInput, styles.notesInput]}
+              style={styles.textArea}
               value={appointmentNotes}
               onChangeText={setAppointmentNotes}
-              placeholder="Enter any notes for this appointment"
+              placeholder={t("appointments.notesPlaceholder")}
               multiline
             />
 
-            <Text style={styles.inputLabel}>Reminder</Text>
-            <View style={styles.reminderToggle}>
+            <Text style={styles.inputLabel}>
+              {t("appointments.reminderLabel")}
+            </Text>
+            <View style={styles.reminderToggleContainer}>
               <TouchableOpacity
                 style={[
-                  styles.reminderButton,
-                  appointmentReminder && styles.reminderButtonActive,
+                  styles.reminderToggle,
+                  appointmentReminder
+                    ? styles.reminderToggleActive
+                    : styles.reminderToggleInactive,
                 ]}
-                onPress={() => setAppointmentReminder(true)}
+                onPress={() => setAppointmentReminder(!appointmentReminder)}
               >
                 <Text
                   style={[
-                    styles.reminderButtonText,
-                    appointmentReminder && styles.reminderButtonTextActive,
+                    styles.reminderToggleText,
+                    appointmentReminder
+                      ? styles.reminderToggleTextActive
+                      : styles.reminderToggleTextInactive,
                   ]}
                 >
-                  On
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={[
-                  styles.reminderButton,
-                  !appointmentReminder && styles.reminderButtonActive,
-                ]}
-                onPress={() => setAppointmentReminder(false)}
-              >
-                <Text
-                  style={[
-                    styles.reminderButtonText,
-                    !appointmentReminder && styles.reminderButtonTextActive,
-                  ]}
-                >
-                  Off
+                  {appointmentReminder ? t("common.yes") : t("common.no")}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -342,17 +354,20 @@ const AppointmentsScreen = () => {
                 style={[styles.modalButton, styles.cancelButton]}
                 onPress={() => setModalVisible(false)}
               >
-                <Text style={styles.modalButtonText}>Cancel</Text>
+                <Text style={styles.modalButtonText}>
+                  {t("common.buttons.cancel")}
+                </Text>
               </TouchableOpacity>
-
               <TouchableOpacity
                 style={[styles.modalButton, styles.saveButton]}
                 onPress={handleSaveAppointment}
               >
-                <Text style={styles.modalButtonText}>Save</Text>
+                <Text style={styles.modalButtonText}>
+                  {t("common.buttons.save")}
+                </Text>
               </TouchableOpacity>
             </View>
-          </ScrollView>
+          </View>
         </View>
       </Modal>
     </View>
@@ -383,7 +398,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "bold",
   },
-  appointmentList: {
+  appointmentsList: {
     flex: 1,
   },
   appointmentItem: {
@@ -464,7 +479,7 @@ const styles = StyleSheet.create({
     color: "#6c757d",
     textAlign: "center",
   },
-  modalContainer: {
+  modalOverlay: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
@@ -491,7 +506,7 @@ const styles = StyleSheet.create({
     marginBottom: 5,
     color: "#343a40",
   },
-  textInput: {
+  input: {
     borderWidth: 1,
     borderColor: "#ced4da",
     borderRadius: 5,
@@ -499,22 +514,22 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
   },
-  notesInput: {
+  textArea: {
     height: 100,
     textAlignVertical: "top",
   },
-  dateInput: {
+  dateTimeButton: {
     borderWidth: 1,
     borderColor: "#ced4da",
     borderRadius: 5,
     padding: 12,
     marginBottom: 15,
   },
-  reminderToggle: {
+  reminderToggleContainer: {
     flexDirection: "row",
     marginBottom: 20,
   },
-  reminderButton: {
+  reminderToggle: {
     flex: 1,
     paddingVertical: 10,
     alignItems: "center",
@@ -522,15 +537,21 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderRadius: 5,
   },
-  reminderButtonActive: {
+  reminderToggleActive: {
     backgroundColor: "#007bff",
   },
-  reminderButtonText: {
+  reminderToggleInactive: {
+    backgroundColor: "#e9ecef",
+  },
+  reminderToggleText: {
     fontSize: 16,
     color: "#495057",
   },
-  reminderButtonTextActive: {
+  reminderToggleTextActive: {
     color: "white",
+  },
+  reminderToggleTextInactive: {
+    color: "#495057",
   },
   modalButtons: {
     flexDirection: "row",
