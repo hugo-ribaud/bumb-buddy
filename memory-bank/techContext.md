@@ -2,97 +2,138 @@
 
 _Version: 1.0_
 _Created: 2024-06-09_
-_Last Updated: 2024-06-09_
+_Last Updated: 2024-06-11_
 
-## Technology Stack
+## Tech Stack
 
-- **Frontend**: React Native with Expo
-- **Backend**: Supabase (PostgreSQL)
-- **State Management**: Redux Toolkit
-- **Navigation**: React Navigation
-- **Push Notifications**: Expo Notifications
-- **Testing**: Jest + React Testing Library
-- **CI/CD**: GitHub Actions
+### Frontend
 
-## Development Environment Setup
+- React Native (Expo framework)
+- TypeScript for type safety
+- Redux Toolkit for state management
+- React Navigation for routing
+- i18next and react-i18next for internationalization
+- Async Storage for local data persistence
 
-- Project uses Expo SDK 53 and Bun as the package manager
-- Supabase client configured for Expo/React Native with AsyncStorage for session persistence
-- Metro bundler workaround (`metro.config.js`) disables package exports to avoid Node.js dependency issues with Supabase Realtime
-- Babel config updated to whitelist correct environment variables for Supabase
-- Realtime enabled and implemented with dedicated `realtimeService.ts` for subscription management
+### Backend
 
-## Dependencies
+- Supabase (PostgreSQL, Auth, Storage, Realtime)
+- Edge Functions for serverless logic (planned)
 
-- **@reduxjs/toolkit**: ^2.0.0 - State management
-- **react-redux**: ^8.1.0 - React bindings for Redux
-- **@react-navigation/native**: ^6.1.0 - Navigation container
-- **@react-navigation/stack**: ^6.3.0 - Stack navigation
-- **@react-navigation/bottom-tabs**: ^6.5.0 - Tab navigation
-- **@supabase/supabase-js**: ^2.49.4 - Supabase client (Realtime enabled)
-- **expo-notifications**: ^0.18.0 - Push notifications
-- **react-native-safe-area-context**: ^4.5.0 - Safe area utilities
-- **react-native-gesture-handler**: ^2.9.0 - Gesture handling
-- **expo-barcode-scanner**: ^12.3.0 - Barcode scanning for food items
-- **expo-image-picker**: ^14.1.0 - Image picking for profiles
-- **react-native-reanimated**: ^2.14.0 - Animation library
-- **react-native-svg**: ^13.9.0 - SVG support for charts and illustrations
+### Development
 
-## Technical Constraints
+- Bun as package manager
+- ESLint for code quality
+- Jest for testing
+- Expo Go for development testing
 
-- Must maintain offline functionality for core features
-- Must ensure data privacy and security for user health information
-- Must be compatible with iOS 14+ and Android 9+
-- Must follow accessibility guidelines for pregnant users
-- User data storage must comply with relevant health data regulations
+## Key Libraries and Versions
 
-## Build and Deployment
+```json
+{
+  "dependencies": {
+    "@expo/vector-icons": "^14.0.0",
+    "@react-native-async-storage/async-storage": "1.21.0",
+    "@react-navigation/bottom-tabs": "^6.5.11",
+    "@react-navigation/native": "^6.1.9",
+    "@react-navigation/native-stack": "^6.9.17",
+    "@reduxjs/toolkit": "^2.2.1",
+    "@supabase/supabase-js": "^2.40.0",
+    "date-fns": "^3.3.1",
+    "expo": "~50.0.0",
+    "expo-localization": "~14.8.3",
+    "expo-status-bar": "~1.11.1",
+    "i18next": "^23.10.0",
+    "react": "18.2.0",
+    "react-i18next": "^14.0.5",
+    "react-native": "0.73.2",
+    "react-native-safe-area-context": "4.8.2",
+    "react-native-screens": "~3.29.0",
+    "react-native-url-polyfill": "^2.0.0",
+    "react-redux": "^9.1.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "@types/react": "~18.2.45",
+    "typescript": "^5.1.3"
+  }
+}
+```
 
-- **Build Process**: Expo EAS Build
-- **Deployment Procedure**:
-  1. Configure app.json for both platforms
-  2. Set up EAS build configuration
-  3. Test on beta testers group via TestFlight/Firebase App Distribution
-  4. Submit to App Store/Google Play through respective consoles
-- **CI/CD**: GitHub Actions workflow for automated testing and building
-
-## Testing Approach
-
-- **Unit Testing**: Jest for testing individual components and Redux slices
-- **Integration Testing**: React Testing Library for component integration tests
-- **E2E Testing**: Detox for end-to-end testing on real devices or emulators
-- **Manual Testing**: Focus on usability testing with actual expectant mothers
-
-## Database Schema (Finalized)
-
-### Core Tables
-
-**users**
+## File Structure
 
 ```
-users
-  - id (UUID, PK, FK to auth.users)
-  - email (TEXT, UNIQUE, NOT NULL)
+bumpbuddy/
+├── App.tsx                  # Root component
+├── app.json                 # Expo configuration
+├── assets/                  # Static assets like images
+├── babel.config.js          # Babel configuration
+├── index.js                 # Entry point
+├── package.json             # Dependencies
+├── src/                     # Source code
+│   ├── components/          # Reusable UI components
+│   ├── config/              # Configuration files
+│   │   └── supabaseConfig.ts # Supabase client setup
+│   ├── constants/           # App-wide constants
+│   ├── hooks/               # Custom React hooks
+│   ├── i18n/                # Internationalization
+│   │   ├── index.ts         # i18n configuration
+│   │   └── languages/       # Translation files
+│   │       ├── en.json
+│   │       ├── es.json
+│   │       └── fr.json
+│   ├── navigation/          # Navigation setup
+│   ├── redux/               # Redux state management
+│   │   ├── slices/          # Redux toolkit slices
+│   │   └── store.ts         # Redux store configuration
+│   ├── screens/             # App screens
+│   ├── services/            # API and data services
+│   │   ├── foodService.ts   # Food database service
+│   │   ├── realtimeService.ts # Realtime updates
+│   │   └── timelineService.ts # Pregnancy timeline service
+│   ├── styles/              # Global styles
+│   ├── types/               # TypeScript interfaces and types
+│   └── utils/               # Utility functions
+└── supabase/                # Supabase migrations and seeds
+    └── migrations/          # Database migrations
+        ├── food_safety_schema.sql
+        └── seed_pregnancy_timeline_data.sql
+```
+
+## Environment Setup
+
+- Expo development environment
+- Supabase project with appropriate tables and RLS policies
+- Environment variables for Supabase URL and API keys
+- React Native debugger for development
+
+## Database Schema
+
+### User Management
+
+**profiles**
+
+```
+profiles
+  - id (UUID, PK)
+  - email (TEXT, unique)
   - first_name (TEXT)
   - last_name (TEXT)
-  - created_at (TIMESTAMPTZ)
-  - updated_at (TIMESTAMPTZ)
   - due_date (DATE)
   - pregnancy_week (INTEGER)
-  - birth_date (DATE)
-  - avatar_url (TEXT)
-  - notification_preferences (JSONB)
   - app_settings (JSONB)
+  - created_at (TIMESTAMPTZ)
+  - updated_at (TIMESTAMPTZ)
 ```
 
-### Food Safety System
+### Food Safety
 
 **food_categories**
 
 ```
 food_categories
   - id (UUID, PK)
-  - name (TEXT, UNIQUE, NOT NULL)
+  - name (TEXT)
   - description (TEXT)
   - icon (TEXT)
   - created_at (TIMESTAMPTZ)
@@ -105,12 +146,11 @@ food_categories
 foods
   - id (UUID, PK)
   - category_id (UUID, FK to food_categories)
-  - name (TEXT, NOT NULL)
-  - safety_rating (ENUM: safe, caution, avoid)
+  - name (TEXT)
+  - safety_rating (ENUM: 'safe', 'caution', 'avoid')
   - description (TEXT)
   - alternatives (TEXT)
   - nutritional_info (JSONB)
-  - image_url (TEXT)
   - created_at (TIMESTAMPTZ)
   - updated_at (TIMESTAMPTZ)
 ```
@@ -126,7 +166,6 @@ symptoms
   - symptom_type (TEXT)
   - severity (INTEGER 1-10)
   - date (DATE)
-  - time (TIME)
   - notes (TEXT)
   - created_at (TIMESTAMPTZ)
   - updated_at (TIMESTAMPTZ)
@@ -309,6 +348,8 @@ erDiagram
         text tips
         text nutrition_advice
         text common_symptoms
+        text medical_checkups
+        text image_url
     }
 
     JOURNAL_ENTRIES {
@@ -346,6 +387,73 @@ erDiagram
 - **Service**: `realtimeService.ts` manages subscriptions with typed interfaces
 - **UI Integration**: ProfileScreen demonstrates real-time updates with status indicators
 - **Testing**: Utility functions for simulating database changes during development
+
+## Timeline Feature Implementation
+
+### Key Technologies
+
+- **AsyncStorage**: For caching timeline data with expiration policy
+- **Redux Toolkit**: For state management of timeline data and UI state
+- **Supabase**: For fetching pregnancy week data from PostgreSQL
+- **TypeScript Interfaces**: For type safety in timeline-related data
+
+### Timeline Service
+
+- **Caching Strategy**: 24-hour expiration policy for cached data
+- **Offline Support**: Ability to use cached data when offline
+- **Data Filtering**: Functions to filter weeks by trimester
+- **Current Week Calculation**: Logic to determine current week based on due date
+
+### Timeline UI Components
+
+- **TimelineScreen**: Main screen with trimester tabs and week listings
+- **WeekDetailScreen**: Detailed view of a specific pregnancy week
+- **Error Handling**: Robust handling of network errors and parsing issues
+- **Refresh Mechanism**: Manual refresh option to clear cache and fetch fresh data
+
+### Timeline Data Flow
+
+1. User requests timeline data
+2. App checks Redux store for data
+3. If not in store, checks AsyncStorage cache
+4. If valid cache exists, uses cached data
+5. If no valid cache, fetches from Supabase
+6. Updates Redux store and cache
+7. Renders data to user
+
+### Timeline Type Definitions
+
+```typescript
+// Key types for the Timeline feature
+interface PregnancyWeek {
+  week: number;
+  fetal_development: string;
+  maternal_changes: string;
+  tips: string;
+  nutrition_advice: string;
+  common_symptoms: string;
+  medical_checkups: string;
+  image_url?: string;
+}
+
+interface TimelineService {
+  getWeekInfo: (weekNumber: number) => Promise<PregnancyWeek | null>;
+  getAllWeeks: () => Promise<PregnancyWeek[]>;
+  getTrimesterWeeks: (trimester: 1 | 2 | 3) => Promise<PregnancyWeek[]>;
+  calculateCurrentWeek: (dueDate: string | null) => number;
+  getCurrentWeekInfo: (dueDate: string | null) => Promise<PregnancyWeek | null>;
+  clearCache: () => Promise<void>;
+}
+
+interface TimelineState {
+  allWeeks: PregnancyWeek[];
+  weekData: PregnancyWeek | null;
+  currentWeek: number;
+  selectedWeek: number | null;
+  loading: boolean;
+  error: string | null;
+}
+```
 
 ---
 

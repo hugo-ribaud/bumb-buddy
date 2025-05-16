@@ -2,15 +2,20 @@
 
 _Version: 1.0_
 _Created: 2024-06-09_
-_Last Updated: 2024-06-09_
+_Last Updated: 2024-06-11_
 
 ## Architecture Overview
 
-BumpBuddy follows a modern client-server architecture using React Native for the mobile client and Supabase as the backend service. The application implements a hybrid offline-first approach, allowing core functionality to work without an internet connection while syncing data when connectivity is restored. Supabase Realtime is enabled and implemented for live updates, providing immediate feedback when data changes.
+BumpBuddy follows a modular architecture pattern with clear separation of concerns between UI components, state management, and data access. The application is built with React Native and Expo for cross-platform support, using Redux for state management and Supabase as the backend service.
 
-## Key Components
+### Key Architecture Components
 
-### Frontend Components
+- **Frontend**: React Native + Expo
+- **State Management**: Redux Toolkit
+- **Backend**: Supabase (PostgreSQL, Authentication, Storage, Realtime)
+- **Offline Support**: AsyncStorage with custom synchronization
+
+## Module Structure
 
 - **Auth Module**: Handles user authentication, registration, and profile management
 - **Food Safety Module**: Manages the food database, search, and filtering capabilities
@@ -36,7 +41,8 @@ BumpBuddy follows a modern client-server architecture using React Native for the
 - **Observer Pattern**: For real-time updates and notifications via Supabase Realtime subscriptions
 - **Strategy Pattern**: For flexible feature implementations based on user preferences
 - **Adapter Pattern**: For handling offline/online mode transitions seamlessly
-- **Service Pattern**: Used for Realtime subscriptions, abstracted in `realtimeService.ts`
+- **Service Pattern**: Used for service abstractions like `timelineService.ts` with caching strategies
+- **Caching Pattern**: Implemented for timeline data with expiration policy
 
 ## Data Models and Relationships
 
@@ -54,19 +60,26 @@ BumpBuddy follows a modern client-server architecture using React Native for the
    - Enumerated safety ratings (safe, caution, avoid)
    - Rich text descriptions and nutritional data in JSON format
 
-3. **Health Tracking Models**
+3. **Pregnancy Timeline**
+
+   - Comprehensive week-by-week pregnancy information (weeks 1-40)
+   - Contains fetal development, maternal changes, tips, nutrition advice
+   - Includes common symptoms, medical checkups, and size comparisons
+   - Image references for size visualization
+
+4. **Health Tracking Models**
 
    - Multiple specialized trackers (symptoms, kicks, contractions, weight)
    - Consistent user linking and timestamp patterns
    - Severity scales for comparative analysis
 
-4. **Appointment System**
+5. **Appointment System**
 
    - Date-time based events with reminder capabilities
    - Location and notes for comprehensive planning
    - Integration with device calendar planned
 
-5. **Pregnancy Journey**
+6. **Pregnancy Journey**
    - Reference data for fetal development by week
    - Curated content for each stage of pregnancy
    - Personal journal entries linked to pregnancy weeks
@@ -93,10 +106,15 @@ flowchart TD
     Categories --> Foods[Food Items]
     Foods --> SafetyInfo[Safety Ratings]
 
-    PregnancyData[Pregnancy Data] --> WeeklyInfo[Weekly Development]
+    PregnancyData[Pregnancy Data] --> Timeline[Pregnancy Timeline]
+    Timeline --> WeeklyInfo[Weekly Development]
     WeeklyInfo --> FetalDev[Fetal Development]
     WeeklyInfo --> MaternalChanges[Maternal Changes]
     WeeklyInfo --> Tips[Health Tips]
+    WeeklyInfo --> Nutrition[Nutrition Advice]
+    WeeklyInfo --> Symptoms[Common Symptoms]
+    WeeklyInfo --> Checkups[Medical Checkups]
+    WeeklyInfo --> SizeComp[Size Comparisons]
 ```
 
 ## Data Flow
@@ -148,9 +166,15 @@ flowchart TD
    - Background synchronization when connectivity resumes
 
 4. **Real-time Data Updates**
+
    - Realtime subscriptions for personal data changes
    - Immediate UI reflection of database changes
    - Subscription management abstracted behind realtimeService
+
+5. **Cached Data Access**
+   - Reference data like pregnancy timeline cached with expiration policy
+   - Service layer handles cache invalidation and refreshing
+   - Fallback to cached data when network is unavailable
 
 ## Key Technical Decisions
 
@@ -162,6 +186,7 @@ flowchart TD
 - **Testing Strategy**: Jest and React Testing Library for comprehensive test coverage
 - **Realtime Implementation**: Supabase Realtime enabled with Metro bundler workarounds for Expo compatibility
 - **Database Schema**: Structured with a focus on security, flexibility, and future extensibility
+- **Caching Strategy**: 24-hour cache expiration for reference data with manual refresh option
 
 ## Component Relationships
 
@@ -191,6 +216,18 @@ flowchart TD
 5. Redux store updates with new data
 6. UI automatically re-renders with latest data
 
+### Timeline Data Flow
+
+1. User navigates to Timeline screen
+2. Redux checks if timeline data exists in store
+3. If not, thunk dispatched to fetch timeline data
+4. Timeline service checks local cache in AsyncStorage first
+5. If cache valid (less than 24 hours old), cached data used
+6. If cache invalid or missing, Supabase query fetches all weeks
+7. Data stored in Redux store and AsyncStorage cache
+8. UI components render data from Redux
+9. Manual refresh option clears cache and forces fresh fetch
+
 ### Feature Module Relationships
 
 - **Auth Module** provides user context to all other modules
@@ -206,6 +243,23 @@ flowchart TD
 - Row-level security in Supabase for data isolation
 - Regular security audits and vulnerability testing
 - Compliance with health data regulations
+
+## Pregnancy Timeline Schema
+
+```sql
+CREATE TABLE public.pregnancy_weeks (
+    week INTEGER PRIMARY KEY CHECK (week >= 1 AND week <= 42),
+    fetal_development TEXT NOT NULL,
+    maternal_changes TEXT NOT NULL,
+    tips TEXT,
+    nutrition_advice TEXT,
+    common_symptoms TEXT,
+    medical_checkups TEXT,
+    image_url TEXT
+);
+```
+
+This schema provides a comprehensive structure for storing all pregnancy-related information by week, with appropriate constraints and relationships. The timeline data is reference data available to all authenticated users.
 
 ---
 

@@ -39,7 +39,8 @@
       "success": "Success"
     },
     "yes": "Yes",
-    "no": "No"
+    "no": "No",
+    "goBack": "Go Back"
   },
   "auth": {
     "login": {
@@ -101,6 +102,27 @@
     "weightLabel": "Weight",
     "trackSymptomsButton": "Track Symptoms",
     "foodGuideButton": "Food Safety Guide"
+  },
+  "timeline": {
+    "title": "Pregnancy Timeline",
+    "weekLabel": "Week {{week}}",
+    "currentWeek": "Current Week",
+    "firstTrimester": "First Trimester",
+    "secondTrimester": "Second Trimester",
+    "thirdTrimester": "Third Trimester",
+    "weekNotFound": "Week information not found",
+    "development": "Fetal Development",
+    "maternalChanges": "Your Body This Week",
+    "tips": "Tips for This Week",
+    "nutritionAdvice": "Nutrition Advice",
+    "commonSymptoms": "Common Symptoms",
+    "medicalCheckups": "Medical Checkups",
+    "sizeComparison": "Baby Size Comparison",
+    "babyIsSize": "Your baby is about the size of a {{size}}",
+    "viewWeekDetails": "View Week Details",
+    "nextWeek": "Next Week",
+    "previousWeek": "Previous Week",
+    "loading": "Loading week information..."
   },
   "foodGuide": {
     "title": "Food Safety Guide",

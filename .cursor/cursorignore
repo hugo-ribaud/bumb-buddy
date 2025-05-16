@@ -71,3 +71,6 @@ coverage.xml
 # Framework specific (uncomment as needed)
 # .cursor/rules/archive/
 # memory-bank/backups/
+
+# MCP
+.cursor/mcp.json

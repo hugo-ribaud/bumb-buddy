@@ -28,8 +28,8 @@
     "errors": {
       "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
       "network": "Error de red. Por favor, comprueba tu conexión.",
-      "unauthorized": "No estás autorizado a acceder a esta función.",
-      "notFound": "No se encontró el recurso solicitado."
+      "unauthorized": "No tienes autorización para acceder a esta función.",
+      "notFound": "El recurso solicitado no se encontró."
     },
     "labels": {
       "loading": "Cargando...",
@@ -39,17 +39,18 @@
       "success": "Éxito"
     },
     "yes": "Sí",
-    "no": "No"
+    "no": "No",
+    "goBack": "Volver Atrás"
   },
   "auth": {
     "login": {
       "title": "Iniciar Sesión",
       "emailLabel": "Correo Electrónico",
       "passwordLabel": "Contraseña",
-      "forgotPassword": "¿Olvidaste tu Contraseña?",
+      "forgotPassword": "¿Olvidaste la Contraseña?",
       "submitButton": "Iniciar Sesión",
       "noAccount": "¿No tienes una cuenta?",
-      "signupLink": "Registrarse",
+      "signupLink": "Regístrate",
       "pleaseLoginFirst": "Por favor, inicia sesión para ver tu perfil."
     },
     "signup": {
@@ -57,7 +58,7 @@
       "emailLabel": "Correo Electrónico",
       "passwordLabel": "Contraseña",
       "confirmPasswordLabel": "Confirmar Contraseña",
-      "dueDateLabel": "Fecha Prevista de Parto",
+      "dueDateLabel": "Fecha Prevista del Parto",
       "submitButton": "Crear Cuenta",
       "hasAccount": "¿Ya tienes una cuenta?",
       "loginLink": "Iniciar Sesión"
@@ -66,41 +67,62 @@
       "title": "Contraseña Olvidada",
       "emailLabel": "Correo Electrónico",
       "submitButton": "Restablecer Contraseña",
-      "instructions": "Introduce tu correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
+      "instructions": "Introduce tu dirección de correo electrónico y te enviaremos un enlace para restablecer tu contraseña.",
       "backToLogin": "Volver a Iniciar Sesión"
     }
   },
   "profile": {
     "title": "Mi Perfil",
     "personalInfo": "Información Personal",
-    "dueDate": "Fecha de Parto",
+    "dueDate": "Fecha Prevista del Parto",
     "pregnancyWeek": "Semana de Embarazo",
     "editProfile": "Editar Perfil",
     "changePassword": "Cambiar Contraseña",
     "logOut": "Cerrar Sesión",
     "settings": "Configuración",
-    "profileUpdated": "Perfil actualizado a las",
+    "profileUpdated": "Perfil actualizado el",
     "realtimeConnected": "Conectado a Tiempo Real",
-    "realtimeConnectionFailed": "Error al conectar a Tiempo Real",
-    "realtimeError": "Error al conectar a Tiempo Real",
-    "profileUpdateSuccess": "Perfil actualizado correctamente",
+    "realtimeConnectionFailed": "Error al conectar con Tiempo Real",
+    "realtimeError": "Error al conectar con Tiempo Real",
+    "profileUpdateSuccess": "Perfil actualizado con éxito",
     "profileUpdateError": "Error al actualizar el perfil",
     "realtime": "Tiempo Real"
   },
   "home": {
     "welcome": "¡Bienvenida, {{name}}!",
-    "journeyTitle": "Tu Camino de Embarazo",
+    "journeyTitle": "Tu Viaje de Embarazo",
     "weekTitle": "Semana {{week}}",
     "trimesterLabel": "{{trimester}} Trimestre",
     "progressLabel": "{{percent}}% Completado",
-    "developmentTitle": "Desarrollo en la Semana {{week}}",
+    "developmentTitle": "Desarrollo Semana {{week}}",
     "bodyChangesTitle": "Tu Cuerpo Esta Semana",
     "nutritionTipsTitle": "Consejos de Nutrición",
     "sizeLabel": "Tamaño",
     "lengthLabel": "Longitud",
     "weightLabel": "Peso",
-    "trackSymptomsButton": "Rastrear Síntomas",
+    "trackSymptomsButton": "Seguimiento de Síntomas",
     "foodGuideButton": "Guía de Seguridad Alimentaria"
+  },
+  "timeline": {
+    "title": "Línea de Tiempo del Embarazo",
+    "weekLabel": "Semana {{week}}",
+    "currentWeek": "Semana Actual",
+    "firstTrimester": "Primer Trimestre",
+    "secondTrimester": "Segundo Trimestre",
+    "thirdTrimester": "Tercer Trimestre",
+    "weekNotFound": "Información de la semana no encontrada",
+    "development": "Desarrollo Fetal",
+    "maternalChanges": "Tu Cuerpo Esta Semana",
+    "tips": "Consejos para Esta Semana",
+    "nutritionAdvice": "Consejos de Nutrición",
+    "commonSymptoms": "Síntomas Comunes",
+    "medicalCheckups": "Revisiones Médicas",
+    "sizeComparison": "Comparación de Tamaño del Bebé",
+    "babyIsSize": "Tu bebé tiene aproximadamente el tamaño de un(a) {{size}}",
+    "viewWeekDetails": "Ver Detalles de la Semana",
+    "nextWeek": "Semana Siguiente",
+    "previousWeek": "Semana Anterior",
+    "loading": "Cargando información de la semana..."
   },
   "foodGuide": {
     "title": "Guía de Seguridad Alimentaria",
@@ -117,7 +139,7 @@
     "caution": "Precaución"
   },
   "healthTracker": {
-    "title": "Registro de Salud",
+    "title": "Seguimiento de Salud",
     "symptomsTitle": "Seguimiento de Síntomas",
     "kickCountTitle": "Contador de Patadas",
     "contractionsTitle": "Temporizador de Contracciones",
@@ -126,10 +148,10 @@
     "dateLabel": "Fecha",
     "timeLabel": "Hora",
     "notesLabel": "Notas",
-    "severityLabel": "Severidad",
+    "severityLabel": "Gravedad",
     "durationLabel": "Duración",
     "frequencyLabel": "Frecuencia",
-    "startTrackingButton": "Comenzar Seguimiento",
+    "startTrackingButton": "Iniciar Seguimiento",
     "stopTrackingButton": "Detener Seguimiento"
   },
   "appointments": {
@@ -157,7 +179,7 @@
   "settings": {
     "title": "Configuración",
     "languageSection": "Idioma",
-    "languageLabel": "Idioma de la App",
+    "languageLabel": "Idioma de la Aplicación",
     "unitsSection": "Unidades",
     "unitsLabel": "Unidades de Medida",
     "themeSection": "Apariencia",
@@ -165,7 +187,7 @@
     "notificationsSection": "Notificaciones",
     "notificationsLabel": "Activar Notificaciones",
     "aboutSection": "Acerca de",
-    "versionLabel": "Versión de la App",
+    "versionLabel": "Versión de la Aplicación",
     "privacyPolicyLabel": "Política de Privacidad",
     "termsOfServiceLabel": "Términos de Servicio",
     "feedbackLabel": "Enviar Comentarios"

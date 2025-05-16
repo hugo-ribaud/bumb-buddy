@@ -12,9 +12,9 @@ import FoodGuideScreen from "../screens/FoodGuideScreen";
 import HealthTrackerScreen from "../screens/HealthTrackerScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
+import TimelineScreen from "../screens/TimelineScreen";
+import WeekDetailScreen from "../screens/WeekDetailScreen";
 import authService from "../services/authService";
-
-// Import screens
 
 // Define types for our navigation
 export type RootStackParamList = {
@@ -24,14 +24,31 @@ export type RootStackParamList = {
 
 export type MainTabParamList = {
   Home: undefined;
+  Timeline: undefined;
   FoodGuide: undefined;
   HealthTracker: undefined;
   Appointments: undefined;
   Profile: undefined;
 };
 
+export type TimelineStackParamList = {
+  TimelineMain: undefined;
+  WeekDetail: undefined;
+};
+
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
+const TimelineStack = createStackNavigator<TimelineStackParamList>();
+
+// Timeline stack navigator
+const TimelineNavigator = () => {
+  return (
+    <TimelineStack.Navigator screenOptions={{ headerShown: false }}>
+      <TimelineStack.Screen name="TimelineMain" component={TimelineScreen} />
+      <TimelineStack.Screen name="WeekDetail" component={WeekDetailScreen} />
+    </TimelineStack.Navigator>
+  );
+};
 
 // Main tab navigator (bottom tabs)
 const MainTabNavigator = () => {
@@ -43,6 +60,8 @@ const MainTabNavigator = () => {
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Timeline") {
+            iconName = focused ? "calendar" : "calendar-outline";
           } else if (route.name === "FoodGuide") {
             iconName = focused ? "restaurant" : "restaurant-outline";
           } else if (route.name === "HealthTracker") {
@@ -61,6 +80,11 @@ const MainTabNavigator = () => {
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen
+        name="Timeline"
+        component={TimelineNavigator}
+        options={{ title: "Timeline" }}
+      />
       <Tab.Screen
         name="FoodGuide"
         component={FoodGuideScreen}
