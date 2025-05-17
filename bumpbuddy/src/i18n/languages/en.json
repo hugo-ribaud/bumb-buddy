@@ -9,7 +9,8 @@
       "confirm": "Confirm",
       "back": "Back",
       "editProfile": "Edit Profile",
-      "logout": "Log Out"
+      "logout": "Log Out",
+      "remove": "Remove"
     },
     "validation": {
       "required": "This field is required",
@@ -29,7 +30,8 @@
       "generic": "Something went wrong. Please try again.",
       "network": "Network error. Please check your connection.",
       "unauthorized": "You are not authorized to access this feature.",
-      "notFound": "The requested resource was not found."
+      "notFound": "The requested resource was not found.",
+      "invalidInput": "Invalid input. Please check your entry."
     },
     "labels": {
       "loading": "Loading...",
@@ -137,6 +139,54 @@
     "all": "All",
     "safe": "Safe",
     "caution": "Caution"
+  },
+  "health": {
+    "title": "Health Tracker",
+    "dailySymptoms": "Daily Symptoms",
+    "symptomsDescription": "Track your pregnancy symptoms and their severity",
+    "kickCounter": "Kick Counter",
+    "kickCounterDescription": "Track your baby's movements",
+    "kicks": "Kicks",
+    "time": "Time",
+    "recordKick": "Record Kick",
+    "startCounting": "Start Counting",
+    "endSession": "End Session",
+    "severityLabel": "Severity (1-5)",
+    "notesLabel": "Notes",
+    "notesPlaceholder": "Add any notes about this symptom...",
+    "removeSymptom": "Remove Symptom",
+    "confirmRemoveSymptom": "Are you sure you want to remove this symptom?",
+    "endKickSession": "End Kick Counting Session",
+    "kickSessionSummary": "You recorded {{count}} kicks in {{time}}",
+    "kickNotesPlaceholder": "Add any notes about this kick counting session...",
+    "severity": "Severity",
+    "symptoms": {
+      "nausea": "Nausea",
+      "fatigue": "Fatigue",
+      "headache": "Headache",
+      "backache": "Backache",
+      "swelling": "Swelling",
+      "heartburn": "Heartburn"
+    },
+    "symptomsDesc": {
+      "nausea": "Morning sickness or general nausea",
+      "fatigue": "Feeling unusually tired",
+      "headache": "Pain or pressure in the head",
+      "backache": "Lower or upper back pain",
+      "swelling": "Swelling in feet, ankles, or hands",
+      "heartburn": "Burning sensation in the chest"
+    },
+    "weightTracker": "Weight Tracker",
+    "weightTrackerDescription": "Monitor your weight throughout pregnancy",
+    "addWeight": "Add Weight",
+    "currentWeight": "Current Weight",
+    "weightHistory": "Weight History",
+    "date": "Date",
+    "weight": "Weight",
+    "weightPlaceholder": "Enter weight (kg)",
+    "weightNotesPlaceholder": "Add any notes about this weight measurement...",
+    "noWeightData": "No weight records found. Start tracking your weight today.",
+    "invalidWeightValue": "Please enter a valid weight value"
   },
   "healthTracker": {
     "title": "Health Tracker",

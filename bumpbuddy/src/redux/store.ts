@@ -1,5 +1,6 @@
 import { configureStore } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
+import healthReducer from "./slices/healthSlice";
 import timelineReducer from "./slices/timelineSlice";
 
 // Configure the Redux store
@@ -7,6 +8,7 @@ export const store = configureStore({
   reducer: {
     auth: authReducer,
     timeline: timelineReducer,
+    health: healthReducer,
     // Other reducers will be added here as we develop features
   },
   // Add middleware for async operations if needed

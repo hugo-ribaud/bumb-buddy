@@ -83,7 +83,7 @@ _Last Updated: 2024-06-11_
 
 ### Phase 3: Secondary Features (Medium Priority)
 
-- Appointment scheduling and reminders
+- Appointment scheduling and reminders (link with Dotcolib if possible)
 - Kick counter and contraction timer
 - Preview of the foetus size (comparaison to fruits with image)
 - Content management for pregnancy information
