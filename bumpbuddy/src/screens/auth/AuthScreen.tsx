@@ -2,18 +2,18 @@ import React, { useState } from "react";
 import {
   ActivityIndicator,
   Alert,
-  StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
-  View,
 } from "react-native";
-import { useDispatch } from "react-redux";
 import {
   authFailure,
   authRequest,
   authSuccess,
 } from "../../redux/slices/authSlice";
+
+import { useDispatch } from "react-redux";
+import FontedText from "../../components/FontedText";
+import ThemedView from "../../components/ThemedView";
 import authService from "../../services/authService";
 
 const AuthScreen = () => {
@@ -72,17 +72,21 @@ const AuthScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>BumpBuddy</Text>
-      <Text style={styles.subtitle}>Your Pregnancy Companion</Text>
+    <ThemedView className="flex-1 justify-center items-center p-5">
+      <FontedText variant="heading-1" className="mb-2">
+        BumpBuddy
+      </FontedText>
+      <FontedText variant="body" colorVariant="secondary" className="mb-10">
+        Your Pregnancy Companion
+      </FontedText>
 
-      <View style={styles.form}>
-        <Text style={styles.formTitle}>
+      <ThemedView className="w-full max-w-[400px]">
+        <FontedText variant="heading-2" className="mb-5 text-center">
           {isLogin ? "Sign In" : "Create Account"}
-        </Text>
+        </FontedText>
 
         <TextInput
-          style={styles.input}
+          className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4 border border-gray-300 dark:border-gray-700"
           placeholder="Email"
           value={email}
           onChangeText={setEmail}
@@ -92,7 +96,7 @@ const AuthScreen = () => {
         />
 
         <TextInput
-          style={styles.input}
+          className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4 border border-gray-300 dark:border-gray-700"
           placeholder="Password"
           value={password}
           onChangeText={setPassword}
@@ -101,90 +105,35 @@ const AuthScreen = () => {
         />
 
         <TouchableOpacity
-          style={[styles.button, loading && styles.buttonDisabled]}
+          className={`bg-primary rounded-lg p-4 items-center mt-2.5 ${
+            loading ? "opacity-70" : ""
+          }`}
           onPress={handleAuth}
           disabled={loading}
         >
           {loading ? (
             <ActivityIndicator color="white" />
           ) : (
-            <Text style={styles.buttonText}>
+            <FontedText className="text-white font-bold text-base">
               {isLogin ? "Sign In" : "Sign Up"}
-            </Text>
+            </FontedText>
           )}
         </TouchableOpacity>
 
         <TouchableOpacity
           onPress={() => setIsLogin(!isLogin)}
           disabled={loading}
+          className="mt-5"
         >
-          <Text style={styles.switchText}>
+          <FontedText className="text-primary text-center">
             {isLogin
               ? "New user? Create an account"
               : "Already have an account? Sign in"}
-          </Text>
+          </FontedText>
         </TouchableOpacity>
-      </View>
-    </View>
+      </ThemedView>
+    </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#f8f9fa",
-    padding: 20,
-  },
-  title: {
-    fontSize: 32,
-    fontWeight: "bold",
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 18,
-    color: "#6c757d",
-    marginBottom: 40,
-  },
-  form: {
-    width: "100%",
-    maxWidth: 400,
-  },
-  formTitle: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  input: {
-    backgroundColor: "white",
-    borderRadius: 8,
-    padding: 15,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: "#ced4da",
-  },
-  button: {
-    backgroundColor: "#007bff",
-    borderRadius: 8,
-    padding: 15,
-    alignItems: "center",
-    marginTop: 10,
-  },
-  buttonDisabled: {
-    backgroundColor: "#7fb7f5",
-  },
-  buttonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  switchText: {
-    color: "#007bff",
-    textAlign: "center",
-    marginTop: 20,
-  },
-});
 
 export default AuthScreen;

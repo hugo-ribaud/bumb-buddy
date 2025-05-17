@@ -1,15 +1,16 @@
-import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import {
   FlatList,
   Modal,
-  StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTranslation } from "react-i18next";
+import FontedText from "../components/FontedText";
+import ThemedView from "../components/ThemedView";
 
 // Define types
 interface Appointment {
@@ -165,74 +166,106 @@ const AppointmentsScreen = () => {
   // Render appointment item
   const renderAppointmentItem = ({ item }: { item: Appointment }) => {
     return (
-      <View style={styles.appointmentItem}>
-        <View style={styles.appointmentHeader}>
-          <Text style={styles.appointmentTitle}>{item.title}</Text>
-          <View style={styles.appointmentActions}>
+      <ThemedView
+        backgroundColor="surface"
+        className="rounded-xl p-4 mb-4 shadow"
+      >
+        <View className="flex-row justify-between items-center mb-2.5">
+          <FontedText variant="heading-4" className="flex-1">
+            {item.title}
+          </FontedText>
+          <View className="flex-row">
             <TouchableOpacity
-              style={[styles.actionButton, styles.editButton]}
+              className="px-2.5 py-1.5 rounded bg-yellow-500 mr-2.5"
               onPress={() => handleEditAppointment(item)}
             >
-              <Text style={styles.actionButtonText}>
+              <FontedText className="text-white font-medium text-sm">
                 {t("common.buttons.edit")}
-              </Text>
+              </FontedText>
             </TouchableOpacity>
             <TouchableOpacity
-              style={[styles.actionButton, styles.deleteButton]}
+              className="px-2.5 py-1.5 rounded bg-red-500"
               onPress={() => handleDeleteAppointment(item.id)}
             >
-              <Text style={styles.actionButtonText}>
+              <FontedText className="text-white font-medium text-sm">
                 {t("common.buttons.delete")}
-              </Text>
+              </FontedText>
             </TouchableOpacity>
           </View>
         </View>
 
-        <View style={styles.appointmentDetails}>
-          <View style={styles.appointmentDetail}>
-            <Text style={styles.detailLabel}>
+        <View className="mt-1">
+          <View className="flex-row mb-1">
+            <FontedText
+              variant="body-small"
+              colorVariant="secondary"
+              className="w-[70px]"
+            >
               {t("appointments.dateTimeLabel")}:
-            </Text>
-            <Text style={styles.detailValue}>{formatDate(item.dateTime)}</Text>
+            </FontedText>
+            <FontedText variant="body-small" className="flex-1">
+              {formatDate(item.dateTime)}
+            </FontedText>
           </View>
 
-          <View style={styles.appointmentDetail}>
-            <Text style={styles.detailLabel}>
+          <View className="flex-row mb-1">
+            <FontedText
+              variant="body-small"
+              colorVariant="secondary"
+              className="w-[70px]"
+            >
               {t("appointments.timeLabel")}:
-            </Text>
-            <Text style={styles.detailValue}>{formatTime(item.dateTime)}</Text>
+            </FontedText>
+            <FontedText variant="body-small" className="flex-1">
+              {formatTime(item.dateTime)}
+            </FontedText>
           </View>
 
           {item.notes && (
-            <View style={styles.appointmentDetail}>
-              <Text style={styles.detailLabel}>
+            <View className="flex-row mb-1">
+              <FontedText
+                variant="body-small"
+                colorVariant="secondary"
+                className="w-[70px]"
+              >
                 {t("appointments.notesLabel")}:
-              </Text>
-              <Text style={styles.detailValue}>{item.notes}</Text>
+              </FontedText>
+              <FontedText variant="body-small" className="flex-1">
+                {item.notes}
+              </FontedText>
             </View>
           )}
 
-          <View style={styles.appointmentDetail}>
-            <Text style={styles.detailLabel}>
+          <View className="flex-row mb-1">
+            <FontedText
+              variant="body-small"
+              colorVariant="secondary"
+              className="w-[70px]"
+            >
               {t("appointments.reminderLabel")}:
-            </Text>
-            <Text style={styles.detailValue}>
+            </FontedText>
+            <FontedText variant="body-small" className="flex-1">
               {item.reminder ? t("common.yes") : t("common.no")}
-            </Text>
+            </FontedText>
           </View>
         </View>
-      </View>
+      </ThemedView>
     );
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t("appointments.title")}</Text>
+    <ThemedView className="flex-1 p-5">
+      <FontedText variant="heading-2" className="mb-5">
+        {t("appointments.title")}
+      </FontedText>
 
-      <TouchableOpacity style={styles.addButton} onPress={handleAddAppointment}>
-        <Text style={styles.addButtonText}>
+      <TouchableOpacity
+        className="bg-primary rounded-xl p-4 items-center mb-5"
+        onPress={handleAddAppointment}
+      >
+        <FontedText className="text-white font-bold text-base">
           + {t("appointments.addButton")}
-        </Text>
+        </FontedText>
       </TouchableOpacity>
 
       {appointments.length > 0 ? (
@@ -240,16 +273,24 @@ const AppointmentsScreen = () => {
           data={appointments}
           renderItem={renderAppointmentItem}
           keyExtractor={(item) => item.id}
-          style={styles.appointmentsList}
+          className="flex-1"
         />
       ) : (
-        <View style={styles.emptyState}>
-          <Text style={styles.emptyStateText}>
+        <View className="flex-1 justify-center items-center p-5">
+          <FontedText
+            variant="heading-3"
+            colorVariant="secondary"
+            className="mb-2.5"
+          >
             {t("appointments.noAppointments")}
-          </Text>
-          <Text style={styles.emptyStateSubtext}>
+          </FontedText>
+          <FontedText
+            variant="body-small"
+            colorVariant="secondary"
+            className="text-center"
+          >
             {t("appointments.tapToAddAppointment")}
-          </Text>
+          </FontedText>
         </View>
       )}
 
@@ -260,30 +301,35 @@ const AppointmentsScreen = () => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
+        <View className="flex-1 justify-center items-center bg-black/50 px-5">
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-5 w-full max-h-[90%]"
+          >
+            <FontedText variant="heading-3" className="mb-5 text-center">
               {editingAppointment
                 ? t("appointments.editAppointment")
                 : t("appointments.addNewAppointment")}
-            </Text>
+            </FontedText>
 
-            <Text style={styles.inputLabel}>
+            <FontedText variant="body" className="mb-1">
               {t("appointments.titleLabel")}
-            </Text>
+            </FontedText>
             <TextInput
-              style={styles.input}
+              className="border border-gray-300 rounded p-2.5 mb-4 text-base"
               value={appointmentTitle}
               onChangeText={setAppointmentTitle}
               placeholder={t("appointments.titlePlaceholder")}
             />
 
-            <Text style={styles.inputLabel}>{t("appointments.dateLabel")}</Text>
+            <FontedText variant="body" className="mb-1">
+              {t("appointments.dateLabel")}
+            </FontedText>
             <TouchableOpacity
-              style={styles.dateTimeButton}
+              className="border border-gray-300 rounded p-3 mb-4"
               onPress={() => setShowDatePicker(true)}
             >
-              <Text>{formatDate(appointmentDate)}</Text>
+              <FontedText>{formatDate(appointmentDate)}</FontedText>
             </TouchableOpacity>
 
             {showDatePicker && (
@@ -295,12 +341,14 @@ const AppointmentsScreen = () => {
               />
             )}
 
-            <Text style={styles.inputLabel}>{t("appointments.timeLabel")}</Text>
+            <FontedText variant="body" className="mb-1">
+              {t("appointments.timeLabel")}
+            </FontedText>
             <TouchableOpacity
-              style={styles.dateTimeButton}
+              className="border border-gray-300 rounded p-3 mb-4"
               onPress={() => setShowTimePicker(true)}
             >
-              <Text>{formatTime(appointmentDate)}</Text>
+              <FontedText>{formatTime(appointmentDate)}</FontedText>
             </TouchableOpacity>
 
             {showTimePicker && (
@@ -312,269 +360,61 @@ const AppointmentsScreen = () => {
               />
             )}
 
-            <Text style={styles.inputLabel}>
+            <FontedText variant="body" className="mb-1">
               {t("appointments.notesLabel")}
-            </Text>
+            </FontedText>
             <TextInput
-              style={styles.textArea}
+              className="border border-gray-300 rounded p-2.5 mb-4 text-base h-[100px]"
+              style={{ textAlignVertical: "top" }}
               value={appointmentNotes}
               onChangeText={setAppointmentNotes}
               placeholder={t("appointments.notesPlaceholder")}
               multiline
             />
 
-            <Text style={styles.inputLabel}>
+            <FontedText variant="body" className="mb-1">
               {t("appointments.reminderLabel")}
-            </Text>
-            <View style={styles.reminderToggleContainer}>
+            </FontedText>
+            <View className="flex-row mb-5">
               <TouchableOpacity
-                style={[
-                  styles.reminderToggle,
-                  appointmentReminder
-                    ? styles.reminderToggleActive
-                    : styles.reminderToggleInactive,
-                ]}
+                className={`flex-1 py-2.5 items-center rounded ${
+                  appointmentReminder ? "bg-primary" : "bg-gray-200"
+                }`}
                 onPress={() => setAppointmentReminder(!appointmentReminder)}
               >
-                <Text
-                  style={[
-                    styles.reminderToggleText,
-                    appointmentReminder
-                      ? styles.reminderToggleTextActive
-                      : styles.reminderToggleTextInactive,
-                  ]}
+                <FontedText
+                  className={
+                    appointmentReminder ? "text-white" : "text-gray-700"
+                  }
                 >
                   {appointmentReminder ? t("common.yes") : t("common.no")}
-                </Text>
+                </FontedText>
               </TouchableOpacity>
             </View>
 
-            <View style={styles.modalButtons}>
+            <View className="flex-row justify-between">
               <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
+                className="flex-1 p-4 rounded bg-gray-500 mr-2.5 items-center"
                 onPress={() => setModalVisible(false)}
               >
-                <Text style={styles.modalButtonText}>
+                <FontedText className="text-white font-bold text-base">
                   {t("common.buttons.cancel")}
-                </Text>
+                </FontedText>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.modalButton, styles.saveButton]}
+                className="flex-1 p-4 rounded bg-primary items-center"
                 onPress={handleSaveAppointment}
               >
-                <Text style={styles.modalButtonText}>
+                <FontedText className="text-white font-bold text-base">
                   {t("common.buttons.save")}
-                </Text>
+                </FontedText>
               </TouchableOpacity>
             </View>
-          </View>
+          </ThemedView>
         </View>
       </Modal>
-    </View>
+    </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f8f9fa",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#343a40",
-  },
-  addButton: {
-    backgroundColor: "#007bff",
-    borderRadius: 10,
-    padding: 15,
-    alignItems: "center",
-    marginBottom: 20,
-  },
-  addButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  appointmentsList: {
-    flex: 1,
-  },
-  appointmentItem: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  appointmentHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  appointmentTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#343a40",
-    flex: 1,
-  },
-  appointmentActions: {
-    flexDirection: "row",
-  },
-  actionButton: {
-    paddingHorizontal: 10,
-    paddingVertical: 5,
-    borderRadius: 5,
-    marginLeft: 10,
-  },
-  editButton: {
-    backgroundColor: "#ffc107",
-  },
-  deleteButton: {
-    backgroundColor: "#dc3545",
-  },
-  actionButtonText: {
-    color: "white",
-    fontWeight: "500",
-    fontSize: 14,
-  },
-  appointmentDetails: {
-    marginTop: 5,
-  },
-  appointmentDetail: {
-    flexDirection: "row",
-    marginBottom: 5,
-  },
-  detailLabel: {
-    fontSize: 14,
-    fontWeight: "600",
-    color: "#6c757d",
-    width: 70,
-  },
-  detailValue: {
-    fontSize: 14,
-    color: "#343a40",
-    flex: 1,
-  },
-  emptyState: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 20,
-  },
-  emptyStateText: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#6c757d",
-    marginBottom: 10,
-  },
-  emptyStateSubtext: {
-    fontSize: 14,
-    color: "#6c757d",
-    textAlign: "center",
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-    paddingHorizontal: 20,
-  },
-  modalContent: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    width: "100%",
-    maxHeight: "90%",
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#343a40",
-    textAlign: "center",
-  },
-  inputLabel: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 5,
-    color: "#343a40",
-  },
-  input: {
-    borderWidth: 1,
-    borderColor: "#ced4da",
-    borderRadius: 5,
-    padding: 10,
-    marginBottom: 15,
-    fontSize: 16,
-  },
-  textArea: {
-    height: 100,
-    textAlignVertical: "top",
-  },
-  dateTimeButton: {
-    borderWidth: 1,
-    borderColor: "#ced4da",
-    borderRadius: 5,
-    padding: 12,
-    marginBottom: 15,
-  },
-  reminderToggleContainer: {
-    flexDirection: "row",
-    marginBottom: 20,
-  },
-  reminderToggle: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: "center",
-    backgroundColor: "#e9ecef",
-    marginRight: 10,
-    borderRadius: 5,
-  },
-  reminderToggleActive: {
-    backgroundColor: "#007bff",
-  },
-  reminderToggleInactive: {
-    backgroundColor: "#e9ecef",
-  },
-  reminderToggleText: {
-    fontSize: 16,
-    color: "#495057",
-  },
-  reminderToggleTextActive: {
-    color: "white",
-  },
-  reminderToggleTextInactive: {
-    color: "#495057",
-  },
-  modalButtons: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  modalButton: {
-    flex: 1,
-    padding: 15,
-    borderRadius: 5,
-    alignItems: "center",
-  },
-  cancelButton: {
-    backgroundColor: "#6c757d",
-    marginRight: 10,
-  },
-  saveButton: {
-    backgroundColor: "#007bff",
-  },
-  modalButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default AppointmentsScreen;

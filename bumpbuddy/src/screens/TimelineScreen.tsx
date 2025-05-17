@@ -1,24 +1,25 @@
+import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   Pressable,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { AppDispatch, RootState } from "../redux/store";
-import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   fetchAllWeeks,
   fetchCurrentWeekData,
   selectWeek,
 } from "../redux/slices/timelineSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 
-import timelineService from "../services/timelineService";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import FontedText from "../components/FontedText";
+import ThemedView from "../components/ThemedView";
+import timelineService from "../services/timelineService";
 
 type Props = {};
 
@@ -96,31 +97,34 @@ const TimelineScreen: React.FC<Props> = () => {
 
     return (
       <Pressable
-        className={`bg-white rounded-xl p-4 mb-3 shadow-sm ${
+        className={`bg-white dark:bg-gray-800 rounded-xl p-4 mb-3 shadow-sm ${
           isCurrentWeek ? "border-2 border-blue-500" : ""
         }`}
         onPress={() => handleWeekSelect(item.week)}
       >
         <View className="flex-row justify-between items-center mb-2">
-          <Text
-            className={`text-lg font-bold ${
-              isCurrentWeek ? "text-blue-500" : "text-gray-800"
-            }`}
+          <FontedText
+            variant={isCurrentWeek ? "heading-4" : "body"}
+            className={isCurrentWeek ? "text-blue-500" : ""}
           >
             {t("timeline.weekLabel", { week: item.week })}
-          </Text>
+          </FontedText>
           {isCurrentWeek && (
-            <Text className="text-xs text-white bg-blue-500 px-2 py-1 rounded-full">
+            <FontedText className="text-xs text-white bg-blue-500 px-2 py-1 rounded-full">
               {t("timeline.currentWeek")}
-            </Text>
+            </FontedText>
           )}
         </View>
-        <Text className="text-base font-medium mb-2 text-gray-700 capitalize">
+        <FontedText variant="body" className="mb-2 capitalize">
           {getFoodNameFromImageUrl(item.image_url)}
-        </Text>
-        <Text numberOfLines={2} className="text-sm text-gray-500">
+        </FontedText>
+        <FontedText
+          variant="body-small"
+          colorVariant="secondary"
+          numberOfLines={2}
+        >
           {item.fetal_development}
-        </Text>
+        </FontedText>
       </Pressable>
     );
   };
@@ -131,70 +135,74 @@ const TimelineScreen: React.FC<Props> = () => {
   };
 
   return (
-    <View className="flex-1 p-4 bg-gray-50">
+    <ThemedView className="flex-1 p-4">
       <View className="flex-row justify-between items-center mb-2">
-        <Text className="text-2xl font-bold text-gray-800">
-          {t("timeline.title")}
-        </Text>
+        <FontedText variant="heading-2">{t("timeline.title")}</FontedText>
         <TouchableOpacity
-          className="bg-blue-500 px-3 py-1.5 rounded"
+          className="bg-primary px-3 py-1.5 rounded"
           onPress={handleClearCache}
           disabled={refreshing}
         >
-          <Text className="text-white font-medium">
+          <FontedText className="text-white font-medium">
             {refreshing ? "Refreshing..." : "Refresh"}
-          </Text>
+          </FontedText>
         </TouchableOpacity>
       </View>
 
       {/* Debug info */}
-      <Text className="text-xs text-gray-500 mb-2">
+      <FontedText variant="caption" colorVariant="secondary" className="mb-2">
         Weeks loaded: {allWeeks.length} | Filtered: {filteredWeeks.length}
-      </Text>
+      </FontedText>
 
       {/* Trimester tabs */}
-      <View className="flex-row mb-4 rounded-lg overflow-hidden bg-gray-200">
+      <View className="flex-row mb-4 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
         <Pressable
           className={`flex-1 py-3 items-center ${
-            activeTab === 1 ? "bg-blue-500" : ""
+            activeTab === 1 ? "bg-primary" : ""
           }`}
           onPress={() => handleTabChange(1)}
         >
-          <Text
-            className={`font-medium ${
-              activeTab === 1 ? "text-white" : "text-gray-500"
-            }`}
+          <FontedText
+            className={
+              activeTab === 1
+                ? "text-white"
+                : "text-gray-500 dark:text-gray-300"
+            }
           >
             {t("timeline.firstTrimester")}
-          </Text>
+          </FontedText>
         </Pressable>
         <Pressable
           className={`flex-1 py-3 items-center ${
-            activeTab === 2 ? "bg-blue-500" : ""
+            activeTab === 2 ? "bg-primary" : ""
           }`}
           onPress={() => handleTabChange(2)}
         >
-          <Text
-            className={`font-medium ${
-              activeTab === 2 ? "text-white" : "text-gray-500"
-            }`}
+          <FontedText
+            className={
+              activeTab === 2
+                ? "text-white"
+                : "text-gray-500 dark:text-gray-300"
+            }
           >
             {t("timeline.secondTrimester")}
-          </Text>
+          </FontedText>
         </Pressable>
         <Pressable
           className={`flex-1 py-3 items-center ${
-            activeTab === 3 ? "bg-blue-500" : ""
+            activeTab === 3 ? "bg-primary" : ""
           }`}
           onPress={() => handleTabChange(3)}
         >
-          <Text
-            className={`font-medium ${
-              activeTab === 3 ? "text-white" : "text-gray-500"
-            }`}
+          <FontedText
+            className={
+              activeTab === 3
+                ? "text-white"
+                : "text-gray-500 dark:text-gray-300"
+            }
           >
             {t("timeline.thirdTrimester")}
-          </Text>
+          </FontedText>
         </Pressable>
       </View>
 
@@ -205,7 +213,9 @@ const TimelineScreen: React.FC<Props> = () => {
           className="flex-1 justify-center items-center"
         />
       ) : error ? (
-        <Text className="text-red-500 text-center mt-4">{error}</Text>
+        <FontedText className="text-red-500 text-center mt-4">
+          {error}
+        </FontedText>
       ) : (
         <FlatList
           data={filteredWeeks}
@@ -215,7 +225,7 @@ const TimelineScreen: React.FC<Props> = () => {
           showsVerticalScrollIndicator={false}
         />
       )}
-    </View>
+    </ThemedView>
   );
 };
 

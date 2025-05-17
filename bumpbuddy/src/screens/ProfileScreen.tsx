@@ -1,17 +1,18 @@
-import DateTimePicker from "@react-native-community/datetimepicker";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
   ScrollView,
-  StyleSheet,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, updateUser } from "../redux/slices/authSlice";
+
+import DateTimePicker from "@react-native-community/datetimepicker";
+import { useTranslation } from "react-i18next";
+import FontedText from "../components/FontedText";
+import ThemedView from "../components/ThemedView";
 import { RootState } from "../redux/store";
 import authService from "../services/authService";
 import realtimeService from "../services/realtimeService";
@@ -146,37 +147,57 @@ const ProfileScreen = () => {
 
   if (!user) {
     return (
-      <View style={styles.container}>
-        <Text>{t("auth.login.pleaseLoginFirst")}</Text>
-      </View>
+      <ThemedView className="flex-1 p-5">
+        <FontedText>{t("auth.login.pleaseLoginFirst")}</FontedText>
+      </ThemedView>
     );
   }
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>{t("profile.title")}</Text>
+    <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
+      <ThemedView className="flex-1 p-5">
+        <FontedText variant="heading-2" className="mb-5 text-center">
+          {t("profile.title")}
+        </FontedText>
 
         {/* Realtime Status Indicator */}
-        <View style={styles.realtimeCard}>
-          <Text style={styles.realtimeStatus}>
+        <View className="bg-blue-50 rounded-lg p-4 mb-5 border border-blue-200">
+          <FontedText className="font-bold text-blue-800">
             {t("profile.realtime")}: {realtimeStatus}
-          </Text>
-          {lastUpdate && <Text style={styles.lastUpdate}>{lastUpdate}</Text>}
+          </FontedText>
+          {lastUpdate && (
+            <FontedText className="mt-1 text-blue-700 italic">
+              {lastUpdate}
+            </FontedText>
+          )}
         </View>
 
-        <View style={styles.infoCard}>
-          <Text style={styles.label}>{t("auth.login.emailLabel")}</Text>
-          <Text style={styles.value}>{user.email}</Text>
+        <ThemedView backgroundColor="surface" className="rounded-lg p-5 shadow">
+          <FontedText
+            variant="body-small"
+            colorVariant="secondary"
+            className="mt-4"
+          >
+            {t("auth.login.emailLabel")}
+          </FontedText>
+          <FontedText variant="body" className="mt-1 mb-1">
+            {user.email}
+          </FontedText>
 
           {editing ? (
             <>
-              <Text style={styles.label}>{t("profile.dueDate")}</Text>
+              <FontedText
+                variant="body-small"
+                colorVariant="secondary"
+                className="mt-4"
+              >
+                {t("profile.dueDate")}
+              </FontedText>
               <TouchableOpacity
-                style={styles.dateInput}
+                className="border border-gray-300 rounded px-2.5 py-2.5 mt-1 mb-4"
                 onPress={() => setShowDatePicker(true)}
               >
-                <Text>{dueDate.toLocaleDateString()}</Text>
+                <FontedText>{dueDate.toLocaleDateString()}</FontedText>
               </TouchableOpacity>
 
               {showDatePicker && (
@@ -188,160 +209,86 @@ const ProfileScreen = () => {
                 />
               )}
 
-              <View style={styles.buttonRow}>
+              <View className="flex-row justify-between">
                 <TouchableOpacity
-                  style={[styles.button, styles.cancelButton]}
+                  className="bg-gray-500 rounded p-3 flex-1 items-center mr-2.5"
                   onPress={() => setEditing(false)}
                 >
-                  <Text style={styles.buttonText}>
+                  <FontedText className="text-white font-bold">
                     {t("common.buttons.cancel")}
-                  </Text>
+                  </FontedText>
                 </TouchableOpacity>
                 <TouchableOpacity
-                  style={styles.button}
+                  className="bg-primary rounded p-3 flex-1 items-center"
                   onPress={handleSaveProfile}
                   disabled={loading}
                 >
                   {loading ? (
                     <ActivityIndicator color="white" size="small" />
                   ) : (
-                    <Text style={styles.buttonText}>
+                    <FontedText className="text-white font-bold">
                       {t("common.buttons.save")}
-                    </Text>
+                    </FontedText>
                   )}
                 </TouchableOpacity>
               </View>
             </>
           ) : (
             <>
-              <Text style={styles.label}>{t("profile.dueDate")}</Text>
-              <Text style={styles.value}>
+              <FontedText
+                variant="body-small"
+                colorVariant="secondary"
+                className="mt-4"
+              >
+                {t("profile.dueDate")}
+              </FontedText>
+              <FontedText variant="body" className="mt-1 mb-1">
                 {user.dueDate
                   ? new Date(user.dueDate).toLocaleDateString()
                   : "Not set"}
-              </Text>
+              </FontedText>
 
-              <Text style={styles.label}>{t("profile.pregnancyWeek")}</Text>
-              <Text style={styles.value}>
+              <FontedText
+                variant="body-small"
+                colorVariant="secondary"
+                className="mt-4"
+              >
+                {t("profile.pregnancyWeek")}
+              </FontedText>
+              <FontedText variant="body" className="mt-1 mb-1">
                 {user.pregnancyWeek !== undefined
                   ? `Week ${user.pregnancyWeek}`
                   : "Not set"}
-              </Text>
+              </FontedText>
 
               <TouchableOpacity
-                style={styles.button}
+                className="bg-primary rounded p-3 items-center mt-4"
                 onPress={() => setEditing(true)}
               >
-                <Text style={styles.buttonText}>
+                <FontedText className="text-white font-bold">
                   {t("common.buttons.editProfile")}
-                </Text>
+                </FontedText>
               </TouchableOpacity>
             </>
           )}
 
           <TouchableOpacity
-            style={[styles.button, styles.logoutButton]}
+            className="bg-red-500 rounded p-3 items-center mt-7"
             onPress={handleLogout}
             disabled={loading}
           >
             {loading ? (
               <ActivityIndicator color="white" size="small" />
             ) : (
-              <Text style={styles.buttonText}>
+              <FontedText className="text-white font-bold">
                 {t("common.buttons.logout")}
-              </Text>
+              </FontedText>
             )}
           </TouchableOpacity>
-        </View>
-      </View>
+        </ThemedView>
+      </ThemedView>
     </ScrollView>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollContainer: {
-    flex: 1,
-    backgroundColor: "#f8f9fa",
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f8f9fa",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    textAlign: "center",
-  },
-  realtimeCard: {
-    backgroundColor: "#e6f7ff",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 20,
-    borderWidth: 1,
-    borderColor: "#91d5ff",
-  },
-  realtimeStatus: {
-    fontWeight: "bold",
-    color: "#0050b3",
-  },
-  lastUpdate: {
-    marginTop: 5,
-    color: "#096dd9",
-    fontStyle: "italic",
-  },
-  infoCard: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  label: {
-    fontSize: 14,
-    color: "#6c757d",
-    marginTop: 15,
-  },
-  value: {
-    fontSize: 16,
-    marginTop: 5,
-    marginBottom: 5,
-  },
-  dateInput: {
-    borderWidth: 1,
-    borderColor: "#ced4da",
-    borderRadius: 5,
-    padding: 10,
-    marginTop: 5,
-    marginBottom: 15,
-  },
-  button: {
-    backgroundColor: "#007bff",
-    borderRadius: 5,
-    padding: 12,
-    alignItems: "center",
-    marginTop: 15,
-  },
-  cancelButton: {
-    backgroundColor: "#6c757d",
-    marginRight: 10,
-  },
-  logoutButton: {
-    backgroundColor: "#dc3545",
-    marginTop: 30,
-  },
-  buttonRow: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  buttonText: {
-    color: "white",
-    fontWeight: "bold",
-  },
-});
 
 export default ProfileScreen;

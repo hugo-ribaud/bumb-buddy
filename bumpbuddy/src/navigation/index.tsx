@@ -1,10 +1,12 @@
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { authFailure, authSuccess } from "../redux/slices/authSlice";
+
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { authFailure, authSuccess } from "../redux/slices/authSlice";
+import { useTheme } from "../contexts/ThemeContext";
 import { RootState } from "../redux/store";
 import AppointmentsScreen from "../screens/AppointmentsScreen";
 import AuthScreen from "../screens/auth/AuthScreen";
@@ -52,6 +54,8 @@ const TimelineNavigator = () => {
 
 // Main tab navigator (bottom tabs)
 const MainTabNavigator = () => {
+  const { isDark } = useTheme();
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -74,9 +78,17 @@ const MainTabNavigator = () => {
 
           return <Ionicons name={iconName as any} size={size} color={color} />;
         },
-        tabBarActiveTintColor: "#007bff",
-        tabBarInactiveTintColor: "#6c757d",
+        tabBarActiveTintColor: isDark ? "#60a5fa" : "#007bff",
+        tabBarInactiveTintColor: isDark ? "#9ca3af" : "#6c757d",
         headerShown: false,
+        tabBarStyle: {
+          backgroundColor: isDark ? "#1f2937" : "#ffffff",
+          borderTopColor: isDark ? "#374151" : "#e5e7eb",
+        },
+        tabBarLabelStyle: {
+          fontFamily: "Poppins",
+          fontSize: 12,
+        },
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} />
