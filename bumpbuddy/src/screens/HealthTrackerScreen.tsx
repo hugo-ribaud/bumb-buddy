@@ -1,13 +1,9 @@
 import {
   ActivityIndicator,
   Alert,
-  FlatList,
-  Modal,
   ScrollView,
   StyleSheet,
   Switch,
-  Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
@@ -34,7 +30,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 
 import { BloodPressureLog } from "../services/healthService";
+import FontedText from "../components/FontedText";
+import ThemedView from "../components/ThemedView";
 import { format } from "date-fns";
+import { useTheme } from "../contexts/ThemeContext";
 import { useTranslation } from "react-i18next";
 
 // Define common symptom types
@@ -73,6 +72,7 @@ const SYMPTOM_TYPES = [
 
 const HealthTrackerScreen = () => {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const { symptoms, kickCounts, weightLogs, contractions, bloodPressureLogs } =
@@ -471,780 +471,347 @@ const HealthTrackerScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <Text style={styles.title}>{t("health.title")}</Text>
+    <ThemedView backgroundColor="background" className="flex-1">
+      <ScrollView className="flex-1">
+        <View className="p-5">
+          <FontedText
+            variant="heading-2"
+            fontFamily="comfortaa"
+            className="mb-4"
+          >
+            {t("health.title")}
+          </FontedText>
 
-        {/* Symptoms Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{t("health.dailySymptoms")}</Text>
-          <Text style={styles.sectionDescription}>
-            {t("health.symptomsDescription")}
-          </Text>
+          {/* Symptoms Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.dailySymptoms")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.symptomsDescription")}
+            </FontedText>
 
-          {symptoms.loading ? (
-            <ActivityIndicator
-              size="large"
-              color="#007bff"
-              style={styles.loader}
-            />
-          ) : (
-            SYMPTOM_TYPES.map((symptom) => {
-              const isActive = isSymptomActiveToday(symptom.id);
-              const symptomData = isActive ? getSymptomData(symptom.id) : null;
-
-              return (
-                <View key={symptom.id} style={styles.symptomItem}>
-                  <View style={styles.symptomInfo}>
-                    <Text style={styles.symptomName}>
-                      {t(`health.symptoms.${symptom.id}`)}
-                    </Text>
-                    <Text style={styles.symptomDescription}>
-                      {t(`health.symptomsDesc.${symptom.id}`)}
-                    </Text>
-                    {isActive && symptomData && (
-                      <>
-                        <Text style={styles.symptomSeverity}>
-                          {t("health.severity")}: {symptomData.severity}/5
-                        </Text>
-                        {symptomData.notes && (
-                          <Text style={styles.symptomNotes}>
-                            {symptomData.notes}
-                          </Text>
-                        )}
-                      </>
-                    )}
-                  </View>
-                  <Switch
-                    value={isActive}
-                    onValueChange={() => toggleSymptom(symptom.id)}
-                    trackColor={{ false: "#ced4da", true: "#007bff" }}
-                  />
-                </View>
-              );
-            })
-          )}
-        </View>
-
-        {/* Kick Counter Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{t("health.kickCounter")}</Text>
-          <Text style={styles.sectionDescription}>
-            {t("health.kickCounterDescription")}
-          </Text>
-
-          <View style={styles.kickCounterContainer}>
-            <View style={styles.kickStats}>
-              <View style={styles.kickStatItem}>
-                <Text style={styles.kickStatValue}>
-                  {kickCounts.currentSession?.count || 0}
-                </Text>
-                <Text style={styles.kickStatLabel}>{t("health.kicks")}</Text>
-              </View>
-
-              <View style={styles.kickStatItem}>
-                <Text style={styles.kickStatValue}>{formatTimeElapsed()}</Text>
-                <Text style={styles.kickStatLabel}>{t("health.time")}</Text>
-              </View>
-            </View>
-
-            {kickCounts.loading ? (
+            {symptoms.loading ? (
               <ActivityIndicator
                 size="large"
-                color="#007bff"
-                style={styles.loader}
+                color="#87D9C4"
+                className="my-4"
               />
             ) : (
-              <>
-                <TouchableOpacity
-                  style={[
-                    styles.kickButton,
-                    kickCounts.currentSession && styles.kickButtonActive,
-                  ]}
-                  onPress={handleKickCounter}
-                >
-                  <Text style={styles.kickButtonText}>
-                    {kickCounts.currentSession
-                      ? t("health.recordKick")
-                      : t("health.startCounting")}
-                  </Text>
-                </TouchableOpacity>
+              SYMPTOM_TYPES.map((symptom) => {
+                const isActive = isSymptomActiveToday(symptom.id);
+                const symptomData = isActive
+                  ? getSymptomData(symptom.id)
+                  : null;
 
-                {kickCounts.currentSession && (
-                  <TouchableOpacity
-                    style={styles.endButton}
-                    onPress={handleEndKickCounter}
+                return (
+                  <View
+                    key={symptom.id}
+                    className="flex-row items-center justify-between p-3 border-b border-gray-200 dark:border-gray-700"
                   >
-                    <Text style={styles.endButtonText}>
-                      {t("health.endSession")}
-                    </Text>
-                  </TouchableOpacity>
-                )}
-              </>
-            )}
-          </View>
-        </View>
-
-        {/* Weight Tracker Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{t("health.weightTracker")}</Text>
-          <Text style={styles.sectionDescription}>
-            {t("health.weightTrackerDescription")}
-          </Text>
-
-          <View style={styles.weightContainer}>
-            {weightLogs.loading ? (
-              <ActivityIndicator
-                size="large"
-                color="#007bff"
-                style={styles.loader}
-              />
-            ) : (
-              <>
-                {latestWeightLog ? (
-                  <View style={styles.currentWeightContainer}>
-                    <Text style={styles.currentWeightLabel}>
-                      {t("health.currentWeight")}
-                    </Text>
-                    <Text style={styles.currentWeightValue}>
-                      {latestWeightLog.weight} kg
-                    </Text>
-                    <Text style={styles.currentWeightDate}>
-                      {formatDate(latestWeightLog.date)}
-                    </Text>
-                  </View>
-                ) : (
-                  <Text style={styles.noWeightData}>
-                    {t("health.noWeightData")}
-                  </Text>
-                )}
-
-                <TouchableOpacity
-                  style={styles.addWeightButton}
-                  onPress={handleAddWeight}
-                >
-                  <Text style={styles.addWeightButtonText}>
-                    {t("health.addWeight")}
-                  </Text>
-                </TouchableOpacity>
-
-                {weightLogs.items.length > 0 && (
-                  <View style={styles.weightHistoryContainer}>
-                    <Text style={styles.weightHistoryTitle}>
-                      {t("health.weightHistory")}
-                    </Text>
-
-                    {weightLogs.items.slice(0, 5).map((log) => (
-                      <View key={log.id} style={styles.weightHistoryItem}>
-                        <View style={styles.weightHistoryInfo}>
-                          <Text style={styles.weightHistoryDate}>
-                            {formatDate(log.date)}
-                          </Text>
-                          <Text style={styles.weightHistoryValue}>
-                            {log.weight} kg
-                          </Text>
-                        </View>
-                        {log.notes && (
-                          <Text style={styles.weightHistoryNotes}>
-                            {log.notes}
-                          </Text>
-                        )}
-                      </View>
-                    ))}
-                  </View>
-                )}
-              </>
-            )}
-          </View>
-        </View>
-
-        {/* Blood Pressure Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>{t("health.bloodPressure")}</Text>
-          <Text style={styles.sectionDescription}>
-            {t("health.bloodPressureDescription")}
-          </Text>
-
-          <View style={styles.bpContainer}>
-            {bloodPressureLogs.loading ? (
-              <ActivityIndicator
-                size="large"
-                color="#007bff"
-                style={styles.loader}
-              />
-            ) : (
-              <>
-                {bloodPressureLogs.items.length > 0 ? (
-                  <View style={styles.currentBpContainer}>
-                    <Text style={styles.currentBpLabel}>
-                      {t("health.currentBloodPressure")}
-                    </Text>
-                    <Text style={styles.currentBpValue}>
-                      {bloodPressureLogs.items[0].systolic}/
-                      {bloodPressureLogs.items[0].diastolic} mmHg
-                    </Text>
-                    {bloodPressureLogs.items[0].pulse && (
-                      <Text style={styles.currentBpPulse}>
-                        {t("health.pulse")}: {bloodPressureLogs.items[0].pulse}{" "}
-                        bpm
-                      </Text>
-                    )}
-                    <Text style={styles.currentBpDate}>
-                      {formatDate(bloodPressureLogs.items[0].date)}
-                    </Text>
-                  </View>
-                ) : (
-                  <Text style={styles.noBpData}>
-                    {t("health.noBloodPressureData")}
-                  </Text>
-                )}
-
-                <TouchableOpacity
-                  style={styles.addBpButton}
-                  onPress={handleAddBloodPressure}
-                >
-                  <Text style={styles.addBpButtonText}>
-                    {t("health.addBloodPressure")}
-                  </Text>
-                </TouchableOpacity>
-
-                {bloodPressureLogs.items.length > 0 && (
-                  <View style={styles.bpHistoryContainer}>
-                    <Text style={styles.bpHistoryTitle}>
-                      {t("health.bloodPressureHistory")}
-                    </Text>
-
-                    {bloodPressureLogs.items.slice(0, 5).map((log) => (
-                      <View key={log.id} style={styles.bpHistoryItem}>
-                        <View style={styles.bpHistoryInfo}>
-                          <Text style={styles.bpHistoryDate}>
-                            {formatDate(log.date)}
-                          </Text>
-                          <Text style={styles.bpHistoryValue}>
-                            {log.systolic}/{log.diastolic} mmHg
-                          </Text>
-                        </View>
-                        <View style={styles.bpHistoryDetails}>
-                          {log.pulse && (
-                            <Text style={styles.bpHistoryPulse}>
-                              {t("health.pulse")}: {log.pulse} bpm
-                            </Text>
-                          )}
-                          {log.position && (
-                            <Text style={styles.bpHistoryPosition}>
-                              {t("health.position")}: {log.position}
-                            </Text>
-                          )}
-                          {log.arm && (
-                            <Text style={styles.bpHistoryArm}>
-                              {t("health.arm")}: {log.arm}
-                            </Text>
-                          )}
-                        </View>
-                        {log.notes && (
-                          <Text style={styles.bpHistoryNotes}>{log.notes}</Text>
-                        )}
-                        <View style={styles.bpHistoryActions}>
-                          <TouchableOpacity
-                            style={styles.bpEditButton}
-                            onPress={() => handleEditBloodPressure(log)}
+                    <View className="flex-1 mr-3">
+                      <FontedText variant="body" className="font-medium">
+                        {t(`health.symptoms.${symptom.id}`)}
+                      </FontedText>
+                      <FontedText variant="caption" textType="secondary">
+                        {t(`health.symptomsDesc.${symptom.id}`)}
+                      </FontedText>
+                      {isActive && symptomData && (
+                        <>
+                          <FontedText
+                            variant="body-small"
+                            colorVariant="primary"
+                            className="mt-1"
                           >
-                            <Text style={styles.bpEditButtonText}>
-                              {t("common.edit")}
-                            </Text>
-                          </TouchableOpacity>
-                          <TouchableOpacity
-                            style={styles.bpDeleteButton}
-                            onPress={() => handleDeleteBloodPressure(log.id)}
-                          >
-                            <Text style={styles.bpDeleteButtonText}>
-                              {t("common.delete")}
-                            </Text>
-                          </TouchableOpacity>
-                        </View>
-                      </View>
-                    ))}
+                            {t("health.severity")}: {symptomData.severity}/5
+                          </FontedText>
+                          {symptomData.notes && (
+                            <FontedText
+                              variant="caption"
+                              className="mt-1 italic"
+                            >
+                              {symptomData.notes}
+                            </FontedText>
+                          )}
+                        </>
+                      )}
+                    </View>
+                    <Switch
+                      value={isActive}
+                      onValueChange={() => toggleSymptom(symptom.id)}
+                      trackColor={{ false: "#ced4da", true: "#87D9C4" }}
+                    />
                   </View>
-                )}
-              </>
+                );
+              })
             )}
-          </View>
-        </View>
+          </ThemedView>
 
-        {/* Contraction Timer Section */}
-        <View style={styles.sectionContainer}>
-          <Text style={styles.sectionTitle}>
-            {t("health.contractionTimer")}
-          </Text>
-          <Text style={styles.sectionDescription}>
-            {t("health.contractionTimerDescription")}
-          </Text>
+          {/* Kick Counter Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.kickCounter")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.kickCounterDescription")}
+            </FontedText>
 
-          <View style={styles.contractionContainer}>
-            <View style={styles.timerDisplay}>
-              <Text style={styles.timerText}>
-                {formatSeconds(timerSeconds)}
-              </Text>
-              <Text style={styles.timerLabel}>
-                {contractionTimerActive
-                  ? t("health.contractionInProgress")
-                  : t("health.readyToStart")}
-              </Text>
-            </View>
+            <View className="items-center mb-4">
+              <View className="flex-row justify-around w-full mb-4">
+                <View className="items-center">
+                  <FontedText variant="heading-1" colorVariant="primary">
+                    {kickCounts.currentSession?.count || 0}
+                  </FontedText>
+                  <FontedText variant="caption" textType="secondary">
+                    {t("health.kicks")}
+                  </FontedText>
+                </View>
 
-            <View style={styles.contractionButtonContainer}>
-              {!contractionTimerActive ? (
-                <TouchableOpacity
-                  style={styles.startContractionButton}
-                  onPress={handleStartContraction}
-                >
-                  <Text style={styles.contractionButtonText}>
-                    {t("health.startContraction")}
-                  </Text>
-                </TouchableOpacity>
+                <View className="items-center">
+                  <FontedText variant="heading-1" colorVariant="primary">
+                    {formatTimeElapsed()}
+                  </FontedText>
+                  <FontedText variant="caption" textType="secondary">
+                    {t("health.time")}
+                  </FontedText>
+                </View>
+              </View>
+
+              {kickCounts.loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#87D9C4"
+                  className="my-4"
+                />
               ) : (
-                <TouchableOpacity
-                  style={styles.endContractionButton}
-                  onPress={handleEndContraction}
-                >
-                  <Text style={styles.contractionButtonText}>
-                    {t("health.endContraction")}
-                  </Text>
-                </TouchableOpacity>
+                <>
+                  <TouchableOpacity
+                    className={`px-6 py-3 rounded-full mb-3 ${
+                      kickCounts.currentSession
+                        ? "bg-primary dark:bg-primary-dark"
+                        : "bg-primary dark:bg-primary-dark"
+                    }`}
+                    onPress={handleKickCounter}
+                  >
+                    <FontedText className="text-white font-bold">
+                      {kickCounts.currentSession
+                        ? t("health.recordKick")
+                        : t("health.startCounting")}
+                    </FontedText>
+                  </TouchableOpacity>
+
+                  {kickCounts.currentSession && (
+                    <TouchableOpacity
+                      className="px-6 py-3 rounded-full bg-accent dark:bg-accent-dark"
+                      onPress={handleEndKickCounter}
+                    >
+                      <FontedText className="text-white font-bold">
+                        {t("health.endSession")}
+                      </FontedText>
+                    </TouchableOpacity>
+                  )}
+                </>
               )}
             </View>
+          </ThemedView>
 
-            {/* Contraction history section */}
-            {contractions.items.length > 0 && (
-              <View style={styles.contractionHistoryContainer}>
-                <Text style={styles.contractionHistoryTitle}>
-                  {t("health.recentContractions")}
-                </Text>
+          {/* Weight Tracker Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.weightTracker")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.weightTrackerDescription")}
+            </FontedText>
 
-                <View style={styles.contractionHistoryHeader}>
-                  <Text style={[styles.contractionHeaderText, { flex: 1 }]}>
-                    {t("health.time")}
-                  </Text>
-                  <Text style={[styles.contractionHeaderText, { flex: 1 }]}>
-                    {t("health.duration")}
-                  </Text>
-                  <Text style={[styles.contractionHeaderText, { flex: 1 }]}>
-                    {t("health.interval")}
-                  </Text>
-                </View>
-
-                <FlatList
-                  data={contractions.items.slice(0, 10)}
-                  keyExtractor={(item) => item.id}
-                  renderItem={({ item, index }) => {
-                    // Calculate duration from start and end times
-                    const startTime = new Date(item.start_time);
-                    const endTime = item.end_time
-                      ? new Date(item.end_time)
-                      : new Date();
-                    const durationSeconds = Math.floor(
-                      (endTime.getTime() - startTime.getTime()) / 1000
-                    );
-
-                    // Calculate interval if not the first contraction
-                    let intervalSeconds;
-                    if (index < contractions.items.length - 1) {
-                      const prevEndTime = new Date(
-                        contractions.items[index + 1].end_time || ""
-                      );
-                      intervalSeconds = Math.floor(
-                        (startTime.getTime() - prevEndTime.getTime()) / 1000
-                      );
-                    }
-
-                    return (
-                      <View style={styles.contractionHistoryItem}>
-                        <Text
-                          style={[styles.contractionHistoryText, { flex: 1 }]}
-                        >
-                          {format(startTime, "HH:mm:ss")}
-                        </Text>
-                        <Text
-                          style={[styles.contractionHistoryText, { flex: 1 }]}
-                        >
-                          {formatSeconds(durationSeconds)}
-                        </Text>
-                        <Text
-                          style={[styles.contractionHistoryText, { flex: 1 }]}
-                        >
-                          {intervalSeconds
-                            ? formatSeconds(intervalSeconds)
-                            : "-"}
-                        </Text>
-                      </View>
-                    );
-                  }}
-                  style={styles.contractionList}
+            <View className="items-center mb-4">
+              {weightLogs.loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#87D9C4"
+                  className="my-4"
                 />
-              </View>
-            )}
-          </View>
-        </View>
+              ) : (
+                <>
+                  {latestWeightLog ? (
+                    <View className="flex-row items-center justify-between mb-4">
+                      <FontedText variant="body" className="font-medium">
+                        {t("health.currentWeight")}
+                      </FontedText>
+                      <FontedText variant="body" className="font-bold">
+                        {latestWeightLog.weight} kg
+                      </FontedText>
+                    </View>
+                  ) : (
+                    <FontedText className="text-center text-gray-500">
+                      {t("health.noWeightData")}
+                    </FontedText>
+                  )}
 
-        {/* Symptom Detail Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={modalVisible}
-          onRequestClose={() => setModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                {selectedSymptomType &&
-                  t(`health.symptoms.${selectedSymptomType}`)}
-              </Text>
-
-              <Text style={styles.modalLabel}>{t("health.severityLabel")}</Text>
-              <View style={styles.severityContainer}>
-                {[1, 2, 3, 4, 5].map((level) => (
                   <TouchableOpacity
-                    key={level}
-                    style={[
-                      styles.severityButton,
-                      symptomSeverity === level && styles.activeSeverityButton,
-                    ]}
-                    onPress={() => setSymptomSeverity(level)}
+                    className="px-6 py-3 rounded-full bg-primary dark:bg-primary-dark"
+                    onPress={handleAddWeight}
                   >
-                    <Text
-                      style={[
-                        styles.severityButtonText,
-                        symptomSeverity === level &&
-                          styles.activeSeverityButtonText,
-                      ]}
-                    >
-                      {level}
-                    </Text>
+                    <FontedText className="text-white font-bold">
+                      {t("health.addWeight")}
+                    </FontedText>
                   </TouchableOpacity>
-                ))}
-              </View>
-
-              <Text style={styles.modalLabel}>{t("health.notesLabel")}</Text>
-              <TextInput
-                style={styles.notesInput}
-                value={symptomNotes}
-                onChangeText={setSymptomNotes}
-                placeholder={t("health.notesPlaceholder")}
-                multiline
-              />
-
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>
-                    {t("common.cancel")}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.saveButton]}
-                  onPress={saveSymptomDetails}
-                >
-                  <Text style={styles.modalButtonText}>{t("common.save")}</Text>
-                </TouchableOpacity>
-              </View>
+                </>
+              )}
             </View>
-          </View>
-        </Modal>
+          </ThemedView>
 
-        {/* End Kick Session Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={endSessionModalVisible}
-          onRequestClose={() => setEndSessionModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                {t("health.endKickSession")}
-              </Text>
+          {/* Blood Pressure Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.bloodPressure")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.bloodPressureDescription")}
+            </FontedText>
 
-              <Text style={styles.kickSessionSummary}>
-                {t("health.kickSessionSummary", {
-                  count: kickCounts.currentSession?.count || 0,
-                  time: formatTimeElapsed(),
-                })}
-              </Text>
+            <View className="items-center mb-4">
+              {bloodPressureLogs.loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#87D9C4"
+                  className="my-4"
+                />
+              ) : (
+                <>
+                  {bloodPressureLogs.items.length > 0 ? (
+                    <View className="flex-row items-center justify-between mb-4">
+                      <FontedText variant="body" className="font-medium">
+                        {t("health.currentBloodPressure")}
+                      </FontedText>
+                      <FontedText variant="body" className="font-bold">
+                        {bloodPressureLogs.items[0].systolic}/
+                        {bloodPressureLogs.items[0].diastolic} mmHg
+                      </FontedText>
+                    </View>
+                  ) : (
+                    <FontedText className="text-center text-gray-500">
+                      {t("health.noBloodPressureData")}
+                    </FontedText>
+                  )}
 
-              <Text style={styles.modalLabel}>{t("health.notesLabel")}</Text>
-              <TextInput
-                style={styles.notesInput}
-                value={kickSessionNotes}
-                onChangeText={setKickSessionNotes}
-                placeholder={t("health.kickNotesPlaceholder")}
-                multiline
-              />
-
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setEndSessionModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>
-                    {t("common.cancel")}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.saveButton]}
-                  onPress={confirmEndKickCounter}
-                >
-                  <Text style={styles.modalButtonText}>
-                    {t("health.endSession")}
-                  </Text>
-                </TouchableOpacity>
-              </View>
+                  <TouchableOpacity
+                    className="px-6 py-3 rounded-full bg-primary dark:bg-primary-dark"
+                    onPress={handleAddBloodPressure}
+                  >
+                    <FontedText className="text-white font-bold">
+                      {t("health.addBloodPressure")}
+                    </FontedText>
+                  </TouchableOpacity>
+                </>
+              )}
             </View>
-          </View>
-        </Modal>
+          </ThemedView>
 
-        {/* Weight Log Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={weightModalVisible}
-          onRequestClose={() => setWeightModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>{t("health.addWeight")}</Text>
+          {/* Contraction Timer Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.contractionTimer")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.contractionTimerDescription")}
+            </FontedText>
 
-              <Text style={styles.modalLabel}>{t("health.weight")}</Text>
-              <TextInput
-                style={styles.weightInput}
-                value={weight}
-                onChangeText={setWeight}
-                placeholder={t("health.weightPlaceholder")}
-                keyboardType="numeric"
-              />
-
-              <Text style={styles.modalLabel}>{t("health.notesLabel")}</Text>
-              <TextInput
-                style={styles.notesInput}
-                value={weightNotes}
-                onChangeText={setWeightNotes}
-                placeholder={t("health.weightNotesPlaceholder")}
-                multiline
-              />
-
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setWeightModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>
-                    {t("common.cancel")}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.saveButton]}
-                  onPress={saveWeightLog}
-                >
-                  <Text style={styles.modalButtonText}>{t("common.save")}</Text>
-                </TouchableOpacity>
+            <View className="items-center mb-4">
+              <View className="flex-row justify-around w-full mb-4">
+                <View className="items-center">
+                  <FontedText variant="heading-1" colorVariant="primary">
+                    {formatSeconds(timerSeconds)}
+                  </FontedText>
+                  <FontedText variant="caption" textType="secondary">
+                    {contractionTimerActive
+                      ? t("health.contractionInProgress")
+                      : t("health.readyToStart")}
+                  </FontedText>
+                </View>
               </View>
-            </View>
-          </View>
-        </Modal>
 
-        {/* Blood Pressure Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={bpModalVisible}
-          onRequestClose={() => setBpModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                {t("health.addBloodPressure")}
-              </Text>
-
-              <Text style={styles.modalLabel}>{t("health.systolic")}</Text>
-              <TextInput
-                style={styles.bpInput}
-                value={bpSystolic}
-                onChangeText={setBpSystolic}
-                placeholder={t("health.systolicPlaceholder")}
-                keyboardType="numeric"
-              />
-
-              <Text style={styles.modalLabel}>{t("health.diastolic")}</Text>
-              <TextInput
-                style={styles.bpInput}
-                value={bpDiastolic}
-                onChangeText={setBpDiastolic}
-                placeholder={t("health.diastolicPlaceholder")}
-                keyboardType="numeric"
-              />
-
-              <Text style={styles.modalLabel}>{t("health.pulse")}</Text>
-              <TextInput
-                style={styles.bpInput}
-                value={bpPulse}
-                onChangeText={setBpPulse}
-                placeholder={t("health.pulsePlaceholder")}
-                keyboardType="numeric"
-              />
-
-              <Text style={styles.modalLabel}>{t("health.position")}</Text>
-              <TextInput
-                style={styles.bpInput}
-                value={bpPosition}
-                onChangeText={setBpPosition}
-                placeholder={t("health.positionPlaceholder")}
-              />
-
-              <Text style={styles.modalLabel}>{t("health.arm")}</Text>
-              <TextInput
-                style={styles.bpInput}
-                value={bpArm}
-                onChangeText={setBpArm}
-                placeholder={t("health.armPlaceholder")}
-              />
-
-              <Text style={styles.modalLabel}>{t("health.notes")}</Text>
-              <TextInput
-                style={styles.notesInput}
-                value={bpNotes}
-                onChangeText={setBpNotes}
-                placeholder={t("health.notesPlaceholder")}
-                multiline
-              />
-
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setBpModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>
-                    {t("common.cancel")}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.saveButton]}
-                  onPress={saveBloodPressureLog}
-                >
-                  <Text style={styles.modalButtonText}>{t("common.save")}</Text>
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        </Modal>
-
-        {/* Contraction Details Modal */}
-        <Modal
-          animationType="slide"
-          transparent={true}
-          visible={contractionModalVisible}
-          onRequestClose={() => setContractionModalVisible(false)}
-        >
-          <View style={styles.modalContainer}>
-            <View style={styles.modalContent}>
-              <Text style={styles.modalTitle}>
-                {t("health.contractionDetails")}
-              </Text>
-
-              <Text style={styles.contractionSummary}>
-                {contractions.currentContraction && (
-                  <React.Fragment>
-                    {t("health.contractionSummary", {
-                      duration: formatSeconds(
-                        contractionEndTime && contractionStartTime
-                          ? Math.floor(
-                              (contractionEndTime.getTime() -
-                                contractionStartTime.getTime()) /
-                                1000
-                            )
-                          : 0
-                      ),
-                      interval:
-                        contractions.items.length > 1
-                          ? formatSeconds(
-                              Math.floor(
-                                (new Date(
-                                  contractions.currentContraction.start_time
-                                ).getTime() -
-                                  new Date(
-                                    contractions.items[1].end_time || ""
-                                  ).getTime()) /
-                                  1000
-                              )
-                            )
-                          : t("health.firstContraction"),
-                    })}
-                  </React.Fragment>
+              <View className="flex-row justify-around w-full">
+                {!contractionTimerActive ? (
+                  <TouchableOpacity
+                    className="px-6 py-3 rounded-full bg-primary dark:bg-primary-dark"
+                    onPress={handleStartContraction}
+                  >
+                    <FontedText className="text-white font-bold">
+                      {t("health.startContraction")}
+                    </FontedText>
+                  </TouchableOpacity>
+                ) : (
+                  <TouchableOpacity
+                    className="px-6 py-3 rounded-full bg-accent dark:bg-accent-dark"
+                    onPress={handleEndContraction}
+                  >
+                    <FontedText className="text-white font-bold">
+                      {t("health.endContraction")}
+                    </FontedText>
+                  </TouchableOpacity>
                 )}
-              </Text>
-
-              <Text style={styles.modalLabel}>
-                {t("health.intensityLabel")}
-              </Text>
-              <View style={styles.severityContainer}>
-                {[1, 2, 3, 4, 5].map((level) => (
-                  <TouchableOpacity
-                    key={level}
-                    style={[
-                      styles.severityButton,
-                      contractionIntensity === level &&
-                        styles.activeSeverityButton,
-                    ]}
-                    onPress={() => setContractionIntensity(level)}
-                  >
-                    <Text
-                      style={[
-                        styles.severityButtonText,
-                        contractionIntensity === level &&
-                          styles.activeSeverityButtonText,
-                      ]}
-                    >
-                      {level}
-                    </Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
-
-              <Text style={styles.modalLabel}>{t("health.notesLabel")}</Text>
-              <TextInput
-                style={styles.notesInput}
-                value={contractionNotes}
-                onChangeText={setContractionNotes}
-                placeholder={t("health.contractionNotesPlaceholder")}
-                multiline
-              />
-
-              <View style={styles.modalButtons}>
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.cancelButton]}
-                  onPress={() => setContractionModalVisible(false)}
-                >
-                  <Text style={styles.modalButtonText}>
-                    {t("common.cancel")}
-                  </Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={[styles.modalButton, styles.saveButton]}
-                  onPress={saveContractionDetails}
-                >
-                  <Text style={styles.modalButtonText}>{t("common.save")}</Text>
-                </TouchableOpacity>
               </View>
             </View>
-          </View>
-        </Modal>
-      </View>
-    </ScrollView>
+          </ThemedView>
+        </View>
+      </ScrollView>
+    </ThemedView>
   );
 };
 

@@ -9,7 +9,6 @@ import {
   FlatList,
   Modal,
   Pressable,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
@@ -48,15 +47,17 @@ export const LanguageSwitcher: React.FC = () => {
       ?.nativeName || language;
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.label}>{t("settings.languageLabel")}</Text>
+    <View className="my-2.5">
+      <Text className="text-base mb-2 font-medium">
+        {t("settings.languageLabel")}
+      </Text>
 
       <Pressable
-        style={styles.languageSelector}
+        className="flex-row justify-between items-center p-3 bg-gray-100 rounded-lg border border-gray-200"
         onPress={() => setModalVisible(true)}
       >
-        <Text style={styles.selectedLanguage}>{displayLanguage}</Text>
-        <Text style={styles.chevron}>▼</Text>
+        <Text className="text-base">{displayLanguage}</Text>
+        <Text className="text-sm text-gray-600">▼</Text>
       </Pressable>
 
       <Modal
@@ -65,37 +66,40 @@ export const LanguageSwitcher: React.FC = () => {
         visible={modalVisible}
         onRequestClose={() => setModalVisible(false)}
       >
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{t("settings.languageLabel")}</Text>
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <View className="w-4/5 bg-white rounded-xl p-5 items-center shadow-md max-h-[70%]">
+            <Text className="text-lg font-bold mb-4 text-center">
+              {t("settings.languageLabel")}
+            </Text>
 
             <FlatList
               data={languageOptions}
               keyExtractor={(item) => item.code}
               renderItem={({ item }) => (
                 <TouchableOpacity
-                  style={[
-                    styles.languageOption,
-                    item.code === language && styles.selectedOption,
-                  ]}
+                  className={`flex-row items-center py-3 px-4 border-b border-gray-100 w-full ${
+                    item.code === language ? "bg-blue-50" : ""
+                  }`}
                   onPress={() => handleLanguageSelect(item.code)}
                 >
-                  <Text style={styles.nativeName}>{item.nativeName}</Text>
+                  <Text className="text-base flex-1">{item.nativeName}</Text>
                   {item.nativeName !== item.name && (
-                    <Text style={styles.englishName}>({item.name})</Text>
+                    <Text className="text-sm text-gray-600 ml-2.5">
+                      ({item.name})
+                    </Text>
                   )}
                   {item.code === language && (
-                    <Text style={styles.checkmark}>✓</Text>
+                    <Text className="text-lg text-blue-700 ml-2.5">✓</Text>
                   )}
                 </TouchableOpacity>
               )}
             />
 
             <TouchableOpacity
-              style={styles.closeButton}
+              className="mt-5 py-2.5 px-5 bg-gray-100 rounded-lg"
               onPress={() => setModalVisible(false)}
             >
-              <Text style={styles.closeButtonText}>
+              <Text className="text-base text-gray-800">
                 {t("common.buttons.cancel")}
               </Text>
             </TouchableOpacity>
@@ -105,98 +109,5 @@ export const LanguageSwitcher: React.FC = () => {
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    marginVertical: 10,
-  },
-  label: {
-    fontSize: 16,
-    marginBottom: 8,
-    fontWeight: "500",
-  },
-  languageSelector: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 12,
-    backgroundColor: "#f5f5f5",
-    borderRadius: 8,
-    borderWidth: 1,
-    borderColor: "#e0e0e0",
-  },
-  selectedLanguage: {
-    fontSize: 16,
-  },
-  chevron: {
-    fontSize: 14,
-    color: "#666",
-  },
-  modalOverlay: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",
-  },
-  modalContent: {
-    width: "80%",
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 20,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-    maxHeight: "70%",
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  languageOption: {
-    flexDirection: "row",
-    alignItems: "center",
-    paddingVertical: 12,
-    paddingHorizontal: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: "#eee",
-    width: "100%",
-  },
-  selectedOption: {
-    backgroundColor: "#f0f7ff",
-  },
-  nativeName: {
-    fontSize: 16,
-    flex: 1,
-  },
-  englishName: {
-    fontSize: 14,
-    color: "#666",
-    marginLeft: 10,
-  },
-  checkmark: {
-    fontSize: 18,
-    color: "#0066cc",
-    marginLeft: 10,
-  },
-  closeButton: {
-    marginTop: 20,
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    backgroundColor: "#f0f0f0",
-    borderRadius: 8,
-  },
-  closeButtonText: {
-    fontSize: 16,
-    color: "#333",
-  },
-});
 
 export default LanguageSwitcher;

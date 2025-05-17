@@ -1,24 +1,24 @@
-import { useNavigation } from "@react-navigation/native";
-import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
   Pressable,
-  StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import React, { useEffect, useState } from "react";
 import {
   fetchAllWeeks,
   fetchCurrentWeekData,
   selectWeek,
 } from "../redux/slices/timelineSlice";
-import { AppDispatch, RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
+
 import timelineService from "../services/timelineService";
+import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
 
 type Props = {};
 
@@ -96,23 +96,29 @@ const TimelineScreen: React.FC<Props> = () => {
 
     return (
       <Pressable
-        style={[styles.weekItem, isCurrentWeek && styles.currentWeekItem]}
+        className={`bg-white rounded-xl p-4 mb-3 shadow-sm ${
+          isCurrentWeek ? "border-2 border-blue-500" : ""
+        }`}
         onPress={() => handleWeekSelect(item.week)}
       >
-        <View style={styles.weekHeader}>
+        <View className="flex-row justify-between items-center mb-2">
           <Text
-            style={[styles.weekNumber, isCurrentWeek && styles.currentWeekText]}
+            className={`text-lg font-bold ${
+              isCurrentWeek ? "text-blue-500" : "text-gray-800"
+            }`}
           >
             {t("timeline.weekLabel", { week: item.week })}
           </Text>
           {isCurrentWeek && (
-            <Text style={styles.currentLabel}>{t("timeline.currentWeek")}</Text>
+            <Text className="text-xs text-white bg-blue-500 px-2 py-1 rounded-full">
+              {t("timeline.currentWeek")}
+            </Text>
           )}
         </View>
-        <Text style={styles.weekTitle}>
+        <Text className="text-base font-medium mb-2 text-gray-700 capitalize">
           {getFoodNameFromImageUrl(item.image_url)}
         </Text>
-        <Text numberOfLines={2} style={styles.weekDescription}>
+        <Text numberOfLines={2} className="text-sm text-gray-500">
           {item.fetal_development}
         </Text>
       </Pressable>
@@ -125,53 +131,67 @@ const TimelineScreen: React.FC<Props> = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
-        <Text style={styles.title}>{t("timeline.title")}</Text>
+    <View className="flex-1 p-4 bg-gray-50">
+      <View className="flex-row justify-between items-center mb-2">
+        <Text className="text-2xl font-bold text-gray-800">
+          {t("timeline.title")}
+        </Text>
         <TouchableOpacity
-          style={styles.refreshButton}
+          className="bg-blue-500 px-3 py-1.5 rounded"
           onPress={handleClearCache}
           disabled={refreshing}
         >
-          <Text style={styles.refreshButtonText}>
+          <Text className="text-white font-medium">
             {refreshing ? "Refreshing..." : "Refresh"}
           </Text>
         </TouchableOpacity>
       </View>
 
       {/* Debug info */}
-      <Text style={styles.debugInfo}>
+      <Text className="text-xs text-gray-500 mb-2">
         Weeks loaded: {allWeeks.length} | Filtered: {filteredWeeks.length}
       </Text>
 
       {/* Trimester tabs */}
-      <View style={styles.tabContainer}>
+      <View className="flex-row mb-4 rounded-lg overflow-hidden bg-gray-200">
         <Pressable
-          style={[styles.tab, activeTab === 1 && styles.activeTab]}
+          className={`flex-1 py-3 items-center ${
+            activeTab === 1 ? "bg-blue-500" : ""
+          }`}
           onPress={() => handleTabChange(1)}
         >
           <Text
-            style={[styles.tabText, activeTab === 1 && styles.activeTabText]}
+            className={`font-medium ${
+              activeTab === 1 ? "text-white" : "text-gray-500"
+            }`}
           >
             {t("timeline.firstTrimester")}
           </Text>
         </Pressable>
         <Pressable
-          style={[styles.tab, activeTab === 2 && styles.activeTab]}
+          className={`flex-1 py-3 items-center ${
+            activeTab === 2 ? "bg-blue-500" : ""
+          }`}
           onPress={() => handleTabChange(2)}
         >
           <Text
-            style={[styles.tabText, activeTab === 2 && styles.activeTabText]}
+            className={`font-medium ${
+              activeTab === 2 ? "text-white" : "text-gray-500"
+            }`}
           >
             {t("timeline.secondTrimester")}
           </Text>
         </Pressable>
         <Pressable
-          style={[styles.tab, activeTab === 3 && styles.activeTab]}
+          className={`flex-1 py-3 items-center ${
+            activeTab === 3 ? "bg-blue-500" : ""
+          }`}
           onPress={() => handleTabChange(3)}
         >
           <Text
-            style={[styles.tabText, activeTab === 3 && styles.activeTabText]}
+            className={`font-medium ${
+              activeTab === 3 ? "text-white" : "text-gray-500"
+            }`}
           >
             {t("timeline.thirdTrimester")}
           </Text>
@@ -179,137 +199,24 @@ const TimelineScreen: React.FC<Props> = () => {
       </View>
 
       {loading || refreshing ? (
-        <ActivityIndicator size="large" color="#007bff" style={styles.loader} />
+        <ActivityIndicator
+          size="large"
+          color="#007bff"
+          className="flex-1 justify-center items-center"
+        />
       ) : error ? (
-        <Text style={styles.errorText}>{error}</Text>
+        <Text className="text-red-500 text-center mt-4">{error}</Text>
       ) : (
         <FlatList
           data={filteredWeeks}
           renderItem={renderWeekItem}
           keyExtractor={(item) => item.week.toString()}
-          contentContainerStyle={styles.listContent}
+          className="pb-4"
           showsVerticalScrollIndicator={false}
         />
       )}
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 16,
-    backgroundColor: "#f8f9fa",
-  },
-  headerContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#343a40",
-  },
-  refreshButton: {
-    backgroundColor: "#007bff",
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 4,
-  },
-  refreshButtonText: {
-    color: "white",
-    fontWeight: "500",
-  },
-  debugInfo: {
-    fontSize: 12,
-    color: "#6c757d",
-    marginBottom: 8,
-  },
-  tabContainer: {
-    flexDirection: "row",
-    marginBottom: 16,
-    borderRadius: 8,
-    overflow: "hidden",
-    backgroundColor: "#e9ecef",
-  },
-  tab: {
-    flex: 1,
-    paddingVertical: 12,
-    alignItems: "center",
-  },
-  activeTab: {
-    backgroundColor: "#007bff",
-  },
-  tabText: {
-    fontWeight: "500",
-    color: "#6c757d",
-  },
-  activeTabText: {
-    color: "white",
-  },
-  listContent: {
-    paddingBottom: 16,
-  },
-  weekItem: {
-    backgroundColor: "white",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  currentWeekItem: {
-    borderWidth: 2,
-    borderColor: "#007bff",
-  },
-  weekHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 8,
-  },
-  weekNumber: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#343a40",
-  },
-  currentWeekText: {
-    color: "#007bff",
-  },
-  currentLabel: {
-    fontSize: 12,
-    color: "white",
-    backgroundColor: "#007bff",
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 12,
-  },
-  weekTitle: {
-    fontSize: 16,
-    fontWeight: "500",
-    marginBottom: 8,
-    color: "#495057",
-    textTransform: "capitalize",
-  },
-  weekDescription: {
-    fontSize: 14,
-    color: "#6c757d",
-  },
-  loader: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorText: {
-    color: "#dc3545",
-    textAlign: "center",
-    marginTop: 16,
-  },
-});
 
 export default TimelineScreen;

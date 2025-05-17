@@ -1,16 +1,13 @@
-import {
-  ScrollView,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import FontedText from "../components/FontedText";
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import React from "react";
 import { RootState } from "../redux/store";
+import ThemeToggle from "../components/ThemeToggle";
+import ThemedView from "../components/ThemedView";
+import { useSelector } from "react-redux";
+import { useTranslation } from "react-i18next";
 
 const HomeScreen = () => {
   const { t } = useTranslation();
@@ -87,228 +84,195 @@ const HomeScreen = () => {
   const progressPercentage = Math.min((pregnancyWeek / 40) * 100, 100);
 
   return (
-    <ScrollView style={styles.scrollContainer}>
-      <View style={styles.container}>
-        <View style={styles.header}>
-          <Text style={styles.welcomeText}>
-            {t("home.welcome", { name: user?.email?.split("@")[0] || "Mom" })}
-          </Text>
-          <Text style={styles.subtitle}>{t("home.journeyTitle")}</Text>
+    <ThemedView backgroundColor="background" className="flex-1">
+      <ScrollView className="flex-1">
+        <ThemedView backgroundColor="background" className="flex-1 p-5">
+          <View className="flex-row justify-between items-center mb-5">
+            <View>
+              <FontedText variant="heading-2" className="font-bold">
+                {t("home.welcome", {
+                  name: user?.email?.split("@")[0] || "Mom",
+                })}
+              </FontedText>
+              <FontedText
+                textType="secondary"
+                variant="body-small"
+                className="mt-1.5"
+              >
+                {t("home.journeyTitle")}
+              </FontedText>
+            </View>
+            <ThemeToggle />
+          </View>
 
           {/* Add Language Switcher */}
           <LanguageSwitcher />
-        </View>
 
-        <View style={styles.progressCard}>
-          <View style={styles.weekContainer}>
-            <Text style={styles.currentWeek}>
-              {t("home.weekTitle", { week: pregnancyWeek })}
-            </Text>
-            <Text style={styles.trimester}>{trimester}</Text>
-          </View>
-
-          <View style={styles.progressBarContainer}>
-            <View
-              style={[styles.progressBar, { width: `${progressPercentage}%` }]}
-            />
-          </View>
-          <Text style={styles.progressText}>
-            {t("home.progressLabel", {
-              percent: progressPercentage.toFixed(0),
-            })}
-          </Text>
-        </View>
-
-        <View style={styles.infoCard}>
-          <Text style={styles.cardTitle}>
-            {t("home.developmentTitle", { week: pregnancyWeek })}
-          </Text>
-
-          <View style={styles.babyInfoContainer}>
-            <View style={styles.babyMetrics}>
-              <Text style={styles.infoLabel}>{t("home.sizeLabel")}</Text>
-              <Text style={styles.infoValue}>{weeklyContent.babySize}</Text>
-
-              <Text style={styles.infoLabel}>{t("home.lengthLabel")}</Text>
-              <Text style={styles.infoValue}>{weeklyContent.babyLength}</Text>
-
-              <Text style={styles.infoLabel}>{t("home.weightLabel")}</Text>
-              <Text style={styles.infoValue}>{weeklyContent.babyWeight}</Text>
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-5 mb-4 shadow-sm"
+          >
+            <View className="flex-row justify-between items-center mb-2.5">
+              <FontedText
+                variant="heading-3"
+                fontFamily="comfortaa"
+                colorVariant="primary"
+              >
+                {t("home.weekTitle", { week: pregnancyWeek })}
+              </FontedText>
+              <FontedText
+                textType="secondary"
+                variant="caption"
+                className="font-medium"
+              >
+                {trimester}
+              </FontedText>
             </View>
-          </View>
 
-          <Text style={styles.sectionTitle}>{t("Development Highlights")}</Text>
-          {weeklyContent.developmentHighlights.map((highlight, index) => (
-            <Text key={index} style={styles.bulletPoint}>
-              • {highlight}
-            </Text>
-          ))}
-        </View>
+            <View className="h-3 bg-gray-200 dark:bg-gray-700 rounded-md my-2.5 overflow-hidden">
+              <View
+                className="h-full bg-primary dark:bg-primary-dark rounded-md"
+                style={{ width: `${progressPercentage}%` }}
+              />
+            </View>
+            <FontedText
+              textType="secondary"
+              variant="caption"
+              className="text-right"
+            >
+              {t("home.progressLabel", {
+                percent: progressPercentage.toFixed(0),
+              })}
+            </FontedText>
+          </ThemedView>
 
-        <View style={styles.infoCard}>
-          <Text style={styles.cardTitle}>{t("home.bodyChangesTitle")}</Text>
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-5 mb-4 shadow-sm"
+          >
+            <FontedText
+              variant="heading-4"
+              fontFamily="comfortaa"
+              colorVariant="primary"
+              className="mb-4"
+            >
+              {t("home.developmentTitle", { week: pregnancyWeek })}
+            </FontedText>
 
-          {weeklyContent.maternalChanges.map((change, index) => (
-            <Text key={index} style={styles.bulletPoint}>
-              • {change}
-            </Text>
-          ))}
-        </View>
+            <View className="flex-row justify-between mb-4">
+              <View className="flex-1">
+                <FontedText
+                  textType="secondary"
+                  variant="caption"
+                  className="mb-0.5"
+                >
+                  {t("home.sizeLabel")}
+                </FontedText>
+                <FontedText variant="body" className="font-medium mb-2.5">
+                  {weeklyContent.babySize}
+                </FontedText>
 
-        <View style={styles.infoCard}>
-          <Text style={styles.cardTitle}>{t("home.nutritionTipsTitle")}</Text>
+                <FontedText
+                  textType="secondary"
+                  variant="caption"
+                  className="mb-0.5"
+                >
+                  {t("home.lengthLabel")}
+                </FontedText>
+                <FontedText variant="body" className="font-medium mb-2.5">
+                  {weeklyContent.babyLength}
+                </FontedText>
 
-          {weeklyContent.nutritionTips.map((tip, index) => (
-            <Text key={index} style={styles.bulletPoint}>
-              • {tip}
-            </Text>
-          ))}
-        </View>
+                <FontedText
+                  textType="secondary"
+                  variant="caption"
+                  className="mb-0.5"
+                >
+                  {t("home.weightLabel")}
+                </FontedText>
+                <FontedText variant="body" className="font-medium mb-2.5">
+                  {weeklyContent.babyWeight}
+                </FontedText>
+              </View>
+            </View>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>
-            {t("home.trackSymptomsButton")}
-          </Text>
-        </TouchableOpacity>
+            <FontedText variant="body" className="font-semibold mt-1.5 mb-2.5">
+              {t("Development Highlights")}
+            </FontedText>
+            {weeklyContent.developmentHighlights.map((highlight, index) => (
+              <FontedText
+                key={index}
+                variant="body-small"
+                className="mb-2 leading-5"
+              >
+                • {highlight}
+              </FontedText>
+            ))}
+          </ThemedView>
 
-        <TouchableOpacity style={styles.actionButton}>
-          <Text style={styles.actionButtonText}>
-            {t("home.foodGuideButton")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-    </ScrollView>
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-5 mb-4 shadow-sm"
+          >
+            <FontedText
+              variant="heading-4"
+              fontFamily="comfortaa"
+              colorVariant="secondary"
+              className="mb-4"
+            >
+              {t("home.bodyChangesTitle")}
+            </FontedText>
+
+            {weeklyContent.maternalChanges.map((change, index) => (
+              <FontedText
+                key={index}
+                variant="body-small"
+                className="mb-2 leading-5"
+              >
+                • {change}
+              </FontedText>
+            ))}
+          </ThemedView>
+
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-5 mb-4 shadow-sm"
+          >
+            <FontedText
+              variant="heading-4"
+              fontFamily="comfortaa"
+              colorVariant="secondary"
+              className="mb-4"
+            >
+              {t("home.nutritionTipsTitle")}
+            </FontedText>
+
+            {weeklyContent.nutritionTips.map((tip, index) => (
+              <FontedText
+                key={index}
+                variant="body-small"
+                className="mb-2 leading-5"
+              >
+                • {tip}
+              </FontedText>
+            ))}
+          </ThemedView>
+
+          <TouchableOpacity className="bg-accent dark:bg-accent-dark rounded-xl p-4 items-center mb-4">
+            <FontedText className="text-white text-base font-bold">
+              {t("home.trackSymptomsButton")}
+            </FontedText>
+          </TouchableOpacity>
+
+          <TouchableOpacity className="bg-accent dark:bg-accent-dark rounded-xl p-4 items-center mb-4">
+            <FontedText className="text-white text-base font-bold">
+              {t("home.foodGuideButton")}
+            </FontedText>
+          </TouchableOpacity>
+        </ThemedView>
+      </ScrollView>
+    </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollContainer: {
-    flex: 1,
-    backgroundColor: "#f8f9fa",
-  },
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f8f9fa",
-  },
-  header: {
-    marginBottom: 20,
-  },
-  welcomeText: {
-    fontSize: 24,
-    fontWeight: "bold",
-    color: "#343a40",
-  },
-  subtitle: {
-    fontSize: 16,
-    color: "#6c757d",
-    marginTop: 5,
-  },
-  progressCard: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  weekContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  currentWeek: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#343a40",
-  },
-  trimester: {
-    fontSize: 14,
-    color: "#6c757d",
-    fontWeight: "500",
-  },
-  progressBarContainer: {
-    height: 12,
-    backgroundColor: "#e9ecef",
-    borderRadius: 6,
-    marginVertical: 10,
-    overflow: "hidden",
-  },
-  progressBar: {
-    height: "100%",
-    backgroundColor: "#007bff",
-    borderRadius: 6,
-  },
-  progressText: {
-    fontSize: 12,
-    color: "#6c757d",
-    textAlign: "right",
-  },
-  infoCard: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    marginBottom: 15,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: "bold",
-    color: "#343a40",
-    marginBottom: 15,
-  },
-  babyInfoContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 15,
-  },
-  babyMetrics: {
-    flex: 1,
-  },
-  infoLabel: {
-    fontSize: 14,
-    color: "#6c757d",
-    marginBottom: 3,
-  },
-  infoValue: {
-    fontSize: 16,
-    fontWeight: "500",
-    color: "#343a40",
-    marginBottom: 10,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#343a40",
-    marginTop: 5,
-    marginBottom: 10,
-  },
-  bulletPoint: {
-    fontSize: 14,
-    color: "#343a40",
-    marginBottom: 8,
-    lineHeight: 20,
-  },
-  actionButton: {
-    backgroundColor: "#007bff",
-    borderRadius: 10,
-    padding: 15,
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  actionButtonText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-});
 
 export default HomeScreen;

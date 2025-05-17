@@ -1,18 +1,19 @@
-import { Food, FoodCategory, SafetyRating } from "food-types";
-import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
   ScrollView,
-  StyleSheet,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
+import { Food, FoodCategory, SafetyRating } from "food-types";
+import React, { useEffect, useState } from "react";
 
-import { useTranslation } from "react-i18next";
+import FontedText from "../components/FontedText";
+import ThemedView from "../components/ThemedView";
 import foodService from "../services/foodService";
+import { useTheme } from "../contexts/ThemeContext";
+import { useTranslation } from "react-i18next";
 
 // Component to render each food item
 const FoodItem = ({
@@ -23,6 +24,7 @@ const FoodItem = ({
   onPress: (item: Food) => void;
 }) => {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
 
   // Determine color based on safety rating
   const safetyColor =
@@ -33,19 +35,26 @@ const FoodItem = ({
       : "#dc3545";
 
   return (
-    <TouchableOpacity style={styles.foodItem} onPress={() => onPress(item)}>
+    <TouchableOpacity
+      className="flex-row rounded-xl p-3 mb-2 bg-white dark:bg-gray-800"
+      style={{ elevation: 1 }}
+      onPress={() => onPress(item)}
+    >
       <View
-        style={[styles.safetyIndicator, { backgroundColor: safetyColor }]}
+        className="w-3 h-full rounded-full mr-3"
+        style={{ backgroundColor: safetyColor }}
       />
-      <View style={styles.foodItemContent}>
-        <Text style={styles.foodName}>{item.name}</Text>
-        <Text style={[styles.safetyRating, { color: safetyColor }]}>
+      <View className="flex-1">
+        <FontedText variant="body" className="font-medium">
+          {item.name}
+        </FontedText>
+        <FontedText variant="caption" style={{ color: safetyColor }}>
           {item.safety_rating === "safe"
             ? t("foodGuide.safeToEat")
             : item.safety_rating === "caution"
             ? t("foodGuide.cautionNeeded")
             : t("foodGuide.avoid")}
-        </Text>
+        </FontedText>
       </View>
     </TouchableOpacity>
   );
@@ -70,34 +79,49 @@ const FoodDetails = ({
       : "#dc3545";
 
   return (
-    <View style={styles.detailsContainer}>
-      <View style={styles.detailsHeader}>
-        <Text style={styles.detailsTitle}>{item.name}</Text>
-        <TouchableOpacity onPress={onClose}>
-          <Text style={styles.closeButton}>✕</Text>
+    <ThemedView backgroundColor="surface" className="rounded-xl p-4 shadow-sm">
+      <View className="flex-row justify-between items-center mb-3">
+        <FontedText variant="heading-3" fontFamily="comfortaa">
+          {item.name}
+        </FontedText>
+        <TouchableOpacity onPress={onClose} className="p-1">
+          <FontedText className="text-xl">✕</FontedText>
         </TouchableOpacity>
       </View>
 
       <View
-        style={[styles.safetySummary, { backgroundColor: safetyColor + "20" }]}
+        className="p-3 mb-4 rounded-lg"
+        style={{ backgroundColor: safetyColor + "20" }}
       >
-        <Text style={[styles.safetyText, { color: safetyColor }]}>
+        <FontedText variant="body" style={{ color: safetyColor }}>
           {item.safety_rating === "safe"
             ? t("foodGuide.safeToEat")
             : item.safety_rating === "caution"
             ? t("foodGuide.cautionNeeded")
             : t("foodGuide.avoid")}
-        </Text>
+        </FontedText>
       </View>
 
-      <Text style={styles.detailsLabel}>{t("foodGuide.description")}</Text>
-      <Text style={styles.detailsText}>{item.description || ""}</Text>
+      <FontedText
+        variant="body-small"
+        colorVariant="secondary"
+        className="mb-1"
+      >
+        {t("foodGuide.description")}
+      </FontedText>
+      <FontedText variant="body" className="mb-4">
+        {item.description || ""}
+      </FontedText>
 
-      <Text style={styles.detailsLabel}>
+      <FontedText
+        variant="body-small"
+        colorVariant="secondary"
+        className="mb-1"
+      >
         {t("foodGuide.alternativesLabel")}
-      </Text>
-      <Text style={styles.detailsText}>{item.alternatives || ""}</Text>
-    </View>
+      </FontedText>
+      <FontedText variant="body">{item.alternatives || ""}</FontedText>
+    </ThemedView>
   );
 };
 
@@ -113,23 +137,58 @@ const CategoryPill = ({
 }) => {
   return (
     <TouchableOpacity
-      style={[styles.categoryPill, isSelected && styles.selectedCategoryPill]}
+      className={`px-3 py-1.5 mr-2 rounded-full ${
+        isSelected
+          ? "bg-primary dark:bg-primary-dark"
+          : "bg-gray-200 dark:bg-gray-700"
+      }`}
       onPress={onPress}
     >
-      <Text
-        style={[
-          styles.categoryPillText,
-          isSelected && styles.selectedCategoryPillText,
-        ]}
+      <FontedText
+        variant="caption"
+        className={`${isSelected ? "text-white" : ""}`}
       >
         {category.name}
-      </Text>
+      </FontedText>
+    </TouchableOpacity>
+  );
+};
+
+// Safety filter button component
+const SafetyFilterButton = ({
+  label,
+  value,
+  currentValue,
+  onPress,
+}: {
+  label: string;
+  value: "all" | SafetyRating;
+  currentValue: "all" | SafetyRating;
+  onPress: (value: "all" | SafetyRating) => void;
+}) => {
+  const isSelected = value === currentValue;
+  return (
+    <TouchableOpacity
+      className={`px-3 py-1.5 mr-2 rounded-lg ${
+        isSelected
+          ? "bg-primary dark:bg-primary-dark"
+          : "bg-gray-200 dark:bg-gray-700"
+      }`}
+      onPress={() => onPress(value)}
+    >
+      <FontedText
+        variant="caption"
+        className={`${isSelected ? "text-white" : ""}`}
+      >
+        {label}
+      </FontedText>
     </TouchableOpacity>
   );
 };
 
 const FoodGuideScreen = () => {
   const { t } = useTranslation();
+  const { isDark } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
   const [safetyFilter, setSafetyFilter] = useState<"all" | SafetyRating>("all");
@@ -219,23 +278,53 @@ const FoodGuideScreen = () => {
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>{t("foodGuide.title")}</Text>
+    <ThemedView backgroundColor="background" className="flex-1 p-4">
+      <FontedText variant="heading-2" fontFamily="comfortaa" className="mb-4">
+        {t("foodGuide.title")}
+      </FontedText>
 
       <TextInput
-        style={styles.searchInput}
+        className="p-3 mb-4 rounded-xl bg-gray-100 dark:bg-gray-800"
         placeholder={t("foodGuide.searchPlaceholder")}
+        placeholderTextColor={isDark ? "#9ca3af" : "#6b7280"}
         value={searchQuery}
         onChangeText={setSearchQuery}
       />
+
+      {/* Safety Filters */}
+      <View className="flex-row mb-4">
+        <SafetyFilterButton
+          label={t("foodGuide.filterAll")}
+          value="all"
+          currentValue={safetyFilter}
+          onPress={setSafetyFilter}
+        />
+        <SafetyFilterButton
+          label={t("foodGuide.filterSafe")}
+          value="safe"
+          currentValue={safetyFilter}
+          onPress={setSafetyFilter}
+        />
+        <SafetyFilterButton
+          label={t("foodGuide.filterCaution")}
+          value="caution"
+          currentValue={safetyFilter}
+          onPress={setSafetyFilter}
+        />
+        <SafetyFilterButton
+          label={t("foodGuide.filterAvoid")}
+          value="avoid"
+          currentValue={safetyFilter}
+          onPress={setSafetyFilter}
+        />
+      </View>
 
       {/* Categories horizontal scroll */}
       {categories.length > 0 && (
         <ScrollView
           horizontal
           showsHorizontalScrollIndicator={false}
-          style={styles.categoriesContainer}
-          contentContainerStyle={styles.categoriesContent}
+          className="mb-4"
         >
           {categories.map((category) => (
             <CategoryPill
@@ -248,302 +337,73 @@ const FoodGuideScreen = () => {
         </ScrollView>
       )}
 
-      <View style={styles.filtersContainer}>
-        <TouchableOpacity
-          style={[
-            styles.filterButton,
-            safetyFilter === "all" && styles.activeFilter,
-          ]}
-          onPress={() => setSafetyFilter("all")}
-        >
-          <Text
-            style={[
-              styles.filterText,
-              safetyFilter === "all" && styles.activeFilterText,
-            ]}
-          >
-            {t("foodGuide.all")}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.filterButton,
-            safetyFilter === "safe" && styles.activeFilterSafe,
-          ]}
-          onPress={() => setSafetyFilter("safe")}
-        >
-          <Text
-            style={[
-              styles.filterText,
-              safetyFilter === "safe" && styles.activeFilterText,
-            ]}
-          >
-            {t("foodGuide.safe")}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.filterButton,
-            safetyFilter === "caution" && styles.activeFilterCaution,
-          ]}
-          onPress={() => setSafetyFilter("caution")}
-        >
-          <Text
-            style={[
-              styles.filterText,
-              safetyFilter === "caution" && styles.activeFilterText,
-            ]}
-          >
-            {t("foodGuide.caution")}
-          </Text>
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          style={[
-            styles.filterButton,
-            safetyFilter === "avoid" && styles.activeFilterAvoid,
-          ]}
-          onPress={() => setSafetyFilter("avoid")}
-        >
-          <Text
-            style={[
-              styles.filterText,
-              safetyFilter === "avoid" && styles.activeFilterText,
-            ]}
-          >
-            {t("foodGuide.avoid")}
-          </Text>
-        </TouchableOpacity>
-      </View>
-
-      {selectedFood ? (
-        <FoodDetails
-          item={selectedFood}
-          onClose={() => setSelectedFood(null)}
-        />
-      ) : loading ? (
-        <View style={styles.centerContainer}>
-          <ActivityIndicator size="large" color="#007bff" />
+      {/* Food list */}
+      {loading ? (
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color="#87D9C4" />
         </View>
       ) : error ? (
-        <View style={styles.centerContainer}>
-          <Text style={styles.errorText}>{error}</Text>
+        <View className="flex-1 justify-center items-center">
+          <FontedText colorVariant="accent">{error}</FontedText>
           <TouchableOpacity
-            style={styles.retryButton}
-            onPress={() => setSafetyFilter(safetyFilter)} // Trigger reload
+            className="mt-4 px-4 py-2 bg-primary dark:bg-primary-dark rounded-lg"
+            onPress={() => {
+              setLoading(true);
+              setError(null);
+              // Reload foods
+              const filter = {
+                searchTerm: searchQuery,
+                category_id: selectedCategoryId || undefined,
+                safety_rating:
+                  safetyFilter !== "all" ? safetyFilter : undefined,
+              };
+              foodService
+                .filterFoods(filter)
+                .then((data) => {
+                  setFoods(data);
+                  setLoading(false);
+                })
+                .catch((err) => {
+                  console.error("Error reloading foods:", err);
+                  setError(t("foodGuide.errorLoading"));
+                  setLoading(false);
+                });
+            }}
           >
-            <Text style={styles.retryButtonText}>{t("common.retry")}</Text>
+            <FontedText className="text-white">
+              {t("foodGuide.tryAgain")}
+            </FontedText>
           </TouchableOpacity>
-        </View>
-      ) : foods.length === 0 ? (
-        <View style={styles.centerContainer}>
-          <Text style={styles.noResultsText}>{t("foodGuide.noResults")}</Text>
         </View>
       ) : (
         <FlatList
           data={foods}
+          keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <FoodItem item={item} onPress={setSelectedFood} />
           )}
-          keyExtractor={(item) => item.id}
-          style={styles.foodList}
+          contentContainerStyle={{ paddingBottom: 20 }}
+          ListEmptyComponent={
+            <View className="flex-1 justify-center items-center py-10">
+              <FontedText colorVariant="secondary">
+                {t("foodGuide.noResults")}
+              </FontedText>
+            </View>
+          }
         />
       )}
-    </View>
+
+      {/* Food details modal */}
+      {selectedFood && (
+        <View className="absolute inset-0 bg-black bg-opacity-50 p-4 justify-center">
+          <FoodDetails
+            item={selectedFood}
+            onClose={() => setSelectedFood(null)}
+          />
+        </View>
+      )}
+    </ThemedView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: "#f8f9fa",
-  },
-  title: {
-    fontSize: 24,
-    fontWeight: "bold",
-    marginBottom: 20,
-    color: "#343a40",
-  },
-  searchInput: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 15,
-    marginBottom: 15,
-    borderWidth: 1,
-    borderColor: "#ced4da",
-  },
-  categoriesContainer: {
-    marginBottom: 15,
-  },
-  categoriesContent: {
-    paddingRight: 20,
-  },
-  categoryPill: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    borderRadius: 20,
-    backgroundColor: "#e9ecef",
-    marginRight: 10,
-    borderWidth: 1,
-    borderColor: "#ced4da",
-  },
-  selectedCategoryPill: {
-    backgroundColor: "#007bff",
-    borderColor: "#0069d9",
-  },
-  categoryPillText: {
-    color: "#495057",
-    fontWeight: "500",
-  },
-  selectedCategoryPillText: {
-    color: "white",
-  },
-  filtersContainer: {
-    flexDirection: "row",
-    marginBottom: 15,
-    justifyContent: "space-between",
-  },
-  filterButton: {
-    paddingVertical: 8,
-    paddingHorizontal: 12,
-    borderRadius: 20,
-    backgroundColor: "#e9ecef",
-    minWidth: 70,
-    alignItems: "center",
-  },
-  filterText: {
-    color: "#495057",
-    fontWeight: "500",
-  },
-  activeFilter: {
-    backgroundColor: "#007bff",
-  },
-  activeFilterSafe: {
-    backgroundColor: "#28a745",
-  },
-  activeFilterCaution: {
-    backgroundColor: "#ffc107",
-  },
-  activeFilterAvoid: {
-    backgroundColor: "#dc3545",
-  },
-  activeFilterText: {
-    color: "white",
-  },
-  foodList: {
-    flex: 1,
-  },
-  foodItem: {
-    backgroundColor: "white",
-    borderRadius: 10,
-    marginBottom: 15,
-    flexDirection: "row",
-    overflow: "hidden",
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  safetyIndicator: {
-    width: 10,
-  },
-  foodItemContent: {
-    padding: 15,
-    flex: 1,
-  },
-  foodName: {
-    fontSize: 16,
-    fontWeight: "bold",
-    color: "#343a40",
-  },
-  foodCategory: {
-    fontSize: 14,
-    color: "#6c757d",
-    marginBottom: 5,
-  },
-  safetyRating: {
-    fontSize: 14,
-    fontWeight: "500",
-  },
-  detailsContainer: {
-    flex: 1,
-    backgroundColor: "white",
-    borderRadius: 10,
-    padding: 20,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  detailsHeader: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    marginBottom: 15,
-  },
-  detailsTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    color: "#343a40",
-  },
-  closeButton: {
-    fontSize: 20,
-    color: "#6c757d",
-    padding: 5,
-  },
-  safetySummary: {
-    padding: 15,
-    borderRadius: 8,
-    marginBottom: 15,
-  },
-  safetyText: {
-    fontSize: 16,
-    fontWeight: "600",
-  },
-  detailsLabel: {
-    fontSize: 16,
-    fontWeight: "600",
-    color: "#343a40",
-    marginBottom: 5,
-    marginTop: 10,
-  },
-  detailsText: {
-    fontSize: 14,
-    color: "#343a40",
-    lineHeight: 20,
-    marginBottom: 10,
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  errorText: {
-    color: "#dc3545",
-    fontSize: 16,
-    marginBottom: 15,
-    textAlign: "center",
-  },
-  noResultsText: {
-    color: "#6c757d",
-    fontSize: 16,
-    textAlign: "center",
-  },
-  retryButton: {
-    backgroundColor: "#007bff",
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 5,
-  },
-  retryButtonText: {
-    color: "white",
-    fontWeight: "500",
-  },
-});
 
 export default FoodGuideScreen;

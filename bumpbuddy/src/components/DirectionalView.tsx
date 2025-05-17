@@ -77,11 +77,13 @@ const convertStyleForRTL = (
 
 interface DirectionalViewProps extends ViewProps {
   style?: StyleProp<ViewStyle>;
+  className?: string;
   children?: React.ReactNode;
 }
 
 const DirectionalView: React.FC<DirectionalViewProps> = ({
   style,
+  className,
   children,
   ...props
 }) => {
@@ -105,7 +107,7 @@ const DirectionalView: React.FC<DirectionalViewProps> = ({
   }, [style, isRTL]);
 
   return (
-    <View style={directionalStyle} {...props}>
+    <View style={directionalStyle} className={className} {...props}>
       {children}
     </View>
   );
