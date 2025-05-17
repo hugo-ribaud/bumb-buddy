@@ -1,5 +1,6 @@
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import healthService, {
+  BloodPressureLog,
   Contraction,
   KickCount,
   Symptom,
@@ -30,6 +31,11 @@ interface HealthState {
     loading: boolean;
     error: string | null;
   };
+  bloodPressureLogs: {
+    items: BloodPressureLog[];
+    loading: boolean;
+    error: string | null;
+  };
 }
 
 // Initial state
@@ -53,6 +59,11 @@ const initialState: HealthState = {
   contractions: {
     items: [],
     currentContraction: null,
+    loading: false,
+    error: null,
+  },
+  bloodPressureLogs: {
+    items: [],
     loading: false,
     error: null,
   },
@@ -249,6 +260,65 @@ export const deleteContraction = createAsyncThunk(
   }
 );
 
+// Blood Pressure thunks
+export const fetchBloodPressureLogs = createAsyncThunk(
+  "health/fetchBloodPressureLogs",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      return await healthService.getBloodPressureLogs(userId);
+    } catch (error) {
+      return rejectWithValue("Failed to fetch blood pressure logs");
+    }
+  }
+);
+
+export const addBloodPressureLog = createAsyncThunk(
+  "health/addBloodPressureLog",
+  async (
+    bpLog: Omit<BloodPressureLog, "id" | "created_at" | "updated_at">,
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.addBloodPressureLog(bpLog);
+      if (!result) return rejectWithValue("Failed to add blood pressure log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to add blood pressure log");
+    }
+  }
+);
+
+export const updateBloodPressureLog = createAsyncThunk(
+  "health/updateBloodPressureLog",
+  async (
+    { id, updates }: { id: string; updates: Partial<BloodPressureLog> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.updateBloodPressureLog(id, updates);
+      if (!result)
+        return rejectWithValue("Failed to update blood pressure log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to update blood pressure log");
+    }
+  }
+);
+
+export const deleteBloodPressureLog = createAsyncThunk(
+  "health/deleteBloodPressureLog",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const success = await healthService.deleteBloodPressureLog(id);
+      if (!success)
+        return rejectWithValue("Failed to delete blood pressure log");
+      return id;
+    } catch (error) {
+      return rejectWithValue("Failed to delete blood pressure log");
+    }
+  }
+);
+
 // Create slice
 const healthSlice = createSlice({
   name: "health",
@@ -259,6 +329,7 @@ const healthSlice = createSlice({
       state.kickCounts.error = null;
       state.weightLogs.error = null;
       state.contractions.error = null;
+      state.bloodPressureLogs.error = null;
     },
     resetCurrentKickCount: (state) => {
       state.kickCounts.currentSession = null;
@@ -448,6 +519,48 @@ const healthSlice = createSlice({
           if (state.contractions.currentContraction?.id === action.payload) {
             state.contractions.currentContraction = null;
           }
+        }
+      )
+
+      // Blood Pressure logs
+      .addCase(fetchBloodPressureLogs.pending, (state) => {
+        state.bloodPressureLogs.loading = true;
+        state.bloodPressureLogs.error = null;
+      })
+      .addCase(
+        fetchBloodPressureLogs.fulfilled,
+        (state, action: PayloadAction<BloodPressureLog[]>) => {
+          state.bloodPressureLogs.loading = false;
+          state.bloodPressureLogs.items = action.payload;
+        }
+      )
+      .addCase(fetchBloodPressureLogs.rejected, (state, action) => {
+        state.bloodPressureLogs.loading = false;
+        state.bloodPressureLogs.error = action.payload as string;
+      })
+      .addCase(
+        addBloodPressureLog.fulfilled,
+        (state, action: PayloadAction<BloodPressureLog>) => {
+          state.bloodPressureLogs.items.unshift(action.payload);
+        }
+      )
+      .addCase(
+        updateBloodPressureLog.fulfilled,
+        (state, action: PayloadAction<BloodPressureLog>) => {
+          const index = state.bloodPressureLogs.items.findIndex(
+            (bp) => bp.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.bloodPressureLogs.items[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        deleteBloodPressureLog.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.bloodPressureLogs.items = state.bloodPressureLogs.items.filter(
+            (bp) => bp.id !== action.payload
+          );
         }
       );
   },

@@ -2,7 +2,7 @@
 
 _Version: 1.0_
 _Created: 2024-06-09_
-_Last Updated: 2024-06-11_
+_Last Updated: 2024-06-12_
 
 ## Project Status: DEVELOPMENT
 
@@ -50,10 +50,18 @@ _Last Updated: 2024-06-11_
 - Added current week calculation based on user's due date
 - Ensured robust error handling for image URL parsing
 - Added cache refresh functionality to update timeline data
+- Health tracking contraction timer functionality implemented
+- Created healthService with contraction management methods
+- Updated Redux healthSlice for contraction state management
+- Built UI components for timing and recording contractions
+- Implemented intensity rating and notes for contractions
+- Added a history view for recent contractions
+- Integrated contraction tracking with Redux and Supabase persistence
+- Ensured proper internationalization support in health tracking UI
 
 ## In Progress
 
-- Preparing health tracking features
+- Implementing additional health tracking features (blood pressure, mood, sleep, exercise)
 
 ## Pending Tasks
 
@@ -77,14 +85,19 @@ _Last Updated: 2024-06-11_
 - ✅ Implement internationalization (i18n) support
 - ✅ Food safety database implementation
 - ✅ Pregnancy timeline tracker
-- ⬜ Basic health tracking features
+- 🔄 Basic health tracking features
+  - ✅ Contraction tracking with timer
+  - ⬜ Blood pressure tracking
+  - ⬜ Mood tracking
+  - ⬜ Sleep tracking
+  - ⬜ Exercise tracking
 - ⬜ User profile management
 - ⬜ Offline functionality foundation
 
 ### Phase 3: Secondary Features (Medium Priority)
 
-- Appointment scheduling and reminders (link with Dotcolib if possible)
-- Kick counter and contraction timer
+- ✅ Kick counter and contraction timer (Implemented as part of health tracking)
+- Appointment scheduling and reminders (link with Dotcolib for france, find the alternative for other countries)
 - Preview of the foetus size (comparaison to fruits with image)
 - Content management for pregnancy information
 - Push notifications
@@ -123,6 +136,9 @@ _Last Updated: 2024-06-11_
 - Add images for fetus size comparisons in the timeline
 - Allow users to add notes to specific weeks in their pregnancy journey
 - Integrate pregnancy timeline with health tracking features
+- Add data visualization (charts/graphs) for health metrics
+- Add reporting and export functionality for health data to share with healthcare providers
+- Implement reminders for health tracking activities
 
 ## Milestones
 
@@ -131,6 +147,8 @@ _Last Updated: 2024-06-11_
 - ✅ Internationalization Complete: 2024-06-09 (Completed)
 - ✅ Food Safety Database Complete: 2024-06-10 (Completed)
 - ✅ Pregnancy Timeline Tracker Complete: 2024-06-11 (Completed)
+- ✅ Contraction Tracking Complete: 2024-06-12 (Completed)
+- ⬜ Health Tracking Features Complete: TBD
 - ⬜ Core Features Complete: TBD
 - ⬜ Secondary Features Complete: TBD
 - ⬜ Polish Complete: TBD
@@ -178,6 +196,28 @@ _Last Updated: 2024-06-11_
 - Created robust error handling for image URL parsing
 - Added cache refresh functionality for timeline data updates
 - Implemented internationalization support for all timeline screens
+
+## Completed Contraction Tracking Implementation
+
+- Defined Contraction interface and database schema with needed fields
+- Created contraction management methods in healthService:
+  - getContractions: Fetches user's contraction history
+  - startContraction: Begins a new contraction session
+  - endContraction: Completes a contraction with intensity rating and notes
+  - deleteContraction: Removes a contraction record
+- Updated Redux healthSlice with:
+  - Contraction state management
+  - Async thunks for all contraction operations
+  - Reducers for handling contraction state changes
+- Enhanced HealthTrackerScreen for contraction tracking:
+  - Timer display with start/stop functionality
+  - Intensity rating selection (1-5 scale)
+  - Notes field for additional context
+  - History view showing recent contractions
+  - Duration and interval calculations
+- Integrated with internationalization for multilingual support
+- Implemented proper error handling for all operations
+- Ensured data persistence with Supabase and local Redux state
 
 ---
 

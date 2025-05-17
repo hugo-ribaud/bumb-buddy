@@ -1,4 +1,3 @@
-import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -12,23 +11,29 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
+import React, { useEffect, useRef, useState } from "react";
 import {
+  addBloodPressureLog,
   addSymptom,
   addWeightLog,
+  deleteBloodPressureLog,
   deleteSymptom,
   endContraction,
   endKickCount,
+  fetchBloodPressureLogs,
   fetchContractions,
   fetchKickCounts,
   fetchSymptoms,
   fetchWeightLogs,
   startContraction,
   startKickCount,
+  updateBloodPressureLog,
   updateKickCount,
 } from "../redux/slices/healthSlice";
-import { AppDispatch, RootState } from "../redux/store";
+import { useDispatch, useSelector } from "react-redux";
 
+import { BloodPressureLog } from "../services/healthService";
 import { format } from "date-fns";
 import { useTranslation } from "react-i18next";
 
@@ -70,9 +75,8 @@ const HealthTrackerScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { symptoms, kickCounts, weightLogs, contractions } = useSelector(
-    (state: RootState) => state.health
-  );
+  const { symptoms, kickCounts, weightLogs, contractions, bloodPressureLogs } =
+    useSelector((state: RootState) => state.health);
 
   // Local state for UI
   const [modalVisible, setModalVisible] = useState(false);
@@ -103,6 +107,16 @@ const HealthTrackerScreen = () => {
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const [timerSeconds, setTimerSeconds] = useState(0);
 
+  // Blood pressure tracking state
+  const [bpModalVisible, setBpModalVisible] = useState(false);
+  const [bpSystolic, setBpSystolic] = useState("");
+  const [bpDiastolic, setBpDiastolic] = useState("");
+  const [bpPulse, setBpPulse] = useState("");
+  const [bpPosition, setBpPosition] = useState("sitting");
+  const [bpArm, setBpArm] = useState("left");
+  const [bpNotes, setBpNotes] = useState("");
+  const [editingBpLog, setEditingBpLog] = useState<string | null>(null);
+
   // Load data on component mount
   useEffect(() => {
     if (user?.id) {
@@ -110,6 +124,7 @@ const HealthTrackerScreen = () => {
       dispatch(fetchKickCounts(user.id));
       dispatch(fetchWeightLogs(user.id));
       dispatch(fetchContractions(user.id));
+      dispatch(fetchBloodPressureLogs(user.id));
     }
   }, [dispatch, user]);
 
@@ -336,6 +351,116 @@ const HealthTrackerScreen = () => {
   // Get the latest weight log
   const latestWeightLog = weightLogs.items[0];
 
+  // Handler for opening blood pressure modal
+  const handleAddBloodPressure = () => {
+    setBpSystolic("");
+    setBpDiastolic("");
+    setBpPulse("");
+    setBpPosition("sitting");
+    setBpArm("left");
+    setBpNotes("");
+    setEditingBpLog(null);
+    setBpModalVisible(true);
+  };
+
+  // Handler for editing blood pressure log
+  const handleEditBloodPressure = (bpLog: BloodPressureLog) => {
+    setBpSystolic(bpLog.systolic.toString());
+    setBpDiastolic(bpLog.diastolic.toString());
+    setBpPulse(bpLog.pulse?.toString() || "");
+    setBpPosition(bpLog.position || "sitting");
+    setBpArm(bpLog.arm || "left");
+    setBpNotes(bpLog.notes || "");
+    setEditingBpLog(bpLog.id);
+    setBpModalVisible(true);
+  };
+
+  // Handler for deleting blood pressure log
+  const handleDeleteBloodPressure = (id: string) => {
+    Alert.alert(
+      t("health.deleteBloodPressure"),
+      t("health.confirmDeleteBloodPressure"),
+      [
+        {
+          text: t("common.cancel"),
+          style: "cancel",
+        },
+        {
+          text: t("common.delete"),
+          onPress: () => {
+            dispatch(deleteBloodPressureLog(id));
+          },
+          style: "destructive",
+        },
+      ]
+    );
+  };
+
+  // Handler for saving blood pressure log
+  const saveBloodPressureLog = () => {
+    if (!user?.id || !bpSystolic || !bpDiastolic) {
+      Alert.alert(
+        t("common.errors.invalidInput"),
+        t("health.invalidBloodPressureValues")
+      );
+      return;
+    }
+
+    const systolicValue = parseInt(bpSystolic, 10);
+    const diastolicValue = parseInt(bpDiastolic, 10);
+    const pulseValue = bpPulse ? parseInt(bpPulse, 10) : undefined;
+
+    if (
+      isNaN(systolicValue) ||
+      isNaN(diastolicValue) ||
+      (bpPulse && isNaN(pulseValue as number))
+    ) {
+      Alert.alert(
+        t("common.errors.invalidInput"),
+        t("health.invalidBloodPressureValues")
+      );
+      return;
+    }
+
+    const now = new Date();
+    const date = now.toISOString().split("T")[0];
+    const time = now.toISOString().split("T")[1].substring(0, 8);
+
+    if (editingBpLog) {
+      // Update existing log
+      dispatch(
+        updateBloodPressureLog({
+          id: editingBpLog,
+          updates: {
+            systolic: systolicValue,
+            diastolic: diastolicValue,
+            pulse: pulseValue,
+            position: bpPosition,
+            arm: bpArm,
+            notes: bpNotes || undefined,
+          },
+        })
+      );
+    } else {
+      // Add new log
+      const newBpLog = {
+        user_id: user.id,
+        date,
+        time,
+        systolic: systolicValue,
+        diastolic: diastolicValue,
+        pulse: pulseValue,
+        position: bpPosition,
+        arm: bpArm,
+        notes: bpNotes || undefined,
+      };
+
+      dispatch(addBloodPressureLog(newBpLog));
+    }
+
+    setBpModalVisible(false);
+  };
+
   // Format date for display
   const formatDate = (dateString: string) => {
     try {
@@ -524,6 +649,119 @@ const HealthTrackerScreen = () => {
                             {log.notes}
                           </Text>
                         )}
+                      </View>
+                    ))}
+                  </View>
+                )}
+              </>
+            )}
+          </View>
+        </View>
+
+        {/* Blood Pressure Section */}
+        <View style={styles.sectionContainer}>
+          <Text style={styles.sectionTitle}>{t("health.bloodPressure")}</Text>
+          <Text style={styles.sectionDescription}>
+            {t("health.bloodPressureDescription")}
+          </Text>
+
+          <View style={styles.bpContainer}>
+            {bloodPressureLogs.loading ? (
+              <ActivityIndicator
+                size="large"
+                color="#007bff"
+                style={styles.loader}
+              />
+            ) : (
+              <>
+                {bloodPressureLogs.items.length > 0 ? (
+                  <View style={styles.currentBpContainer}>
+                    <Text style={styles.currentBpLabel}>
+                      {t("health.currentBloodPressure")}
+                    </Text>
+                    <Text style={styles.currentBpValue}>
+                      {bloodPressureLogs.items[0].systolic}/
+                      {bloodPressureLogs.items[0].diastolic} mmHg
+                    </Text>
+                    {bloodPressureLogs.items[0].pulse && (
+                      <Text style={styles.currentBpPulse}>
+                        {t("health.pulse")}: {bloodPressureLogs.items[0].pulse}{" "}
+                        bpm
+                      </Text>
+                    )}
+                    <Text style={styles.currentBpDate}>
+                      {formatDate(bloodPressureLogs.items[0].date)}
+                    </Text>
+                  </View>
+                ) : (
+                  <Text style={styles.noBpData}>
+                    {t("health.noBloodPressureData")}
+                  </Text>
+                )}
+
+                <TouchableOpacity
+                  style={styles.addBpButton}
+                  onPress={handleAddBloodPressure}
+                >
+                  <Text style={styles.addBpButtonText}>
+                    {t("health.addBloodPressure")}
+                  </Text>
+                </TouchableOpacity>
+
+                {bloodPressureLogs.items.length > 0 && (
+                  <View style={styles.bpHistoryContainer}>
+                    <Text style={styles.bpHistoryTitle}>
+                      {t("health.bloodPressureHistory")}
+                    </Text>
+
+                    {bloodPressureLogs.items.slice(0, 5).map((log) => (
+                      <View key={log.id} style={styles.bpHistoryItem}>
+                        <View style={styles.bpHistoryInfo}>
+                          <Text style={styles.bpHistoryDate}>
+                            {formatDate(log.date)}
+                          </Text>
+                          <Text style={styles.bpHistoryValue}>
+                            {log.systolic}/{log.diastolic} mmHg
+                          </Text>
+                        </View>
+                        <View style={styles.bpHistoryDetails}>
+                          {log.pulse && (
+                            <Text style={styles.bpHistoryPulse}>
+                              {t("health.pulse")}: {log.pulse} bpm
+                            </Text>
+                          )}
+                          {log.position && (
+                            <Text style={styles.bpHistoryPosition}>
+                              {t("health.position")}: {log.position}
+                            </Text>
+                          )}
+                          {log.arm && (
+                            <Text style={styles.bpHistoryArm}>
+                              {t("health.arm")}: {log.arm}
+                            </Text>
+                          )}
+                        </View>
+                        {log.notes && (
+                          <Text style={styles.bpHistoryNotes}>{log.notes}</Text>
+                        )}
+                        <View style={styles.bpHistoryActions}>
+                          <TouchableOpacity
+                            style={styles.bpEditButton}
+                            onPress={() => handleEditBloodPressure(log)}
+                          >
+                            <Text style={styles.bpEditButtonText}>
+                              {t("common.edit")}
+                            </Text>
+                          </TouchableOpacity>
+                          <TouchableOpacity
+                            style={styles.bpDeleteButton}
+                            onPress={() => handleDeleteBloodPressure(log.id)}
+                          >
+                            <Text style={styles.bpDeleteButtonText}>
+                              {t("common.delete")}
+                            </Text>
+                          </TouchableOpacity>
+                        </View>
                       </View>
                     ))}
                   </View>
@@ -810,6 +1048,92 @@ const HealthTrackerScreen = () => {
                 <TouchableOpacity
                   style={[styles.modalButton, styles.saveButton]}
                   onPress={saveWeightLog}
+                >
+                  <Text style={styles.modalButtonText}>{t("common.save")}</Text>
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        </Modal>
+
+        {/* Blood Pressure Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={bpModalVisible}
+          onRequestClose={() => setBpModalVisible(false)}
+        >
+          <View style={styles.modalContainer}>
+            <View style={styles.modalContent}>
+              <Text style={styles.modalTitle}>
+                {t("health.addBloodPressure")}
+              </Text>
+
+              <Text style={styles.modalLabel}>{t("health.systolic")}</Text>
+              <TextInput
+                style={styles.bpInput}
+                value={bpSystolic}
+                onChangeText={setBpSystolic}
+                placeholder={t("health.systolicPlaceholder")}
+                keyboardType="numeric"
+              />
+
+              <Text style={styles.modalLabel}>{t("health.diastolic")}</Text>
+              <TextInput
+                style={styles.bpInput}
+                value={bpDiastolic}
+                onChangeText={setBpDiastolic}
+                placeholder={t("health.diastolicPlaceholder")}
+                keyboardType="numeric"
+              />
+
+              <Text style={styles.modalLabel}>{t("health.pulse")}</Text>
+              <TextInput
+                style={styles.bpInput}
+                value={bpPulse}
+                onChangeText={setBpPulse}
+                placeholder={t("health.pulsePlaceholder")}
+                keyboardType="numeric"
+              />
+
+              <Text style={styles.modalLabel}>{t("health.position")}</Text>
+              <TextInput
+                style={styles.bpInput}
+                value={bpPosition}
+                onChangeText={setBpPosition}
+                placeholder={t("health.positionPlaceholder")}
+              />
+
+              <Text style={styles.modalLabel}>{t("health.arm")}</Text>
+              <TextInput
+                style={styles.bpInput}
+                value={bpArm}
+                onChangeText={setBpArm}
+                placeholder={t("health.armPlaceholder")}
+              />
+
+              <Text style={styles.modalLabel}>{t("health.notes")}</Text>
+              <TextInput
+                style={styles.notesInput}
+                value={bpNotes}
+                onChangeText={setBpNotes}
+                placeholder={t("health.notesPlaceholder")}
+                multiline
+              />
+
+              <View style={styles.modalButtons}>
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.cancelButton]}
+                  onPress={() => setBpModalVisible(false)}
+                >
+                  <Text style={styles.modalButtonText}>
+                    {t("common.cancel")}
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={[styles.modalButton, styles.saveButton]}
+                  onPress={saveBloodPressureLog}
                 >
                   <Text style={styles.modalButtonText}>{t("common.save")}</Text>
                 </TouchableOpacity>
@@ -1293,6 +1617,137 @@ const styles = StyleSheet.create({
     color: "#343a40",
     textAlign: "center",
     marginBottom: 20,
+  },
+  bpContainer: {
+    alignItems: "center",
+    padding: 15,
+  },
+  currentBpContainer: {
+    alignItems: "center",
+    marginBottom: 20,
+  },
+  currentBpLabel: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#343a40",
+  },
+  currentBpValue: {
+    fontSize: 32,
+    fontWeight: "bold",
+    color: "#343a40",
+  },
+  currentBpDate: {
+    fontSize: 14,
+    color: "#6c757d",
+  },
+  currentBpPulse: {
+    fontSize: 16,
+    color: "#343a40",
+    marginBottom: 5,
+  },
+  noBpData: {
+    fontSize: 16,
+    color: "#6c757d",
+    marginBottom: 20,
+    textAlign: "center",
+  },
+  addBpButton: {
+    backgroundColor: "#007bff",
+    borderRadius: 30,
+    paddingVertical: 15,
+    paddingHorizontal: 30,
+    alignItems: "center",
+  },
+  addBpButtonText: {
+    color: "white",
+    fontSize: 18,
+    fontWeight: "bold",
+  },
+  bpHistoryContainer: {
+    marginTop: 20,
+    width: "100%",
+  },
+  bpHistoryTitle: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#343a40",
+    marginBottom: 10,
+  },
+  bpHistoryItem: {
+    paddingVertical: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: "#e9ecef",
+  },
+  bpHistoryInfo: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  bpHistoryDate: {
+    fontSize: 14,
+    color: "#6c757d",
+  },
+  bpHistoryValue: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#343a40",
+  },
+  bpHistoryNotes: {
+    fontSize: 14,
+    color: "#6c757d",
+    fontStyle: "italic",
+    marginTop: 5,
+  },
+  bpInput: {
+    borderWidth: 1,
+    borderColor: "#ced4da",
+    borderRadius: 5,
+    padding: 10,
+    height: 50,
+    marginBottom: 20,
+  },
+  bpHistoryDetails: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bpHistoryPulse: {
+    fontSize: 14,
+    color: "#6c757d",
+  },
+  bpHistoryPosition: {
+    fontSize: 14,
+    color: "#6c757d",
+  },
+  bpHistoryArm: {
+    fontSize: 14,
+    color: "#6c757d",
+  },
+  bpHistoryActions: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  bpEditButton: {
+    backgroundColor: "#007bff",
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    marginRight: 10,
+  },
+  bpEditButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  bpDeleteButton: {
+    backgroundColor: "#dc3545",
+    borderRadius: 30,
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+  },
+  bpDeleteButtonText: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
   },
 });
 

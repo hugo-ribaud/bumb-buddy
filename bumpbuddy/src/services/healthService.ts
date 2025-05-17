@@ -46,11 +46,27 @@ export interface Contraction {
   updated_at: string;
 }
 
+export interface BloodPressureLog {
+  id: string;
+  user_id: string;
+  date: string;
+  time: string;
+  systolic: number; // The top number, pressure when heart beats
+  diastolic: number; // The bottom number, pressure when heart is resting
+  pulse?: number; // Heart rate in beats per minute
+  position?: string; // Position during measurement (sitting, lying, standing)
+  arm?: string; // Which arm was used (left, right)
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Cache keys
 const SYMPTOMS_CACHE_KEY = "health_symptoms_cache";
 const KICK_COUNTS_CACHE_KEY = "health_kick_counts_cache";
 const WEIGHT_LOGS_CACHE_KEY = "health_weight_logs_cache";
 const CONTRACTIONS_CACHE_KEY = "health_contractions_cache";
+const BLOOD_PRESSURE_LOGS_CACHE_KEY = "health_bp_logs_cache";
 
 // Health tracking service
 const healthService = {
@@ -518,6 +534,155 @@ const healthService = {
       return true;
     } catch (error) {
       console.error("Error in deleteContraction:", error);
+      return false;
+    }
+  },
+
+  // Blood Pressure Logs
+  getBloodPressureLogs: async (userId: string): Promise<BloodPressureLog[]> => {
+    try {
+      // Try to get from cache first
+      const cachedData = await AsyncStorage.getItem(
+        BLOOD_PRESSURE_LOGS_CACHE_KEY
+      );
+      let bloodPressureLogs: BloodPressureLog[] = [];
+
+      if (cachedData) {
+        bloodPressureLogs = JSON.parse(cachedData);
+      }
+
+      // Fetch from API
+      const { data, error } = await supabase
+        .from("blood_pressure_logs")
+        .select("*")
+        .eq("user_id", userId)
+        .order("date", { ascending: false })
+        .order("time", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching blood pressure logs:", error);
+        return bloodPressureLogs; // Return cached data if available
+      }
+
+      // Update cache
+      if (data) {
+        await AsyncStorage.setItem(
+          BLOOD_PRESSURE_LOGS_CACHE_KEY,
+          JSON.stringify(data)
+        );
+        return data;
+      }
+
+      return bloodPressureLogs;
+    } catch (error) {
+      console.error("Error in getBloodPressureLogs:", error);
+      return [];
+    }
+  },
+
+  addBloodPressureLog: async (
+    bpLog: Omit<BloodPressureLog, "id" | "created_at" | "updated_at">
+  ): Promise<BloodPressureLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("blood_pressure_logs")
+        .insert(bpLog)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error adding blood pressure log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(
+        BLOOD_PRESSURE_LOGS_CACHE_KEY
+      );
+      if (cachedData) {
+        const bpLogs: BloodPressureLog[] = JSON.parse(cachedData);
+        bpLogs.unshift(data);
+        await AsyncStorage.setItem(
+          BLOOD_PRESSURE_LOGS_CACHE_KEY,
+          JSON.stringify(bpLogs)
+        );
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in addBloodPressureLog:", error);
+      return null;
+    }
+  },
+
+  updateBloodPressureLog: async (
+    id: string,
+    updates: Partial<BloodPressureLog>
+  ): Promise<BloodPressureLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("blood_pressure_logs")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating blood pressure log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(
+        BLOOD_PRESSURE_LOGS_CACHE_KEY
+      );
+      if (cachedData) {
+        const bpLogs: BloodPressureLog[] = JSON.parse(cachedData);
+        const index = bpLogs.findIndex((log) => log.id === id);
+        if (index !== -1) {
+          bpLogs[index] = { ...bpLogs[index], ...updates };
+          await AsyncStorage.setItem(
+            BLOOD_PRESSURE_LOGS_CACHE_KEY,
+            JSON.stringify(bpLogs)
+          );
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in updateBloodPressureLog:", error);
+      return null;
+    }
+  },
+
+  deleteBloodPressureLog: async (id: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase
+        .from("blood_pressure_logs")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        console.error("Error deleting blood pressure log:", error);
+        return false;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(
+        BLOOD_PRESSURE_LOGS_CACHE_KEY
+      );
+      if (cachedData) {
+        const bpLogs: BloodPressureLog[] = JSON.parse(cachedData);
+        const updatedLogs = bpLogs.filter((log) => log.id !== id);
+        await AsyncStorage.setItem(
+          BLOOD_PRESSURE_LOGS_CACHE_KEY,
+          JSON.stringify(updatedLogs)
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error in deleteBloodPressureLog:", error);
       return false;
     }
   },
