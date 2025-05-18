@@ -76,6 +76,7 @@ EXECUTE: Implementing health tracking features one by one, starting with contrac
 - System patterns: Completed and updated with data models
 - Active context: Updated with contraction tracking completion
 - Progress tracking: Updated to reflect health tracking implementation progress
+- Internal documentation : all documentations related to the can be found in /bumbbuddy/docs/
 
 ## Key Insights from Health Tracking Implementation
 

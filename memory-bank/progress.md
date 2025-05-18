@@ -126,8 +126,9 @@ _Last Updated: 2024-06-12_
 
 - Community features and forums
 - Healthcare provider integration
-- Multi-language support beyond current languages (Arabic, Hebrew, etc.)
+- Multi-language support beyond current languages (Arabic, Hebrew, Polish, etc.)
 - Baby registry integration
+- AI food scanner (Scan an aliment to see if it's allowed or restricted)
 - Shopping recommendations
 - Personalized content based on user preferences
 - AI-powered symptom analysis
@@ -139,6 +140,8 @@ _Last Updated: 2024-06-12_
 - Add data visualization (charts/graphs) for health metrics
 - Add reporting and export functionality for health data to share with healthcare providers
 - Implement reminders for health tracking activities
+- Implement post natal follow up (follow the baby develompent - height, weight, head tour size etc ...)
+- Implement a way to connect future moms between each other (with the approximative same due date.)
 
 ## Milestones
 
