@@ -1,18 +1,21 @@
+import React, { useEffect } from "react";
 import {
   ActivityIndicator,
   ScrollView,
-  Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { AppDispatch, RootState } from "../redux/store";
-import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 
 import { Ionicons } from "@expo/vector-icons";
-import { fetchWeekData } from "../redux/slices/timelineSlice";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import FontedText from "../components/FontedText";
+import SafeAreaWrapper from "../components/SafeAreaWrapper";
+import ThemedView from "../components/ThemedView";
+import { useTheme } from "../contexts/ThemeContext";
+import { fetchWeekData } from "../redux/slices/timelineSlice";
 
 type Props = {};
 
@@ -20,6 +23,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
+  const { isDark } = useTheme();
 
   const { selectedWeek, weekData, loading, error } = useSelector(
     (state: RootState) => state.timeline
@@ -64,141 +68,199 @@ const WeekDetailScreen: React.FC<Props> = () => {
   // Loading state
   if (loading) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-50">
-        <ActivityIndicator size="large" color="#007bff" />
-      </View>
+      <SafeAreaWrapper>
+        <ThemedView className="flex-1 justify-center items-center">
+          <ActivityIndicator
+            size="large"
+            color={isDark ? "#60a5fa" : "#007bff"}
+          />
+        </ThemedView>
+      </SafeAreaWrapper>
     );
   }
 
   // Error state
   if (error || !weekData) {
     return (
-      <View className="flex-1 justify-center items-center bg-gray-50 p-5">
-        <Text className="text-red-500 text-center mb-5 text-base">
-          {error || t("timeline.weekNotFound")}
-        </Text>
-        <TouchableOpacity
-          className="flex-row items-center"
-          onPress={() => navigation.goBack()}
-        >
-          <Text className="text-blue-500 text-base ml-1">
-            {t("common.goBack")}
-          </Text>
-        </TouchableOpacity>
-      </View>
+      <SafeAreaWrapper>
+        <ThemedView className="flex-1 justify-center items-center p-5">
+          <FontedText
+            variant="body"
+            colorVariant="accent"
+            className="text-center mb-5"
+          >
+            {error || t("timeline.weekNotFound")}
+          </FontedText>
+          <TouchableOpacity
+            className="flex-row items-center"
+            onPress={() => navigation.goBack()}
+          >
+            <FontedText colorVariant="primary" variant="body" className="ml-1">
+              {t("common.goBack")}
+            </FontedText>
+          </TouchableOpacity>
+        </ThemedView>
+      </SafeAreaWrapper>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-gray-50">
-      {/* Header with back button */}
-      <View className="p-4 flex-row items-center">
-        <TouchableOpacity
-          className="flex-row items-center"
-          onPress={() => navigation.goBack()}
-        >
-          <Ionicons name="chevron-back" size={24} color="#007bff" />
-          <Text className="text-blue-500 text-base ml-1">
-            {t("common.back")}
-          </Text>
-        </TouchableOpacity>
-      </View>
+    <SafeAreaWrapper>
+      <ThemedView className="flex-1">
+        <ScrollView className="flex-1">
+          {/* Header with back button */}
+          <View className="p-4 flex-row items-center">
+            <TouchableOpacity
+              className="flex-row items-center"
+              onPress={() => navigation.goBack()}
+            >
+              <Ionicons
+                name="chevron-back"
+                size={24}
+                color={isDark ? "#60a5fa" : "#007bff"}
+              />
+              <FontedText
+                colorVariant="primary"
+                variant="body"
+                className="ml-1"
+              >
+                {t("common.back")}
+              </FontedText>
+            </TouchableOpacity>
+          </View>
 
-      {/* Week title and trimester */}
-      <View className="px-4">
-        <Text className="text-2xl font-bold text-gray-800">
-          {t("timeline.weekLabel", { week: weekData.week })}
-        </Text>
-        <Text className="text-base text-gray-500 mt-1">{getTrimester()}</Text>
-      </View>
+          {/* Week title and trimester */}
+          <View className="px-4">
+            <FontedText variant="heading-2">
+              {t("timeline.weekLabel", { week: weekData.week })}
+            </FontedText>
+            <FontedText
+              variant="body"
+              colorVariant="secondary"
+              className="mt-1"
+            >
+              {getTrimester()}
+            </FontedText>
+          </View>
 
-      {/* Baby size comparison */}
-      <View className="bg-white mx-4 my-4 rounded-xl p-4 shadow-sm">
-        <Text className="text-lg font-bold mb-3 text-gray-800">
-          {t("timeline.sizeComparison")}
-        </Text>
-        <View className="flex-row items-center">
-          <View className="w-[100px] h-[100px] justify-center items-center">
-            {/* Placeholder for image - would be loaded dynamically */}
-            <View className="w-20 h-20 rounded-full bg-gray-200 justify-center items-center">
-              <Text className="text-center text-sm font-medium text-gray-500 p-1 capitalize">
-                {getFoodNameFromImageUrl(weekData.image_url)}
-              </Text>
+          {/* Baby size comparison */}
+          <ThemedView
+            backgroundColor="surface"
+            className="mx-4 my-4 rounded-xl p-4 shadow-sm"
+          >
+            <FontedText variant="heading-3" className="mb-3">
+              {t("timeline.sizeComparison")}
+            </FontedText>
+            <View className="flex-row items-center">
+              <View className="w-[100px] h-[100px] justify-center items-center">
+                {/* Placeholder for image - would be loaded dynamically */}
+                <View
+                  className="w-20 h-20 rounded-full justify-center items-center"
+                  style={{
+                    backgroundColor: isDark ? "#333333" : "#e5e7eb",
+                  }}
+                >
+                  <FontedText
+                    variant="body-small"
+                    className="text-center p-1 capitalize"
+                  >
+                    {getFoodNameFromImageUrl(weekData.image_url)}
+                  </FontedText>
+                </View>
+              </View>
+              <View className="flex-1 ml-4">
+                <FontedText variant="body">
+                  {t("timeline.babyIsSize", {
+                    size: getFoodNameFromImageUrl(weekData.image_url),
+                  })}
+                </FontedText>
+              </View>
             </View>
-          </View>
-          <View className="flex-1 ml-4">
-            <Text className="text-base text-gray-700">
-              {t("timeline.babyIsSize", {
-                size: getFoodNameFromImageUrl(weekData.image_url),
-              })}
-            </Text>
-          </View>
-        </View>
-      </View>
+          </ThemedView>
 
-      {/* Development information */}
-      <View className="bg-white mx-4 mb-4 rounded-xl p-4 shadow-sm">
-        <Text className="text-lg font-bold mb-3 text-gray-800">
-          {t("timeline.development")}
-        </Text>
-        <Text className="text-base text-gray-700 leading-6">
-          {weekData.fetal_development}
-        </Text>
-      </View>
+          {/* Development information */}
+          <ThemedView
+            backgroundColor="surface"
+            className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
+          >
+            <FontedText variant="heading-3" className="mb-3">
+              {t("timeline.development")}
+            </FontedText>
+            <FontedText variant="body" className="leading-6">
+              {weekData.fetal_development}
+            </FontedText>
+          </ThemedView>
 
-      {/* Maternal changes */}
-      <View className="bg-white mx-4 mb-4 rounded-xl p-4 shadow-sm">
-        <Text className="text-lg font-bold mb-3 text-gray-800">
-          {t("timeline.maternalChanges")}
-        </Text>
-        <Text className="text-base text-gray-700 leading-6">
-          {weekData.maternal_changes}
-        </Text>
-      </View>
+          {/* Maternal changes */}
+          <ThemedView
+            backgroundColor="surface"
+            className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
+          >
+            <FontedText variant="heading-3" className="mb-3">
+              {t("timeline.maternalChanges")}
+            </FontedText>
+            <FontedText variant="body" className="leading-6">
+              {weekData.maternal_changes}
+            </FontedText>
+          </ThemedView>
 
-      {/* Common symptoms */}
-      <View className="bg-white mx-4 mb-4 rounded-xl p-4 shadow-sm">
-        <Text className="text-lg font-bold mb-3 text-gray-800">
-          {t("timeline.commonSymptoms")}
-        </Text>
-        <Text className="text-base text-gray-700 leading-6">
-          {weekData.common_symptoms}
-        </Text>
-      </View>
+          {/* Common symptoms */}
+          <ThemedView
+            backgroundColor="surface"
+            className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
+          >
+            <FontedText variant="heading-3" className="mb-3">
+              {t("timeline.commonSymptoms")}
+            </FontedText>
+            <FontedText variant="body" className="leading-6">
+              {weekData.common_symptoms}
+            </FontedText>
+          </ThemedView>
 
-      {/* Tips */}
-      <View className="bg-white mx-4 mb-4 rounded-xl p-4 shadow-sm">
-        <Text className="text-lg font-bold mb-3 text-gray-800">
-          {t("timeline.tips")}
-        </Text>
-        <Text className="text-base text-gray-700 leading-6">
-          {weekData.tips}
-        </Text>
-      </View>
+          {/* Tips */}
+          <ThemedView
+            backgroundColor="surface"
+            className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
+          >
+            <FontedText variant="heading-3" className="mb-3">
+              {t("timeline.tips")}
+            </FontedText>
+            <FontedText variant="body" className="leading-6">
+              {weekData.tips}
+            </FontedText>
+          </ThemedView>
 
-      {/* Nutrition advice */}
-      <View className="bg-white mx-4 mb-4 rounded-xl p-4 shadow-sm">
-        <Text className="text-lg font-bold mb-3 text-gray-800">
-          {t("timeline.nutritionAdvice")}
-        </Text>
-        <Text className="text-base text-gray-700 leading-6">
-          {weekData.nutrition_advice}
-        </Text>
-      </View>
+          {/* Nutrition advice */}
+          <ThemedView
+            backgroundColor="surface"
+            className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
+          >
+            <FontedText variant="heading-3" className="mb-3">
+              {t("timeline.nutritionAdvice")}
+            </FontedText>
+            <FontedText variant="body" className="leading-6">
+              {weekData.nutrition_advice}
+            </FontedText>
+          </ThemedView>
 
-      {/* Medical checkups */}
-      <View className="bg-white mx-4 mb-4 rounded-xl p-4 shadow-sm">
-        <Text className="text-lg font-bold mb-3 text-gray-800">
-          {t("timeline.medicalCheckups")}
-        </Text>
-        <Text className="text-base text-gray-700 leading-6">
-          {weekData.medical_checkups}
-        </Text>
-      </View>
+          {/* Medical checkups */}
+          <ThemedView
+            backgroundColor="surface"
+            className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
+          >
+            <FontedText variant="heading-3" className="mb-3">
+              {t("timeline.medicalCheckups")}
+            </FontedText>
+            <FontedText variant="body" className="leading-6">
+              {weekData.medical_checkups}
+            </FontedText>
+          </ThemedView>
 
-      {/* Bottom padding */}
-      <View className="h-10" />
-    </ScrollView>
+          {/* Bottom padding */}
+          <View className="h-10" />
+        </ScrollView>
+      </ThemedView>
+    </SafeAreaWrapper>
   );
 };
 

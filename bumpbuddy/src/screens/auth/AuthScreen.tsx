@@ -13,6 +13,7 @@ import {
 
 import { useDispatch } from "react-redux";
 import FontedText from "../../components/FontedText";
+import SafeAreaWrapper from "../../components/SafeAreaWrapper";
 import ThemedView from "../../components/ThemedView";
 import authService from "../../services/authService";
 
@@ -72,67 +73,69 @@ const AuthScreen = () => {
   };
 
   return (
-    <ThemedView className="flex-1 justify-center items-center p-5">
-      <FontedText variant="heading-1" className="mb-2">
-        BumpBuddy
-      </FontedText>
-      <FontedText variant="body" colorVariant="secondary" className="mb-10">
-        Your Pregnancy Companion
-      </FontedText>
-
-      <ThemedView className="w-full max-w-[400px]">
-        <FontedText variant="heading-2" className="mb-5 text-center">
-          {isLogin ? "Sign In" : "Create Account"}
+    <SafeAreaWrapper>
+      <ThemedView className="items-center justify-center flex-1 p-5">
+        <FontedText variant="heading-1" className="mb-2">
+          BumpBuddy
+        </FontedText>
+        <FontedText variant="body" colorVariant="secondary" className="mb-10">
+          Your Pregnancy Companion
         </FontedText>
 
-        <TextInput
-          className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4 border border-gray-300 dark:border-gray-700"
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          editable={!loading}
-        />
-
-        <TextInput
-          className="bg-white dark:bg-gray-800 rounded-lg p-4 mb-4 border border-gray-300 dark:border-gray-700"
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          editable={!loading}
-        />
-
-        <TouchableOpacity
-          className={`bg-primary rounded-lg p-4 items-center mt-2.5 ${
-            loading ? "opacity-70" : ""
-          }`}
-          onPress={handleAuth}
-          disabled={loading}
-        >
-          {loading ? (
-            <ActivityIndicator color="white" />
-          ) : (
-            <FontedText className="text-white font-bold text-base">
-              {isLogin ? "Sign In" : "Sign Up"}
-            </FontedText>
-          )}
-        </TouchableOpacity>
-
-        <TouchableOpacity
-          onPress={() => setIsLogin(!isLogin)}
-          disabled={loading}
-          className="mt-5"
-        >
-          <FontedText className="text-primary text-center">
-            {isLogin
-              ? "New user? Create an account"
-              : "Already have an account? Sign in"}
+        <ThemedView className="w-full max-w-[400px]">
+          <FontedText variant="heading-2" className="mb-5 text-center">
+            {isLogin ? "Sign In" : "Create Account"}
           </FontedText>
-        </TouchableOpacity>
+
+          <TextInput
+            className="p-4 mb-4 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-700"
+            placeholder="Email"
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
+            editable={!loading}
+          />
+
+          <TextInput
+            className="p-4 mb-4 bg-white border border-gray-300 rounded-lg dark:bg-gray-800 dark:border-gray-700"
+            placeholder="Password"
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            editable={!loading}
+          />
+
+          <TouchableOpacity
+            className={`bg-primary rounded-lg p-4 items-center mt-2.5 ${
+              loading ? "opacity-70" : ""
+            }`}
+            onPress={handleAuth}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color="white" />
+            ) : (
+              <FontedText className="text-base font-bold text-white">
+                {isLogin ? "Sign In" : "Sign Up"}
+              </FontedText>
+            )}
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            onPress={() => setIsLogin(!isLogin)}
+            disabled={loading}
+            className="mt-5"
+          >
+            <FontedText className="text-center text-primary">
+              {isLogin
+                ? "New user? Create an account"
+                : "Already have an account? Sign in"}
+            </FontedText>
+          </TouchableOpacity>
+        </ThemedView>
       </ThemedView>
-    </ThemedView>
+    </SafeAreaWrapper>
   );
 };
 

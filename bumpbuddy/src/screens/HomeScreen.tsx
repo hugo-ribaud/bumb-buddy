@@ -1,13 +1,14 @@
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
+import React from "react";
+import { useTranslation } from "react-i18next";
+import { useSelector } from "react-redux";
 import FontedText from "../components/FontedText";
 import LanguageSwitcher from "../components/LanguageSwitcher";
-import React from "react";
-import { RootState } from "../redux/store";
+import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemeToggle from "../components/ThemeToggle";
 import ThemedView from "../components/ThemedView";
-import { useSelector } from "react-redux";
-import { useTranslation } from "react-i18next";
+import { RootState } from "../redux/store";
 
 const HomeScreen = () => {
   const { t } = useTranslation();
@@ -84,194 +85,199 @@ const HomeScreen = () => {
   const progressPercentage = Math.min((pregnancyWeek / 40) * 100, 100);
 
   return (
-    <ThemedView backgroundColor="background" className="flex-1">
-      <ScrollView className="flex-1">
-        <ThemedView backgroundColor="background" className="flex-1 p-5">
-          <View className="flex-row justify-between items-center mb-5">
-            <View>
-              <FontedText variant="heading-2" className="font-bold">
-                {t("home.welcome", {
-                  name: user?.email?.split("@")[0] || "Mom",
-                })}
-              </FontedText>
-              <FontedText
-                textType="secondary"
-                variant="body-small"
-                className="mt-1.5"
-              >
-                {t("home.journeyTitle")}
-              </FontedText>
+    <SafeAreaWrapper>
+      <ThemedView backgroundColor="background" className="flex-1">
+        <ScrollView className="flex-1">
+          <ThemedView backgroundColor="background" className="flex-1 p-5">
+            <View className="flex-row items-center justify-between mb-5">
+              <View>
+                <FontedText variant="heading-2" className="font-bold">
+                  {t("home.welcome", {
+                    name: user?.email?.split("@")[0] || "Mom",
+                  })}
+                </FontedText>
+                <FontedText
+                  textType="secondary"
+                  variant="body-small"
+                  className="mt-1.5"
+                >
+                  {t("home.journeyTitle")}
+                </FontedText>
+              </View>
+              <ThemeToggle />
             </View>
-            <ThemeToggle />
-          </View>
 
-          {/* Add Language Switcher */}
-          <LanguageSwitcher />
+            {/* Add Language Switcher */}
+            <LanguageSwitcher />
 
-          <ThemedView
-            backgroundColor="surface"
-            className="rounded-xl p-5 mb-4 shadow-sm"
-          >
-            <View className="flex-row justify-between items-center mb-2.5">
-              <FontedText
-                variant="heading-3"
-                fontFamily="comfortaa"
-                colorVariant="primary"
-              >
-                {t("home.weekTitle", { week: pregnancyWeek })}
-              </FontedText>
+            <ThemedView
+              backgroundColor="surface"
+              className="p-5 mb-4 shadow-sm rounded-xl"
+            >
+              <View className="flex-row justify-between items-center mb-2.5">
+                <FontedText
+                  variant="heading-3"
+                  fontFamily="comfortaa"
+                  colorVariant="primary"
+                >
+                  {t("home.weekTitle", { week: pregnancyWeek })}
+                </FontedText>
+                <FontedText
+                  textType="secondary"
+                  variant="caption"
+                  className="font-medium"
+                >
+                  {trimester}
+                </FontedText>
+              </View>
+
+              <View className="h-3 bg-gray-200 dark:bg-gray-700 rounded-md my-2.5 overflow-hidden">
+                <View
+                  className="h-full rounded-md bg-primary dark:bg-primary-dark"
+                  style={{ width: `${progressPercentage}%` }}
+                />
+              </View>
               <FontedText
                 textType="secondary"
                 variant="caption"
-                className="font-medium"
+                className="text-right"
               >
-                {trimester}
+                {t("home.progressLabel", {
+                  percent: progressPercentage.toFixed(0),
+                })}
               </FontedText>
-            </View>
+            </ThemedView>
 
-            <View className="h-3 bg-gray-200 dark:bg-gray-700 rounded-md my-2.5 overflow-hidden">
-              <View
-                className="h-full bg-primary dark:bg-primary-dark rounded-md"
-                style={{ width: `${progressPercentage}%` }}
-              />
-            </View>
-            <FontedText
-              textType="secondary"
-              variant="caption"
-              className="text-right"
+            <ThemedView
+              backgroundColor="surface"
+              className="p-5 mb-4 shadow-sm rounded-xl"
             >
-              {t("home.progressLabel", {
-                percent: progressPercentage.toFixed(0),
-              })}
-            </FontedText>
-          </ThemedView>
+              <FontedText
+                variant="heading-4"
+                fontFamily="comfortaa"
+                colorVariant="primary"
+                className="mb-4"
+              >
+                {t("home.developmentTitle", { week: pregnancyWeek })}
+              </FontedText>
 
-          <ThemedView
-            backgroundColor="surface"
-            className="rounded-xl p-5 mb-4 shadow-sm"
-          >
-            <FontedText
-              variant="heading-4"
-              fontFamily="comfortaa"
-              colorVariant="primary"
-              className="mb-4"
-            >
-              {t("home.developmentTitle", { week: pregnancyWeek })}
-            </FontedText>
+              <View className="flex-row justify-between mb-4">
+                <View className="flex-1">
+                  <FontedText
+                    textType="secondary"
+                    variant="caption"
+                    className="mb-0.5"
+                  >
+                    {t("home.sizeLabel")}
+                  </FontedText>
+                  <FontedText variant="body" className="font-medium mb-2.5">
+                    {weeklyContent.babySize}
+                  </FontedText>
 
-            <View className="flex-row justify-between mb-4">
-              <View className="flex-1">
-                <FontedText
-                  textType="secondary"
-                  variant="caption"
-                  className="mb-0.5"
-                >
-                  {t("home.sizeLabel")}
-                </FontedText>
-                <FontedText variant="body" className="font-medium mb-2.5">
-                  {weeklyContent.babySize}
-                </FontedText>
+                  <FontedText
+                    textType="secondary"
+                    variant="caption"
+                    className="mb-0.5"
+                  >
+                    {t("home.lengthLabel")}
+                  </FontedText>
+                  <FontedText variant="body" className="font-medium mb-2.5">
+                    {weeklyContent.babyLength}
+                  </FontedText>
 
-                <FontedText
-                  textType="secondary"
-                  variant="caption"
-                  className="mb-0.5"
-                >
-                  {t("home.lengthLabel")}
-                </FontedText>
-                <FontedText variant="body" className="font-medium mb-2.5">
-                  {weeklyContent.babyLength}
-                </FontedText>
-
-                <FontedText
-                  textType="secondary"
-                  variant="caption"
-                  className="mb-0.5"
-                >
-                  {t("home.weightLabel")}
-                </FontedText>
-                <FontedText variant="body" className="font-medium mb-2.5">
-                  {weeklyContent.babyWeight}
-                </FontedText>
+                  <FontedText
+                    textType="secondary"
+                    variant="caption"
+                    className="mb-0.5"
+                  >
+                    {t("home.weightLabel")}
+                  </FontedText>
+                  <FontedText variant="body" className="font-medium mb-2.5">
+                    {weeklyContent.babyWeight}
+                  </FontedText>
+                </View>
               </View>
-            </View>
 
-            <FontedText variant="body" className="font-semibold mt-1.5 mb-2.5">
-              {t("Development Highlights")}
-            </FontedText>
-            {weeklyContent.developmentHighlights.map((highlight, index) => (
               <FontedText
-                key={index}
-                variant="body-small"
-                className="mb-2 leading-5"
+                variant="body"
+                className="font-semibold mt-1.5 mb-2.5"
               >
-                • {highlight}
+                {t("Development Highlights")}
               </FontedText>
-            ))}
-          </ThemedView>
+              {weeklyContent.developmentHighlights.map((highlight, index) => (
+                <FontedText
+                  key={index}
+                  variant="body-small"
+                  className="mb-2 leading-5"
+                >
+                  • {highlight}
+                </FontedText>
+              ))}
+            </ThemedView>
 
-          <ThemedView
-            backgroundColor="surface"
-            className="rounded-xl p-5 mb-4 shadow-sm"
-          >
-            <FontedText
-              variant="heading-4"
-              fontFamily="comfortaa"
-              colorVariant="secondary"
-              className="mb-4"
+            <ThemedView
+              backgroundColor="surface"
+              className="p-5 mb-4 shadow-sm rounded-xl"
             >
-              {t("home.bodyChangesTitle")}
-            </FontedText>
-
-            {weeklyContent.maternalChanges.map((change, index) => (
               <FontedText
-                key={index}
-                variant="body-small"
-                className="mb-2 leading-5"
+                variant="heading-4"
+                fontFamily="comfortaa"
+                colorVariant="secondary"
+                className="mb-4"
               >
-                • {change}
+                {t("home.bodyChangesTitle")}
               </FontedText>
-            ))}
-          </ThemedView>
 
-          <ThemedView
-            backgroundColor="surface"
-            className="rounded-xl p-5 mb-4 shadow-sm"
-          >
-            <FontedText
-              variant="heading-4"
-              fontFamily="comfortaa"
-              colorVariant="secondary"
-              className="mb-4"
+              {weeklyContent.maternalChanges.map((change, index) => (
+                <FontedText
+                  key={index}
+                  variant="body-small"
+                  className="mb-2 leading-5"
+                >
+                  • {change}
+                </FontedText>
+              ))}
+            </ThemedView>
+
+            <ThemedView
+              backgroundColor="surface"
+              className="p-5 mb-4 shadow-sm rounded-xl"
             >
-              {t("home.nutritionTipsTitle")}
-            </FontedText>
-
-            {weeklyContent.nutritionTips.map((tip, index) => (
               <FontedText
-                key={index}
-                variant="body-small"
-                className="mb-2 leading-5"
+                variant="heading-4"
+                fontFamily="comfortaa"
+                colorVariant="secondary"
+                className="mb-4"
               >
-                • {tip}
+                {t("home.nutritionTipsTitle")}
               </FontedText>
-            ))}
+
+              {weeklyContent.nutritionTips.map((tip, index) => (
+                <FontedText
+                  key={index}
+                  variant="body-small"
+                  className="mb-2 leading-5"
+                >
+                  • {tip}
+                </FontedText>
+              ))}
+            </ThemedView>
+
+            <TouchableOpacity className="items-center p-4 mb-4 bg-accent dark:bg-accent-dark rounded-xl">
+              <FontedText className="text-base font-bold text-white">
+                {t("home.trackSymptomsButton")}
+              </FontedText>
+            </TouchableOpacity>
+
+            <TouchableOpacity className="items-center p-4 mb-4 bg-accent dark:bg-accent-dark rounded-xl">
+              <FontedText className="text-base font-bold text-white">
+                {t("home.foodGuideButton")}
+              </FontedText>
+            </TouchableOpacity>
           </ThemedView>
-
-          <TouchableOpacity className="bg-accent dark:bg-accent-dark rounded-xl p-4 items-center mb-4">
-            <FontedText className="text-white text-base font-bold">
-              {t("home.trackSymptomsButton")}
-            </FontedText>
-          </TouchableOpacity>
-
-          <TouchableOpacity className="bg-accent dark:bg-accent-dark rounded-xl p-4 items-center mb-4">
-            <FontedText className="text-white text-base font-bold">
-              {t("home.foodGuideButton")}
-            </FontedText>
-          </TouchableOpacity>
-        </ThemedView>
-      </ScrollView>
-    </ThemedView>
+        </ScrollView>
+      </ThemedView>
+    </SafeAreaWrapper>
   );
 };
 

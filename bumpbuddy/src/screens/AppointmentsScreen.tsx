@@ -10,6 +10,7 @@ import {
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
+import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 
 // Define types
@@ -168,7 +169,7 @@ const AppointmentsScreen = () => {
     return (
       <ThemedView
         backgroundColor="surface"
-        className="rounded-xl p-4 mb-4 shadow"
+        className="p-4 mb-4 shadow rounded-xl"
       >
         <View className="flex-row justify-between items-center mb-2.5">
           <FontedText variant="heading-4" className="flex-1">
@@ -179,7 +180,7 @@ const AppointmentsScreen = () => {
               className="px-2.5 py-1.5 rounded bg-yellow-500 mr-2.5"
               onPress={() => handleEditAppointment(item)}
             >
-              <FontedText className="text-white font-medium text-sm">
+              <FontedText className="text-sm font-medium text-white">
                 {t("common.buttons.edit")}
               </FontedText>
             </TouchableOpacity>
@@ -187,7 +188,7 @@ const AppointmentsScreen = () => {
               className="px-2.5 py-1.5 rounded bg-red-500"
               onPress={() => handleDeleteAppointment(item.id)}
             >
-              <FontedText className="text-white font-medium text-sm">
+              <FontedText className="text-sm font-medium text-white">
                 {t("common.buttons.delete")}
               </FontedText>
             </TouchableOpacity>
@@ -254,166 +255,168 @@ const AppointmentsScreen = () => {
   };
 
   return (
-    <ThemedView className="flex-1 p-5">
-      <FontedText variant="heading-2" className="mb-5">
-        {t("appointments.title")}
-      </FontedText>
-
-      <TouchableOpacity
-        className="bg-primary rounded-xl p-4 items-center mb-5"
-        onPress={handleAddAppointment}
-      >
-        <FontedText className="text-white font-bold text-base">
-          + {t("appointments.addButton")}
+    <SafeAreaWrapper>
+      <ThemedView className="flex-1 p-5">
+        <FontedText variant="heading-2" className="mb-5">
+          {t("appointments.title")}
         </FontedText>
-      </TouchableOpacity>
 
-      {appointments.length > 0 ? (
-        <FlatList
-          data={appointments}
-          renderItem={renderAppointmentItem}
-          keyExtractor={(item) => item.id}
-          className="flex-1"
-        />
-      ) : (
-        <View className="flex-1 justify-center items-center p-5">
-          <FontedText
-            variant="heading-3"
-            colorVariant="secondary"
-            className="mb-2.5"
-          >
-            {t("appointments.noAppointments")}
+        <TouchableOpacity
+          className="items-center p-4 mb-5 bg-primary rounded-xl"
+          onPress={handleAddAppointment}
+        >
+          <FontedText className="text-base font-bold text-white">
+            + {t("appointments.addButton")}
           </FontedText>
-          <FontedText
-            variant="body-small"
-            colorVariant="secondary"
-            className="text-center"
-          >
-            {t("appointments.tapToAddAppointment")}
-          </FontedText>
-        </View>
-      )}
+        </TouchableOpacity>
 
-      {/* Appointment Modal */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50 px-5">
-          <ThemedView
-            backgroundColor="surface"
-            className="rounded-xl p-5 w-full max-h-[90%]"
-          >
-            <FontedText variant="heading-3" className="mb-5 text-center">
-              {editingAppointment
-                ? t("appointments.editAppointment")
-                : t("appointments.addNewAppointment")}
-            </FontedText>
-
-            <FontedText variant="body" className="mb-1">
-              {t("appointments.titleLabel")}
-            </FontedText>
-            <TextInput
-              className="border border-gray-300 rounded p-2.5 mb-4 text-base"
-              value={appointmentTitle}
-              onChangeText={setAppointmentTitle}
-              placeholder={t("appointments.titlePlaceholder")}
-            />
-
-            <FontedText variant="body" className="mb-1">
-              {t("appointments.dateLabel")}
-            </FontedText>
-            <TouchableOpacity
-              className="border border-gray-300 rounded p-3 mb-4"
-              onPress={() => setShowDatePicker(true)}
+        {appointments.length > 0 ? (
+          <FlatList
+            data={appointments}
+            renderItem={renderAppointmentItem}
+            keyExtractor={(item) => item.id}
+            className="flex-1"
+          />
+        ) : (
+          <View className="items-center justify-center flex-1 p-5">
+            <FontedText
+              variant="heading-3"
+              colorVariant="secondary"
+              className="mb-2.5"
             >
-              <FontedText>{formatDate(appointmentDate)}</FontedText>
-            </TouchableOpacity>
-
-            {showDatePicker && (
-              <DateTimePicker
-                value={appointmentDate}
-                mode="date"
-                display="default"
-                onChange={onDateChange}
-              />
-            )}
-
-            <FontedText variant="body" className="mb-1">
-              {t("appointments.timeLabel")}
+              {t("appointments.noAppointments")}
             </FontedText>
-            <TouchableOpacity
-              className="border border-gray-300 rounded p-3 mb-4"
-              onPress={() => setShowTimePicker(true)}
+            <FontedText
+              variant="body-small"
+              colorVariant="secondary"
+              className="text-center"
             >
-              <FontedText>{formatTime(appointmentDate)}</FontedText>
-            </TouchableOpacity>
+              {t("appointments.tapToAddAppointment")}
+            </FontedText>
+          </View>
+        )}
 
-            {showTimePicker && (
-              <DateTimePicker
-                value={appointmentDate}
-                mode="time"
-                display="default"
-                onChange={onTimeChange}
+        {/* Appointment Modal */}
+        <Modal
+          animationType="slide"
+          transparent={true}
+          visible={modalVisible}
+          onRequestClose={() => setModalVisible(false)}
+        >
+          <View className="items-center justify-center flex-1 px-5 bg-black/50">
+            <ThemedView
+              backgroundColor="surface"
+              className="rounded-xl p-5 w-full max-h-[90%]"
+            >
+              <FontedText variant="heading-3" className="mb-5 text-center">
+                {editingAppointment
+                  ? t("appointments.editAppointment")
+                  : t("appointments.addNewAppointment")}
+              </FontedText>
+
+              <FontedText variant="body" className="mb-1">
+                {t("appointments.titleLabel")}
+              </FontedText>
+              <TextInput
+                className="border border-gray-300 rounded p-2.5 mb-4 text-base"
+                value={appointmentTitle}
+                onChangeText={setAppointmentTitle}
+                placeholder={t("appointments.titlePlaceholder")}
               />
-            )}
 
-            <FontedText variant="body" className="mb-1">
-              {t("appointments.notesLabel")}
-            </FontedText>
-            <TextInput
-              className="border border-gray-300 rounded p-2.5 mb-4 text-base h-[100px]"
-              style={{ textAlignVertical: "top" }}
-              value={appointmentNotes}
-              onChangeText={setAppointmentNotes}
-              placeholder={t("appointments.notesPlaceholder")}
-              multiline
-            />
-
-            <FontedText variant="body" className="mb-1">
-              {t("appointments.reminderLabel")}
-            </FontedText>
-            <View className="flex-row mb-5">
+              <FontedText variant="body" className="mb-1">
+                {t("appointments.dateLabel")}
+              </FontedText>
               <TouchableOpacity
-                className={`flex-1 py-2.5 items-center rounded ${
-                  appointmentReminder ? "bg-primary" : "bg-gray-200"
-                }`}
-                onPress={() => setAppointmentReminder(!appointmentReminder)}
+                className="p-3 mb-4 border border-gray-300 rounded"
+                onPress={() => setShowDatePicker(true)}
               >
-                <FontedText
-                  className={
-                    appointmentReminder ? "text-white" : "text-gray-700"
-                  }
+                <FontedText>{formatDate(appointmentDate)}</FontedText>
+              </TouchableOpacity>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={appointmentDate}
+                  mode="date"
+                  display="default"
+                  onChange={onDateChange}
+                />
+              )}
+
+              <FontedText variant="body" className="mb-1">
+                {t("appointments.timeLabel")}
+              </FontedText>
+              <TouchableOpacity
+                className="p-3 mb-4 border border-gray-300 rounded"
+                onPress={() => setShowTimePicker(true)}
+              >
+                <FontedText>{formatTime(appointmentDate)}</FontedText>
+              </TouchableOpacity>
+
+              {showTimePicker && (
+                <DateTimePicker
+                  value={appointmentDate}
+                  mode="time"
+                  display="default"
+                  onChange={onTimeChange}
+                />
+              )}
+
+              <FontedText variant="body" className="mb-1">
+                {t("appointments.notesLabel")}
+              </FontedText>
+              <TextInput
+                className="border border-gray-300 rounded p-2.5 mb-4 text-base h-[100px]"
+                style={{ textAlignVertical: "top" }}
+                value={appointmentNotes}
+                onChangeText={setAppointmentNotes}
+                placeholder={t("appointments.notesPlaceholder")}
+                multiline
+              />
+
+              <FontedText variant="body" className="mb-1">
+                {t("appointments.reminderLabel")}
+              </FontedText>
+              <View className="flex-row mb-5">
+                <TouchableOpacity
+                  className={`flex-1 py-2.5 items-center rounded ${
+                    appointmentReminder ? "bg-primary" : "bg-gray-200"
+                  }`}
+                  onPress={() => setAppointmentReminder(!appointmentReminder)}
                 >
-                  {appointmentReminder ? t("common.yes") : t("common.no")}
-                </FontedText>
-              </TouchableOpacity>
-            </View>
+                  <FontedText
+                    className={
+                      appointmentReminder ? "text-white" : "text-gray-700"
+                    }
+                  >
+                    {appointmentReminder ? t("common.yes") : t("common.no")}
+                  </FontedText>
+                </TouchableOpacity>
+              </View>
 
-            <View className="flex-row justify-between">
-              <TouchableOpacity
-                className="flex-1 p-4 rounded bg-gray-500 mr-2.5 items-center"
-                onPress={() => setModalVisible(false)}
-              >
-                <FontedText className="text-white font-bold text-base">
-                  {t("common.buttons.cancel")}
-                </FontedText>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="flex-1 p-4 rounded bg-primary items-center"
-                onPress={handleSaveAppointment}
-              >
-                <FontedText className="text-white font-bold text-base">
-                  {t("common.buttons.save")}
-                </FontedText>
-              </TouchableOpacity>
-            </View>
-          </ThemedView>
-        </View>
-      </Modal>
-    </ThemedView>
+              <View className="flex-row justify-between">
+                <TouchableOpacity
+                  className="flex-1 p-4 rounded bg-gray-500 mr-2.5 items-center"
+                  onPress={() => setModalVisible(false)}
+                >
+                  <FontedText className="text-base font-bold text-white">
+                    {t("common.buttons.cancel")}
+                  </FontedText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className="items-center flex-1 p-4 rounded bg-primary"
+                  onPress={handleSaveAppointment}
+                >
+                  <FontedText className="text-base font-bold text-white">
+                    {t("common.buttons.save")}
+                  </FontedText>
+                </TouchableOpacity>
+              </View>
+            </ThemedView>
+          </View>
+        </Modal>
+      </ThemedView>
+    </SafeAreaWrapper>
   );
 };
 

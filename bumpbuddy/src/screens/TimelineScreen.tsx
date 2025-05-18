@@ -18,7 +18,9 @@ import { AppDispatch, RootState } from "../redux/store";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
+import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
+import { useTheme } from "../contexts/ThemeContext";
 import timelineService from "../services/timelineService";
 
 type Props = {};
@@ -29,6 +31,7 @@ const TimelineScreen: React.FC<Props> = () => {
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState<1 | 2 | 3>(1);
   const [refreshing, setRefreshing] = useState(false);
+  const { isDark } = useTheme();
 
   const { currentWeek, allWeeks, loading, error } = useSelector(
     (state: RootState) => state.timeline
@@ -97,12 +100,16 @@ const TimelineScreen: React.FC<Props> = () => {
 
     return (
       <Pressable
-        className={`bg-white dark:bg-gray-800 rounded-xl p-4 mb-3 shadow-sm ${
+        className={`p-4 mb-3 rounded-xl shadow-sm ${
           isCurrentWeek ? "border-2 border-blue-500" : ""
         }`}
+        style={{
+          backgroundColor: isDark ? "#171717" : "#FFFFFF",
+          elevation: 1,
+        }}
         onPress={() => handleWeekSelect(item.week)}
       >
-        <View className="flex-row justify-between items-center mb-2">
+        <View className="flex-row items-center justify-between mb-2">
           <FontedText
             variant={isCurrentWeek ? "heading-4" : "body"}
             className={isCurrentWeek ? "text-blue-500" : ""}
@@ -110,7 +117,7 @@ const TimelineScreen: React.FC<Props> = () => {
             {t("timeline.weekLabel", { week: item.week })}
           </FontedText>
           {isCurrentWeek && (
-            <FontedText className="text-xs text-white bg-blue-500 px-2 py-1 rounded-full">
+            <FontedText className="px-2 py-1 text-xs text-white bg-blue-500 rounded-full">
               {t("timeline.currentWeek")}
             </FontedText>
           )}
@@ -135,97 +142,125 @@ const TimelineScreen: React.FC<Props> = () => {
   };
 
   return (
-    <ThemedView className="flex-1 p-4">
-      <View className="flex-row justify-between items-center mb-2">
-        <FontedText variant="heading-2">{t("timeline.title")}</FontedText>
-        <TouchableOpacity
-          className="bg-primary px-3 py-1.5 rounded"
-          onPress={handleClearCache}
-          disabled={refreshing}
-        >
-          <FontedText className="text-white font-medium">
-            {refreshing ? "Refreshing..." : "Refresh"}
-          </FontedText>
-        </TouchableOpacity>
-      </View>
-
-      {/* Debug info */}
-      <FontedText variant="caption" colorVariant="secondary" className="mb-2">
-        Weeks loaded: {allWeeks.length} | Filtered: {filteredWeeks.length}
-      </FontedText>
-
-      {/* Trimester tabs */}
-      <View className="flex-row mb-4 rounded-lg overflow-hidden bg-gray-200 dark:bg-gray-700">
-        <Pressable
-          className={`flex-1 py-3 items-center ${
-            activeTab === 1 ? "bg-primary" : ""
-          }`}
-          onPress={() => handleTabChange(1)}
-        >
-          <FontedText
-            className={
-              activeTab === 1
-                ? "text-white"
-                : "text-gray-500 dark:text-gray-300"
-            }
+    <SafeAreaWrapper>
+      <ThemedView className="flex-1 p-4">
+        <View className="flex-row items-center justify-between mb-2">
+          <FontedText variant="heading-2">{t("timeline.title")}</FontedText>
+          <TouchableOpacity
+            className="px-3 py-1.5 rounded bg-primary dark:bg-primary-dark"
+            style={{
+              backgroundColor: isDark ? "#5DBDA8" : "#87D9C4",
+            }}
+            onPress={handleClearCache}
+            disabled={refreshing}
           >
-            {t("timeline.firstTrimester")}
-          </FontedText>
-        </Pressable>
-        <Pressable
-          className={`flex-1 py-3 items-center ${
-            activeTab === 2 ? "bg-primary" : ""
-          }`}
-          onPress={() => handleTabChange(2)}
-        >
-          <FontedText
-            className={
-              activeTab === 2
-                ? "text-white"
-                : "text-gray-500 dark:text-gray-300"
-            }
-          >
-            {t("timeline.secondTrimester")}
-          </FontedText>
-        </Pressable>
-        <Pressable
-          className={`flex-1 py-3 items-center ${
-            activeTab === 3 ? "bg-primary" : ""
-          }`}
-          onPress={() => handleTabChange(3)}
-        >
-          <FontedText
-            className={
-              activeTab === 3
-                ? "text-white"
-                : "text-gray-500 dark:text-gray-300"
-            }
-          >
-            {t("timeline.thirdTrimester")}
-          </FontedText>
-        </Pressable>
-      </View>
+            <FontedText className="font-medium text-white">
+              {refreshing ? "Refreshing..." : "Refresh"}
+            </FontedText>
+          </TouchableOpacity>
+        </View>
 
-      {loading || refreshing ? (
-        <ActivityIndicator
-          size="large"
-          color="#007bff"
-          className="flex-1 justify-center items-center"
-        />
-      ) : error ? (
-        <FontedText className="text-red-500 text-center mt-4">
-          {error}
+        {/* Debug info */}
+        <FontedText variant="caption" colorVariant="secondary" className="mb-2">
+          Weeks loaded: {allWeeks.length} | Filtered: {filteredWeeks.length}
         </FontedText>
-      ) : (
-        <FlatList
-          data={filteredWeeks}
-          renderItem={renderWeekItem}
-          keyExtractor={(item) => item.week.toString()}
-          className="pb-4"
-          showsVerticalScrollIndicator={false}
-        />
-      )}
-    </ThemedView>
+
+        {/* Trimester tabs */}
+        <View
+          className="flex-row mb-4 overflow-hidden rounded-lg"
+          style={{
+            backgroundColor: isDark ? "#333333" : "#e5e7eb",
+          }}
+        >
+          <Pressable
+            className="items-center flex-1 py-3"
+            style={{
+              backgroundColor:
+                activeTab === 1
+                  ? isDark
+                    ? "#5DBDA8"
+                    : "#87D9C4"
+                  : "transparent",
+            }}
+            onPress={() => handleTabChange(1)}
+          >
+            <FontedText
+              className={
+                activeTab === 1
+                  ? "text-white"
+                  : "text-gray-500 dark:text-gray-300"
+              }
+            >
+              {t("timeline.firstTrimester")}
+            </FontedText>
+          </Pressable>
+          <Pressable
+            className="items-center flex-1 py-3"
+            style={{
+              backgroundColor:
+                activeTab === 2
+                  ? isDark
+                    ? "#5DBDA8"
+                    : "#87D9C4"
+                  : "transparent",
+            }}
+            onPress={() => handleTabChange(2)}
+          >
+            <FontedText
+              className={
+                activeTab === 2
+                  ? "text-white"
+                  : "text-gray-500 dark:text-gray-300"
+              }
+            >
+              {t("timeline.secondTrimester")}
+            </FontedText>
+          </Pressable>
+          <Pressable
+            className="items-center flex-1 py-3"
+            style={{
+              backgroundColor:
+                activeTab === 3
+                  ? isDark
+                    ? "#5DBDA8"
+                    : "#87D9C4"
+                  : "transparent",
+            }}
+            onPress={() => handleTabChange(3)}
+          >
+            <FontedText
+              className={
+                activeTab === 3
+                  ? "text-white"
+                  : "text-gray-500 dark:text-gray-300"
+              }
+            >
+              {t("timeline.thirdTrimester")}
+            </FontedText>
+          </Pressable>
+        </View>
+
+        {loading || refreshing ? (
+          <ActivityIndicator
+            size="large"
+            color={isDark ? "#60a5fa" : "#007bff"}
+            className="items-center justify-center flex-1"
+          />
+        ) : error ? (
+          <FontedText className="mt-4 text-center text-red-500">
+            {error}
+          </FontedText>
+        ) : (
+          <FlatList
+            data={filteredWeeks}
+            renderItem={renderWeekItem}
+            keyExtractor={(item) => item.week.toString()}
+            className="pb-4"
+            showsVerticalScrollIndicator={false}
+          />
+        )}
+      </ThemedView>
+    </SafeAreaWrapper>
   );
 };
 

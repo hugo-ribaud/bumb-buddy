@@ -12,6 +12,7 @@ import { logout, updateUser } from "../redux/slices/authSlice";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
+import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { RootState } from "../redux/store";
 import authService from "../services/authService";
@@ -147,147 +148,154 @@ const ProfileScreen = () => {
 
   if (!user) {
     return (
-      <ThemedView className="flex-1 p-5">
-        <FontedText>{t("auth.login.pleaseLoginFirst")}</FontedText>
-      </ThemedView>
+      <SafeAreaWrapper>
+        <ThemedView className="flex-1 p-5">
+          <FontedText>{t("auth.login.pleaseLoginFirst")}</FontedText>
+        </ThemedView>
+      </SafeAreaWrapper>
     );
   }
 
   return (
-    <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
-      <ThemedView className="flex-1 p-5">
-        <FontedText variant="heading-2" className="mb-5 text-center">
-          {t("profile.title")}
-        </FontedText>
-
-        {/* Realtime Status Indicator */}
-        <View className="bg-blue-50 rounded-lg p-4 mb-5 border border-blue-200">
-          <FontedText className="font-bold text-blue-800">
-            {t("profile.realtime")}: {realtimeStatus}
+    <SafeAreaWrapper>
+      <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
+        <ThemedView className="flex-1 p-5">
+          <FontedText variant="heading-2" className="mb-5 text-center">
+            {t("profile.title")}
           </FontedText>
-          {lastUpdate && (
-            <FontedText className="mt-1 text-blue-700 italic">
-              {lastUpdate}
+
+          {/* Realtime Status Indicator */}
+          <View className="p-4 mb-5 border border-blue-200 rounded-lg bg-blue-50">
+            <FontedText className="font-bold text-blue-800">
+              {t("profile.realtime")}: {realtimeStatus}
             </FontedText>
-          )}
-        </View>
-
-        <ThemedView backgroundColor="surface" className="rounded-lg p-5 shadow">
-          <FontedText
-            variant="body-small"
-            colorVariant="secondary"
-            className="mt-4"
-          >
-            {t("auth.login.emailLabel")}
-          </FontedText>
-          <FontedText variant="body" className="mt-1 mb-1">
-            {user.email}
-          </FontedText>
-
-          {editing ? (
-            <>
-              <FontedText
-                variant="body-small"
-                colorVariant="secondary"
-                className="mt-4"
-              >
-                {t("profile.dueDate")}
-              </FontedText>
-              <TouchableOpacity
-                className="border border-gray-300 rounded px-2.5 py-2.5 mt-1 mb-4"
-                onPress={() => setShowDatePicker(true)}
-              >
-                <FontedText>{dueDate.toLocaleDateString()}</FontedText>
-              </TouchableOpacity>
-
-              {showDatePicker && (
-                <DateTimePicker
-                  value={dueDate}
-                  mode="date"
-                  display="default"
-                  onChange={onDateChange}
-                />
-              )}
-
-              <View className="flex-row justify-between">
-                <TouchableOpacity
-                  className="bg-gray-500 rounded p-3 flex-1 items-center mr-2.5"
-                  onPress={() => setEditing(false)}
-                >
-                  <FontedText className="text-white font-bold">
-                    {t("common.buttons.cancel")}
-                  </FontedText>
-                </TouchableOpacity>
-                <TouchableOpacity
-                  className="bg-primary rounded p-3 flex-1 items-center"
-                  onPress={handleSaveProfile}
-                  disabled={loading}
-                >
-                  {loading ? (
-                    <ActivityIndicator color="white" size="small" />
-                  ) : (
-                    <FontedText className="text-white font-bold">
-                      {t("common.buttons.save")}
-                    </FontedText>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </>
-          ) : (
-            <>
-              <FontedText
-                variant="body-small"
-                colorVariant="secondary"
-                className="mt-4"
-              >
-                {t("profile.dueDate")}
-              </FontedText>
-              <FontedText variant="body" className="mt-1 mb-1">
-                {user.dueDate
-                  ? new Date(user.dueDate).toLocaleDateString()
-                  : "Not set"}
-              </FontedText>
-
-              <FontedText
-                variant="body-small"
-                colorVariant="secondary"
-                className="mt-4"
-              >
-                {t("profile.pregnancyWeek")}
-              </FontedText>
-              <FontedText variant="body" className="mt-1 mb-1">
-                {user.pregnancyWeek !== undefined
-                  ? `Week ${user.pregnancyWeek}`
-                  : "Not set"}
-              </FontedText>
-
-              <TouchableOpacity
-                className="bg-primary rounded p-3 items-center mt-4"
-                onPress={() => setEditing(true)}
-              >
-                <FontedText className="text-white font-bold">
-                  {t("common.buttons.editProfile")}
-                </FontedText>
-              </TouchableOpacity>
-            </>
-          )}
-
-          <TouchableOpacity
-            className="bg-red-500 rounded p-3 items-center mt-7"
-            onPress={handleLogout}
-            disabled={loading}
-          >
-            {loading ? (
-              <ActivityIndicator color="white" size="small" />
-            ) : (
-              <FontedText className="text-white font-bold">
-                {t("common.buttons.logout")}
+            {lastUpdate && (
+              <FontedText className="mt-1 italic text-blue-700">
+                {lastUpdate}
               </FontedText>
             )}
-          </TouchableOpacity>
+          </View>
+
+          <ThemedView
+            backgroundColor="surface"
+            className="p-5 rounded-lg shadow"
+          >
+            <FontedText
+              variant="body-small"
+              colorVariant="secondary"
+              className="mt-4"
+            >
+              {t("auth.login.emailLabel")}
+            </FontedText>
+            <FontedText variant="body" className="mt-1 mb-1">
+              {user.email}
+            </FontedText>
+
+            {editing ? (
+              <>
+                <FontedText
+                  variant="body-small"
+                  colorVariant="secondary"
+                  className="mt-4"
+                >
+                  {t("profile.dueDate")}
+                </FontedText>
+                <TouchableOpacity
+                  className="border border-gray-300 rounded px-2.5 py-2.5 mt-1 mb-4"
+                  onPress={() => setShowDatePicker(true)}
+                >
+                  <FontedText>{dueDate.toLocaleDateString()}</FontedText>
+                </TouchableOpacity>
+
+                {showDatePicker && (
+                  <DateTimePicker
+                    value={dueDate}
+                    mode="date"
+                    display="default"
+                    onChange={onDateChange}
+                  />
+                )}
+
+                <View className="flex-row justify-between">
+                  <TouchableOpacity
+                    className="bg-gray-500 rounded p-3 flex-1 items-center mr-2.5"
+                    onPress={() => setEditing(false)}
+                  >
+                    <FontedText className="font-bold text-white">
+                      {t("common.buttons.cancel")}
+                    </FontedText>
+                  </TouchableOpacity>
+                  <TouchableOpacity
+                    className="items-center flex-1 p-3 rounded bg-primary"
+                    onPress={handleSaveProfile}
+                    disabled={loading}
+                  >
+                    {loading ? (
+                      <ActivityIndicator color="white" size="small" />
+                    ) : (
+                      <FontedText className="font-bold text-white">
+                        {t("common.buttons.save")}
+                      </FontedText>
+                    )}
+                  </TouchableOpacity>
+                </View>
+              </>
+            ) : (
+              <>
+                <FontedText
+                  variant="body-small"
+                  colorVariant="secondary"
+                  className="mt-4"
+                >
+                  {t("profile.dueDate")}
+                </FontedText>
+                <FontedText variant="body" className="mt-1 mb-1">
+                  {user.dueDate
+                    ? new Date(user.dueDate).toLocaleDateString()
+                    : "Not set"}
+                </FontedText>
+
+                <FontedText
+                  variant="body-small"
+                  colorVariant="secondary"
+                  className="mt-4"
+                >
+                  {t("profile.pregnancyWeek")}
+                </FontedText>
+                <FontedText variant="body" className="mt-1 mb-1">
+                  {user.pregnancyWeek !== undefined
+                    ? `Week ${user.pregnancyWeek}`
+                    : "Not set"}
+                </FontedText>
+
+                <TouchableOpacity
+                  className="items-center p-3 mt-4 rounded bg-primary"
+                  onPress={() => setEditing(true)}
+                >
+                  <FontedText className="font-bold text-white">
+                    {t("common.buttons.editProfile")}
+                  </FontedText>
+                </TouchableOpacity>
+              </>
+            )}
+
+            <TouchableOpacity
+              className="items-center p-3 bg-red-500 rounded mt-7"
+              onPress={handleLogout}
+              disabled={loading}
+            >
+              {loading ? (
+                <ActivityIndicator color="white" size="small" />
+              ) : (
+                <FontedText className="font-bold text-white">
+                  {t("common.buttons.logout")}
+                </FontedText>
+              )}
+            </TouchableOpacity>
+          </ThemedView>
         </ThemedView>
-      </ThemedView>
-    </ScrollView>
+      </ScrollView>
+    </SafeAreaWrapper>
   );
 };
 
