@@ -12,7 +12,10 @@ import React, {
   useEffect,
   useState,
 } from "react";
+import { useSelector } from "react-redux";
 import { isRTL, supportedLanguages } from "../i18n/languages";
+import { RootState } from "../redux/store";
+import authService from "../services/authService";
 
 // Storage key for language preference
 const LANGUAGE_STORAGE_KEY = "bumpbuddy_language";
@@ -47,6 +50,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 }) => {
   const [language, setLanguageState] = useState(i18next.language || "en");
   const [rtl, setRTL] = useState(isRTL(language));
+  const { user } = useSelector((state: RootState) => state.auth);
 
   // Load saved language on mount
   useEffect(() => {
@@ -84,6 +88,24 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 
       // Save to AsyncStorage
       await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, lang);
+
+      // Save to user profile in database if user is logged in
+      if (user) {
+        try {
+          await authService.updateProfile({
+            id: user.id,
+            appSettings: {
+              language: lang,
+            },
+          });
+          console.log(`Language preference (${lang}) saved to user profile`);
+        } catch (error) {
+          console.error(
+            "Failed to save language preference to profile:",
+            error
+          );
+        }
+      }
 
       console.log(`Language changed to ${lang}`);
     } catch (error) {

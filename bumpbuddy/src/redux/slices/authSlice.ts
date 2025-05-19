@@ -10,6 +10,16 @@ interface User {
   createdAt: string;
 }
 
+// These are the database field names used for consistency
+interface DatabaseUser {
+  id: string;
+  email: string;
+  first_name?: string;
+  due_date?: string;
+  pregnancy_week?: number;
+  created_at: string;
+}
+
 interface AuthState {
   user: User | null;
   session: any | null;
@@ -41,14 +51,7 @@ const authSlice = createSlice({
     authSuccess: (
       state,
       action: PayloadAction<{
-        user: {
-          id: string;
-          email: string;
-          first_name?: string;
-          due_date?: string;
-          pregnancy_week?: number;
-          created_at: string;
-        };
+        user: DatabaseUser;
         session: any;
       }>
     ) => {
@@ -84,10 +87,37 @@ const authSlice = createSlice({
         state.user = { ...state.user, ...action.payload };
       }
     },
+    // Update user profile with database fields
+    updateUserFromDB: (state, action: PayloadAction<Partial<DatabaseUser>>) => {
+      if (state.user) {
+        // Map DB fields to our User interface
+        const updates: Partial<User> = {};
+
+        if (action.payload.id !== undefined) updates.id = action.payload.id;
+        if (action.payload.email !== undefined)
+          updates.email = action.payload.email;
+        if (action.payload.first_name !== undefined)
+          updates.name = action.payload.first_name;
+        if (action.payload.due_date !== undefined)
+          updates.dueDate = action.payload.due_date;
+        if (action.payload.pregnancy_week !== undefined)
+          updates.pregnancyWeek = action.payload.pregnancy_week;
+        if (action.payload.created_at !== undefined)
+          updates.createdAt = action.payload.created_at;
+
+        state.user = { ...state.user, ...updates };
+      }
+    },
   },
 });
 
 // Export actions and reducer
-export const { authRequest, authSuccess, authFailure, logout, updateUser } =
-  authSlice.actions;
+export const {
+  authRequest,
+  authSuccess,
+  authFailure,
+  logout,
+  updateUser,
+  updateUserFromDB,
+} = authSlice.actions;
 export default authSlice.reducer;

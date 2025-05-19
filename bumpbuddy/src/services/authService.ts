@@ -16,6 +16,11 @@ interface UpdateProfileParams {
   name?: string;
   dueDate?: string;
   pregnancyWeek?: number;
+  appSettings?: {
+    theme?: string;
+    units?: string;
+    language?: string;
+  };
 }
 
 // Authentication service
@@ -92,19 +97,53 @@ const authService = {
     name,
     dueDate,
     pregnancyWeek,
+    appSettings,
   }: UpdateProfileParams) => {
     try {
-      const { data, error } = await supabase
+      // Get current user data to merge with updates
+      const { data: currentUser, error: fetchError } = await supabase
         .from("users")
-        .update({
-          first_name: name,
-          due_date: dueDate,
-          pregnancy_week: pregnancyWeek,
-        })
-        .eq("id", id);
+        .select("app_settings")
+        .eq("id", id)
+        .single();
 
-      if (error) throw error;
-      return { data, error: null };
+      if (fetchError) throw fetchError;
+
+      // Build update object
+      const updates: any = {};
+      if (name !== undefined) updates.first_name = name;
+      if (dueDate !== undefined) updates.due_date = dueDate;
+      if (pregnancyWeek !== undefined) updates.pregnancy_week = pregnancyWeek;
+
+      // Handle app settings update
+      if (appSettings) {
+        // Merge with existing settings instead of overwriting
+        const currentSettings = currentUser.app_settings || {};
+        const updatedSettings = { ...currentSettings };
+
+        if (appSettings.theme !== undefined)
+          updatedSettings.theme = appSettings.theme;
+        if (appSettings.units !== undefined)
+          updatedSettings.units = appSettings.units;
+        if (appSettings.language !== undefined)
+          updatedSettings.language = appSettings.language;
+
+        updates.app_settings = updatedSettings;
+      }
+
+      // Make update if there's anything to update
+      if (Object.keys(updates).length > 0) {
+        const { data, error } = await supabase
+          .from("users")
+          .update(updates)
+          .eq("id", id)
+          .select();
+
+        if (error) throw error;
+        return { data, error: null };
+      }
+
+      return { data: currentUser, error: null };
     } catch (error: any) {
       return { data: null, error: error.message || "Failed to update profile" };
     }

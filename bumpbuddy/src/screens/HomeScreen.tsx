@@ -16,6 +16,10 @@ const HomeScreen = () => {
   // Get current pregnancy week from user data or default to week 1
   const pregnancyWeek = user?.pregnancyWeek || 1;
 
+  // Get user's name or fallback to friendly default
+  const userName =
+    user?.name || user?.email?.split("@")[0] || t("common.labels.mom");
+
   // Mock data for weekly content - in a real app, this would come from a database
   const weeklyContent = {
     title: t("home.weekTitle", { week: pregnancyWeek }),
@@ -91,9 +95,7 @@ const HomeScreen = () => {
             <View className="flex-row items-center justify-between mb-5">
               <View>
                 <FontedText variant="heading-2" className="font-bold">
-                  {t("home.welcome", {
-                    name: user?.email?.split("@")[0] || "Mom",
-                  })}
+                  {t("home.welcome", { name: userName })}
                 </FontedText>
                 <FontedText
                   textType="secondary"

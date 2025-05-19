@@ -6,6 +6,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import supabase from "../config/supabaseConfig";
 import { useTheme } from "../contexts/ThemeContext";
 import { RootState } from "../redux/store";
 import AppointmentsScreen from "../screens/AppointmentsScreen";
@@ -133,14 +134,37 @@ const RootNavigator = () => {
         }
 
         if (data.session.user) {
+          const userId = data.session.user.id;
+
+          // Fetch user data from public.users table
+          const { data: userData, error: userError } = await supabase
+            .from("users")
+            .select("*")
+            .eq("id", userId)
+            .single();
+
+          if (userError) {
+            console.error("Error fetching user data:", userError);
+
+            // Fall back to basic user data from session
+            dispatch(
+              authSuccess({
+                user: {
+                  id: userId,
+                  email: data.session.user.email || "",
+                  created_at:
+                    data.session.user.created_at || new Date().toISOString(),
+                },
+                session: data.session,
+              })
+            );
+            return;
+          }
+
+          // Dispatch success with user data
           dispatch(
             authSuccess({
-              user: {
-                id: data.session.user.id,
-                email: data.session.user.email || "",
-                createdAt:
-                  data.session.user.created_at || new Date().toISOString(),
-              },
+              user: userData,
               session: data.session,
             })
           );

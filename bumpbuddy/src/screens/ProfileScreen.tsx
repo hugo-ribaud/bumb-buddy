@@ -17,6 +17,7 @@ import FontedText from "../components/FontedText";
 import LanguageSwitcher from "../components/LanguageSwitcher";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
+import { useTheme } from "../contexts/ThemeContext";
 import { RootState } from "../redux/store";
 import authService from "../services/authService";
 import realtimeService from "../services/realtimeService";
@@ -26,6 +27,7 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const colorScheme = useColorScheme();
+  const { setTheme } = useTheme();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -61,6 +63,22 @@ const ProfileScreen = () => {
             pregnancyWeek: payload.new.pregnancy_week,
             // Add any other fields that may have changed
           };
+
+          // Check if app_settings were updated
+          if (payload.new.app_settings) {
+            // If theme setting changed, update theme context
+            if (payload.new.app_settings.theme) {
+              const savedTheme = payload.new.app_settings.theme;
+              if (
+                savedTheme === "light" ||
+                savedTheme === "dark" ||
+                savedTheme === "system"
+              ) {
+                setTheme(savedTheme);
+                console.log("Theme updated from remote:", savedTheme);
+              }
+            }
+          }
 
           dispatch(updateUser(updatedUserData));
         }
