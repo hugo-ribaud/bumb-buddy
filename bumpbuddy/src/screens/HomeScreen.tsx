@@ -4,10 +4,9 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
 import FontedText from "../components/FontedText";
-import LanguageSwitcher from "../components/LanguageSwitcher";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
-import ThemeToggle from "../components/ThemeToggle";
 import ThemedView from "../components/ThemedView";
+import ThemeToggle from "../components/ThemeToggle";
 import { RootState } from "../redux/store";
 
 const HomeScreen = () => {
@@ -106,9 +105,6 @@ const HomeScreen = () => {
               </View>
               <ThemeToggle />
             </View>
-
-            {/* Add Language Switcher */}
-            <LanguageSwitcher />
 
             <ThemedView
               backgroundColor="surface"

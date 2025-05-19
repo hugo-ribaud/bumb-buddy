@@ -43,6 +43,7 @@ BumpBuddy follows a modular architecture pattern with clear separation of concer
 - **Adapter Pattern**: For handling offline/online mode transitions seamlessly
 - **Service Pattern**: Used for service abstractions like `timelineService.ts` with caching strategies
 - **Caching Pattern**: Implemented for timeline data with expiration policy
+- **Icon library**: Always use lucide-react icon library
 
 ## Data Models and Relationships
 

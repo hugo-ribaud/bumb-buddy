@@ -4,6 +4,7 @@ import { PayloadAction, createSlice } from "@reduxjs/toolkit";
 interface User {
   id: string;
   email: string;
+  name?: string;
   dueDate?: string;
   pregnancyWeek?: number;
   createdAt: string;
@@ -39,11 +40,29 @@ const authSlice = createSlice({
     // Auth success (login/signup)
     authSuccess: (
       state,
-      action: PayloadAction<{ user: User; session: any }>
+      action: PayloadAction<{
+        user: {
+          id: string;
+          email: string;
+          first_name?: string;
+          due_date?: string;
+          pregnancy_week?: number;
+          created_at: string;
+        };
+        session: any;
+      }>
     ) => {
       state.isLoading = false;
       state.isAuthenticated = true;
-      state.user = action.payload.user;
+      // Map DB fields to our User interface
+      state.user = {
+        id: action.payload.user.id,
+        email: action.payload.user.email,
+        name: action.payload.user.first_name,
+        dueDate: action.payload.user.due_date,
+        pregnancyWeek: action.payload.user.pregnancy_week,
+        createdAt: action.payload.user.created_at,
+      };
       state.session = action.payload.session;
       state.error = null;
     },

@@ -1,111 +1,149 @@
 /**
  * Language Switcher Component
  * A component for switching between available languages
+ * Uses react-native-element-dropdown for a more customizable experience
  */
 
-import React, { useState } from "react";
+import React from "react";
 import { useTranslation } from "react-i18next";
-import {
-  FlatList,
-  Modal,
-  Pressable,
-  Text,
-  TouchableOpacity,
-  View,
-} from "react-native";
+import { View, useColorScheme } from "react-native";
+import { Dropdown } from "react-native-element-dropdown";
 import { useLanguage } from "../contexts/LanguageContext";
+import FontedText from "./FontedText";
+import LanguageFlag from "./LanguageFlag";
 
 interface LanguageOption {
-  code: string;
-  nativeName: string;
-  name: string;
+  value: string;
+  label: string;
+  nativeLabel: string;
 }
 
 export const LanguageSwitcher: React.FC = () => {
   const { t } = useTranslation();
   const { language, setLanguage, supportedLanguages } = useLanguage();
-  const [modalVisible, setModalVisible] = useState(false);
+  const colorScheme = useColorScheme();
+  const isDark = colorScheme === "dark";
 
   // Create array of language options
   const languageOptions: LanguageOption[] = Object.entries(
     supportedLanguages
   ).map(([code, { nativeName, name }]) => ({
-    code,
-    nativeName,
-    name,
+    value: code,
+    label: name,
+    nativeLabel: nativeName,
   }));
 
-  const handleLanguageSelect = async (langCode: string) => {
-    setModalVisible(false);
-    if (langCode !== language) {
-      await setLanguage(langCode);
+  const handleLanguageSelect = async (item: LanguageOption) => {
+    if (item.value !== language) {
+      await setLanguage(item.value);
     }
   };
 
-  const displayLanguage =
-    supportedLanguages[language as keyof typeof supportedLanguages]
-      ?.nativeName || language;
+  // Custom rendering of dropdown items
+  const renderItem = (item: LanguageOption) => {
+    const isSelected = item.value === language;
+
+    return (
+      <View
+        className={`flex-row items-center px-4 py-3 ${
+          isSelected ? "bg-primary-light/20 dark:bg-primary-dark/30" : ""
+        }`}
+      >
+        <LanguageFlag languageCode={item.value} size="medium" />
+        <View className="flex-1 ml-3">
+          <FontedText
+            variant="body"
+            className="font-medium text-gray-800 dark:text-gray-100"
+          >
+            {item.nativeLabel}
+          </FontedText>
+          {item.nativeLabel !== item.label && (
+            <FontedText
+              variant="caption"
+              className="text-gray-500 dark:text-gray-300"
+            >
+              {item.label}
+            </FontedText>
+          )}
+        </View>
+        {isSelected && (
+          <View className="w-6 h-6 rounded-full bg-primary dark:bg-primary-dark items-center justify-center">
+            <FontedText className="text-white font-bold text-xs">✓</FontedText>
+          </View>
+        )}
+      </View>
+    );
+  };
+
+  // Render the flag icon on the left side of the dropdown
+  const renderLeftIcon = () => {
+    return (
+      <View className="mr-2.5">
+        <LanguageFlag languageCode={language} size="medium" />
+      </View>
+    );
+  };
+
+  const selectedLang = languageOptions.find((item) => item.value === language);
+  const selectedLabel = selectedLang ? selectedLang.nativeLabel : "";
 
   return (
     <View className="my-2.5">
-      <Text className="text-base mb-2 font-medium">
+      <FontedText variant="body" className="mb-2 font-medium">
         {t("settings.languageLabel")}
-      </Text>
+      </FontedText>
 
-      <Pressable
-        className="flex-row justify-between items-center p-3 bg-gray-100 rounded-lg border border-gray-200"
-        onPress={() => setModalVisible(true)}
-      >
-        <Text className="text-base">{displayLanguage}</Text>
-        <Text className="text-sm text-gray-600">▼</Text>
-      </Pressable>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View className="flex-1 justify-center items-center bg-black/50">
-          <View className="w-4/5 bg-white rounded-xl p-5 items-center shadow-md max-h-[70%]">
-            <Text className="text-lg font-bold mb-4 text-center">
-              {t("settings.languageLabel")}
-            </Text>
-
-            <FlatList
-              data={languageOptions}
-              keyExtractor={(item) => item.code}
-              renderItem={({ item }) => (
-                <TouchableOpacity
-                  className={`flex-row items-center py-3 px-4 border-b border-gray-100 w-full ${
-                    item.code === language ? "bg-blue-50" : ""
-                  }`}
-                  onPress={() => handleLanguageSelect(item.code)}
-                >
-                  <Text className="text-base flex-1">{item.nativeName}</Text>
-                  {item.nativeName !== item.name && (
-                    <Text className="text-sm text-gray-600 ml-2.5">
-                      ({item.name})
-                    </Text>
-                  )}
-                  {item.code === language && (
-                    <Text className="text-lg text-blue-700 ml-2.5">✓</Text>
-                  )}
-                </TouchableOpacity>
-              )}
-            />
-
-            <TouchableOpacity
-              className="mt-5 py-2.5 px-5 bg-gray-100 rounded-lg"
-              onPress={() => setModalVisible(false)}
-            >
-              <Text className="text-base text-gray-800">
-                {t("common.buttons.cancel")}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
+      <Dropdown
+        style={{
+          height: 56,
+          paddingHorizontal: 12,
+          paddingVertical: 8,
+          borderRadius: 12,
+          borderWidth: 1,
+          borderColor: isDark ? "#374151" : "#e5e7eb",
+          backgroundColor: isDark ? "#1f2937" : "white",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 1 },
+          shadowOpacity: isDark ? 0.2 : 0.1,
+          shadowRadius: 2,
+          elevation: 2,
+        }}
+        containerStyle={{
+          borderRadius: 12,
+          backgroundColor: isDark ? "#1f2937" : "white",
+          borderWidth: 1,
+          borderColor: isDark ? "#374151" : "#e5e7eb",
+          shadowColor: "#000",
+          shadowOffset: { width: 0, height: 4 },
+          shadowOpacity: isDark ? 0.25 : 0.1,
+          shadowRadius: 5,
+          elevation: 5,
+        }}
+        itemContainerStyle={{
+          borderBottomWidth: 1,
+          borderBottomColor: isDark ? "#374151" : "#f0f0f0",
+        }}
+        activeColor={isDark ? "#374151" : "#f9fafb"}
+        selectedTextStyle={{
+          fontSize: 16,
+          fontWeight: "500",
+          color: isDark ? "#f9fafb" : "#1f2937",
+        }}
+        placeholderStyle={{
+          fontSize: 16,
+          color: isDark ? "#9ca3af" : "#6b7280",
+        }}
+        data={languageOptions}
+        maxHeight={300}
+        labelField="nativeLabel"
+        valueField="value"
+        value={language}
+        onChange={handleLanguageSelect}
+        renderItem={renderItem}
+        renderLeftIcon={renderLeftIcon}
+        placeholder={selectedLabel}
+        search={false}
+      />
     </View>
   );
 };

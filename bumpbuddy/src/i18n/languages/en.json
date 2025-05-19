@@ -82,13 +82,19 @@
     "changePassword": "Change Password",
     "logOut": "Log Out",
     "settings": "Settings",
+    "name": "Name",
+    "namePlaceholder": "Enter your name",
+    "userDetails": "User Details",
+    "languageSettings": "Language Settings",
+    "selectYourLanguage": "Choose your preferred language",
     "profileUpdated": "Profile updated at",
     "realtimeConnected": "Connected to Realtime",
     "realtimeConnectionFailed": "Failed to connect to Realtime",
     "realtimeError": "Error connecting to Realtime",
     "profileUpdateSuccess": "Profile updated successfully",
     "profileUpdateError": "Failed to update profile",
-    "realtime": "Realtime"
+    "realtime": "Realtime",
+    "notSet": "Not set"
   },
   "home": {
     "welcome": "Welcome, {{name}}!",

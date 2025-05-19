@@ -3,8 +3,10 @@ import {
   ActivityIndicator,
   Alert,
   ScrollView,
+  TextInput,
   TouchableOpacity,
   View,
+  useColorScheme,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { logout, updateUser } from "../redux/slices/authSlice";
@@ -12,6 +14,7 @@ import { logout, updateUser } from "../redux/slices/authSlice";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
+import LanguageSwitcher from "../components/LanguageSwitcher";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { RootState } from "../redux/store";
@@ -22,6 +25,7 @@ const ProfileScreen = () => {
   const { t } = useTranslation();
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
+  const colorScheme = useColorScheme();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -33,6 +37,7 @@ const ProfileScreen = () => {
     user?.dueDate ? new Date(user.dueDate) : new Date()
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [name, setName] = useState(user?.name || "");
 
   // Set up Realtime subscription
   useEffect(() => {
@@ -94,6 +99,8 @@ const ProfileScreen = () => {
   };
 
   const handleSaveProfile = async () => {
+    if (!user) return;
+
     setLoading(true);
     try {
       // Calculate pregnancy week based on due date
@@ -105,21 +112,27 @@ const ProfileScreen = () => {
       const weeksDiff = Math.floor(timeDiff / (1000 * 3600 * 24 * 7));
       const pregnancyWeek = 40 - weeksDiff;
 
-      // In a real implementation, we would update the user in Supabase here
-      // For example:
-      // await supabase
-      //   .from('users')
-      //   .update({
-      //     due_date: dueDate.toISOString().split("T")[0],
-      //     pregnancy_week: pregnancyWeek > 0 ? pregnancyWeek : 0
-      //   })
-      //   .eq('id', user.id);
+      // Update user in Supabase
+      const formattedDueDate = dueDate.toISOString().split("T")[0];
+      const calculatedPregnancyWeek = pregnancyWeek > 0 ? pregnancyWeek : 0;
+
+      const { error } = await authService.updateProfile({
+        id: user.id,
+        name,
+        dueDate: formattedDueDate,
+        pregnancyWeek: calculatedPregnancyWeek,
+      });
+
+      if (error) {
+        throw new Error(error);
+      }
 
       // Update Redux state
       dispatch(
         updateUser({
-          dueDate: dueDate.toISOString().split("T")[0],
-          pregnancyWeek: pregnancyWeek > 0 ? pregnancyWeek : 0,
+          name,
+          dueDate: formattedDueDate,
+          pregnancyWeek: calculatedPregnancyWeek,
         })
       );
 
@@ -165,21 +178,64 @@ const ProfileScreen = () => {
           </FontedText>
 
           {/* Realtime Status Indicator */}
-          <View className="p-4 mb-5 border border-blue-200 rounded-lg bg-blue-50">
-            <FontedText className="font-bold text-blue-800">
-              {t("profile.realtime")}: {realtimeStatus}
-            </FontedText>
+          <ThemedView
+            backgroundColor="surface"
+            className="p-4 mb-5 border-l-4 border-blue-400 dark:border-blue-600 rounded-lg"
+          >
+            <View className="flex-row items-center">
+              <View className="w-2.5 h-2.5 rounded-full bg-blue-400 dark:bg-blue-600 mr-2.5" />
+              <FontedText className="font-bold text-blue-800 dark:text-blue-300">
+                {t("profile.realtime")}: {realtimeStatus}
+              </FontedText>
+            </View>
             {lastUpdate && (
-              <FontedText className="mt-1 italic text-blue-700">
+              <FontedText className="mt-1.5 pl-5 italic text-blue-700 dark:text-blue-400">
                 {lastUpdate}
               </FontedText>
             )}
-          </View>
+          </ThemedView>
 
+          {/* Language Settings Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-lg shadow mb-5 overflow-hidden"
+          >
+            <View className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
+              <View className="flex-row items-center">
+                <FontedText
+                  variant="heading-4"
+                  colorVariant="primary"
+                  className="flex-1"
+                >
+                  {t("profile.languageSettings")}
+                </FontedText>
+                <FontedText
+                  variant="caption"
+                  colorVariant="secondary"
+                  className="text-right"
+                >
+                  {t("profile.selectYourLanguage")}
+                </FontedText>
+              </View>
+            </View>
+            <View className="p-5">
+              <LanguageSwitcher />
+            </View>
+          </ThemedView>
+
+          {/* User Details Section */}
           <ThemedView
             backgroundColor="surface"
             className="p-5 rounded-lg shadow"
           >
+            <FontedText
+              variant="heading-4"
+              colorVariant="primary"
+              className="mb-3"
+            >
+              {t("profile.userDetails")}
+            </FontedText>
+
             <FontedText
               variant="body-small"
               colorVariant="secondary"
@@ -198,10 +254,29 @@ const ProfileScreen = () => {
                   colorVariant="secondary"
                   className="mt-4"
                 >
+                  {t("profile.name")}
+                </FontedText>
+                <View className="border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-3 mt-1 mb-4 bg-white dark:bg-gray-800">
+                  <TextInput
+                    value={name}
+                    onChangeText={setName}
+                    placeholder={t("profile.namePlaceholder")}
+                    className="text-body dark:text-body-dark"
+                    placeholderTextColor={
+                      colorScheme === "dark" ? "#9ca3af" : "#6b7280"
+                    }
+                  />
+                </View>
+
+                <FontedText
+                  variant="body-small"
+                  colorVariant="secondary"
+                  className="mt-4"
+                >
                   {t("profile.dueDate")}
                 </FontedText>
                 <TouchableOpacity
-                  className="border border-gray-300 rounded px-2.5 py-2.5 mt-1 mb-4"
+                  className="border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-3.5 mt-1 mb-4 bg-white dark:bg-gray-800"
                   onPress={() => setShowDatePicker(true)}
                 >
                   <FontedText>{dueDate.toLocaleDateString()}</FontedText>
@@ -213,12 +288,13 @@ const ProfileScreen = () => {
                     mode="date"
                     display="default"
                     onChange={onDateChange}
+                    themeVariant={colorScheme === "dark" ? "dark" : "light"}
                   />
                 )}
 
-                <View className="flex-row justify-between">
+                <View className="flex-row justify-between mt-6">
                   <TouchableOpacity
-                    className="bg-gray-500 rounded p-3 flex-1 items-center mr-2.5"
+                    className="bg-gray-500 dark:bg-gray-600 rounded-xl p-3.5 flex-1 items-center mr-2.5"
                     onPress={() => setEditing(false)}
                   >
                     <FontedText className="font-bold text-white">
@@ -226,7 +302,7 @@ const ProfileScreen = () => {
                     </FontedText>
                   </TouchableOpacity>
                   <TouchableOpacity
-                    className="items-center flex-1 p-3 rounded bg-primary"
+                    className="items-center flex-1 p-3.5 rounded-xl bg-primary dark:bg-primary-dark"
                     onPress={handleSaveProfile}
                     disabled={loading}
                   >
@@ -247,12 +323,23 @@ const ProfileScreen = () => {
                   colorVariant="secondary"
                   className="mt-4"
                 >
+                  {t("profile.name")}
+                </FontedText>
+                <FontedText variant="body" className="mt-1 mb-1">
+                  {user.name || t("profile.notSet")}
+                </FontedText>
+
+                <FontedText
+                  variant="body-small"
+                  colorVariant="secondary"
+                  className="mt-4"
+                >
                   {t("profile.dueDate")}
                 </FontedText>
                 <FontedText variant="body" className="mt-1 mb-1">
                   {user.dueDate
                     ? new Date(user.dueDate).toLocaleDateString()
-                    : "Not set"}
+                    : t("profile.notSet")}
                 </FontedText>
 
                 <FontedText
@@ -280,7 +367,7 @@ const ProfileScreen = () => {
             )}
 
             <TouchableOpacity
-              className="items-center p-3 bg-red-500 rounded mt-7"
+              className="items-center p-3 bg-red-500 dark:bg-red-600 rounded mt-7"
               onPress={handleLogout}
               disabled={loading}
             >

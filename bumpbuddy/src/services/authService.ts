@@ -11,6 +11,13 @@ interface SignInParams {
   password: string;
 }
 
+interface UpdateProfileParams {
+  id: string;
+  name?: string;
+  dueDate?: string;
+  pregnancyWeek?: number;
+}
+
 // Authentication service
 const authService = {
   // Sign up a new user
@@ -76,6 +83,30 @@ const authService = {
       return { data, error: null };
     } catch (error: any) {
       return { data: null, error: error.message || "Failed to reset password" };
+    }
+  },
+
+  // Update user profile
+  updateProfile: async ({
+    id,
+    name,
+    dueDate,
+    pregnancyWeek,
+  }: UpdateProfileParams) => {
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .update({
+          first_name: name,
+          due_date: dueDate,
+          pregnancy_week: pregnancyWeek,
+        })
+        .eq("id", id);
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error: any) {
+      return { data: null, error: error.message || "Failed to update profile" };
     }
   },
 };

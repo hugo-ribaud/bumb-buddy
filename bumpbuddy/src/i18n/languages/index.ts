@@ -16,16 +16,19 @@ export const supportedLanguages = {
     name: "English",
     nativeName: "English",
     isRTL: false,
+    flag: "🇬🇧",
   },
   es: {
     name: "Spanish",
     nativeName: "Español",
     isRTL: false,
+    flag: "🇪🇸",
   },
   fr: {
     name: "French",
     nativeName: "Français",
     isRTL: false,
+    flag: "🇫🇷",
   },
 };
 
@@ -45,6 +48,14 @@ export const getLanguageName = (language: string): string => {
   );
 };
 
+// Get language flag
+export const getLanguageFlag = (language: string): string => {
+  return (
+    supportedLanguages[language as keyof typeof supportedLanguages]?.flag ||
+    "🌐"
+  );
+};
+
 // Default language fallback
 export const defaultLanguage = "en";
 
@@ -53,5 +64,10 @@ export const getLanguageInfo = (code: string) => {
   if (code in supportedLanguages) {
     return supportedLanguages[code as keyof typeof supportedLanguages];
   }
-  return { name: code, nativeName: code, isRTL: isRTL(code) };
+  return {
+    name: code,
+    nativeName: code,
+    isRTL: isRTL(code),
+    flag: "🌐",
+  };
 };
