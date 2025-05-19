@@ -88,6 +88,23 @@ export interface SleepLog {
   updated_at: string;
 }
 
+export interface ExerciseLog {
+  id: string;
+  user_id: string;
+  date: string;
+  time: string;
+  exercise_type: string; // e.g., 'walking', 'yoga', 'swimming', etc.
+  duration: number; // in minutes
+  intensity?: number; // Scale of 1-5, where 1 is very light and 5 is very intense
+  modified_positions?: boolean; // whether exercise positions were modified for pregnancy
+  heart_rate?: number; // in bpm (optional)
+  felt_contractions?: boolean;
+  felt_discomfort?: boolean;
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Cache keys
 const SYMPTOMS_CACHE_KEY = "health_symptoms_cache";
 const KICK_COUNTS_CACHE_KEY = "health_kick_counts_cache";
@@ -96,6 +113,7 @@ const CONTRACTIONS_CACHE_KEY = "health_contractions_cache";
 const BLOOD_PRESSURE_LOGS_CACHE_KEY = "health_bp_logs_cache";
 const MOOD_LOGS_CACHE_KEY = "health_mood_logs_cache";
 const SLEEP_LOGS_CACHE_KEY = "health_sleep_logs_cache";
+const EXERCISE_LOGS_CACHE_KEY = "health_exercise_logs_cache";
 
 // Health tracking service
 const healthService = {
@@ -982,6 +1000,146 @@ const healthService = {
       return true;
     } catch (error) {
       console.error("Error in deleteSleepLog:", error);
+      return false;
+    }
+  },
+
+  // Exercise Tracking
+  getExerciseLogs: async (userId: string): Promise<ExerciseLog[]> => {
+    try {
+      // Try to get from cache first
+      const cachedData = await AsyncStorage.getItem(EXERCISE_LOGS_CACHE_KEY);
+      let exerciseLogs: ExerciseLog[] = [];
+
+      if (cachedData) {
+        exerciseLogs = JSON.parse(cachedData);
+      }
+
+      // Fetch from API
+      const { data, error } = await supabase
+        .from("exercise_logs")
+        .select("*")
+        .eq("user_id", userId)
+        .order("date", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching exercise logs:", error);
+        return exerciseLogs; // Return cached data if available
+      }
+
+      // Update cache
+      if (data) {
+        await AsyncStorage.setItem(
+          EXERCISE_LOGS_CACHE_KEY,
+          JSON.stringify(data)
+        );
+        return data;
+      }
+
+      return exerciseLogs;
+    } catch (error) {
+      console.error("Error in getExerciseLogs:", error);
+      return [];
+    }
+  },
+
+  addExerciseLog: async (
+    exerciseLog: Omit<ExerciseLog, "id" | "created_at" | "updated_at">
+  ): Promise<ExerciseLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("exercise_logs")
+        .insert(exerciseLog)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error adding exercise log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(EXERCISE_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const exerciseLogs: ExerciseLog[] = JSON.parse(cachedData);
+        exerciseLogs.unshift(data);
+        await AsyncStorage.setItem(
+          EXERCISE_LOGS_CACHE_KEY,
+          JSON.stringify(exerciseLogs)
+        );
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in addExerciseLog:", error);
+      return null;
+    }
+  },
+
+  updateExerciseLog: async (
+    id: string,
+    updates: Partial<ExerciseLog>
+  ): Promise<ExerciseLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("exercise_logs")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating exercise log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(EXERCISE_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const exerciseLogs: ExerciseLog[] = JSON.parse(cachedData);
+        const index = exerciseLogs.findIndex((log) => log.id === id);
+        if (index !== -1) {
+          exerciseLogs[index] = { ...exerciseLogs[index], ...updates };
+          await AsyncStorage.setItem(
+            EXERCISE_LOGS_CACHE_KEY,
+            JSON.stringify(exerciseLogs)
+          );
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in updateExerciseLog:", error);
+      return null;
+    }
+  },
+
+  deleteExerciseLog: async (id: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase
+        .from("exercise_logs")
+        .delete()
+        .eq("id", id);
+
+      if (error) {
+        console.error("Error deleting exercise log:", error);
+        return false;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(EXERCISE_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const exerciseLogs: ExerciseLog[] = JSON.parse(cachedData);
+        const updatedLogs = exerciseLogs.filter((log) => log.id !== id);
+        await AsyncStorage.setItem(
+          EXERCISE_LOGS_CACHE_KEY,
+          JSON.stringify(updatedLogs)
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error in deleteExerciseLog:", error);
       return false;
     }
   },

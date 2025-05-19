@@ -13,11 +13,13 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   addBloodPressureLog,
+  addExerciseLog,
   addMoodLog,
   addSleepLog,
   addSymptom,
   addWeightLog,
   deleteBloodPressureLog,
+  deleteExerciseLog,
   deleteMoodLog,
   deleteSleepLog,
   deleteSymptom,
@@ -25,6 +27,7 @@ import {
   endKickCount,
   fetchBloodPressureLogs,
   fetchContractions,
+  fetchExerciseLogs,
   fetchKickCounts,
   fetchMoodLogs,
   fetchSleepLogs,
@@ -33,6 +36,7 @@ import {
   startContraction,
   startKickCount,
   updateBloodPressureLog,
+  updateExerciseLog,
   updateKickCount,
   updateMoodLog,
   updateSleepLog,
@@ -44,7 +48,12 @@ import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
-import { BloodPressureLog, MoodLog, SleepLog } from "../services/healthService";
+import {
+  BloodPressureLog,
+  ExerciseLog,
+  MoodLog,
+  SleepLog,
+} from "../services/healthService";
 
 // Define common symptom types
 const SYMPTOM_TYPES = [
@@ -123,6 +132,20 @@ const COMMON_DISRUPTIONS = [
   { id: "partner", name: "Partner Disruption" },
 ];
 
+// Define common exercise types
+const EXERCISE_TYPES = [
+  { id: "walking", name: "Walking" },
+  { id: "swimming", name: "Swimming" },
+  { id: "yoga", name: "Prenatal Yoga" },
+  { id: "stretching", name: "Stretching" },
+  { id: "pilates", name: "Pilates" },
+  { id: "cycling", name: "Stationary Cycling" },
+  { id: "strength", name: "Light Strength Training" },
+  { id: "dance", name: "Dance" },
+  { id: "water", name: "Water Aerobics" },
+  { id: "other", name: "Other" },
+];
+
 const HealthTrackerScreen = () => {
   const { t } = useTranslation();
   const { isDark } = useTheme();
@@ -136,6 +159,7 @@ const HealthTrackerScreen = () => {
     bloodPressureLogs,
     moodLogs,
     sleepLogs,
+    exerciseLogs,
   } = useSelector((state: RootState) => state.health);
 
   // Local state for UI
@@ -196,6 +220,20 @@ const HealthTrackerScreen = () => {
   const [sleepNotes, setSleepNotes] = useState("");
   const [editingSleepLog, setEditingSleepLog] = useState<string | null>(null);
 
+  // Exercise tracking state
+  const [exerciseModalVisible, setExerciseModalVisible] = useState(false);
+  const [exerciseType, setExerciseType] = useState("");
+  const [exerciseDuration, setExerciseDuration] = useState("");
+  const [exerciseIntensity, setExerciseIntensity] = useState(3);
+  const [heartRate, setHeartRate] = useState("");
+  const [modifiedPositions, setModifiedPositions] = useState(false);
+  const [feltContractions, setFeltContractions] = useState(false);
+  const [feltDiscomfort, setFeltDiscomfort] = useState(false);
+  const [exerciseNotes, setExerciseNotes] = useState("");
+  const [editingExerciseLog, setEditingExerciseLog] = useState<string | null>(
+    null
+  );
+
   // Load data on component mount
   useEffect(() => {
     if (user?.id) {
@@ -206,6 +244,7 @@ const HealthTrackerScreen = () => {
       dispatch(fetchBloodPressureLogs(user.id));
       dispatch(fetchMoodLogs(user.id));
       dispatch(fetchSleepLogs(user.id));
+      dispatch(fetchExerciseLogs(user.id));
     }
   }, [dispatch, user]);
 
@@ -776,6 +815,107 @@ const HealthTrackerScreen = () => {
       return `${hours}h`;
     } else {
       return `${mins}m`;
+    }
+  };
+
+  // Add Exercise log
+  const handleAddExercise = () => {
+    setExerciseType("");
+    setExerciseDuration("");
+    setExerciseIntensity(3);
+    setHeartRate("");
+    setModifiedPositions(false);
+    setFeltContractions(false);
+    setFeltDiscomfort(false);
+    setExerciseNotes("");
+    setEditingExerciseLog(null);
+    setExerciseModalVisible(true);
+  };
+
+  // Edit Exercise log
+  const handleEditExercise = (exerciseLog: ExerciseLog) => {
+    setExerciseType(exerciseLog.exercise_type || "");
+    setExerciseDuration(exerciseLog.duration.toString() || "");
+    setExerciseIntensity(exerciseLog.intensity || 3);
+    setHeartRate(exerciseLog.heart_rate?.toString() || "");
+    setModifiedPositions(exerciseLog.modified_positions || false);
+    setFeltContractions(exerciseLog.felt_contractions || false);
+    setFeltDiscomfort(exerciseLog.felt_discomfort || false);
+    setExerciseNotes(exerciseLog.notes || "");
+    setEditingExerciseLog(exerciseLog.id);
+    setExerciseModalVisible(true);
+  };
+
+  // Delete Exercise log
+  const handleDeleteExercise = (id: string) => {
+    Alert.alert(t("health.deleteExercise"), t("health.confirmDeleteExercise"), [
+      {
+        text: t("common.buttons.cancel"),
+        style: "cancel",
+      },
+      {
+        text: t("common.buttons.delete"),
+        onPress: () => {
+          if (user?.id) {
+            dispatch(deleteExerciseLog(id));
+          }
+        },
+        style: "destructive",
+      },
+    ]);
+  };
+
+  // Save Exercise log
+  const saveExerciseLog = () => {
+    if (
+      !exerciseType ||
+      !exerciseDuration ||
+      isNaN(parseInt(exerciseDuration))
+    ) {
+      Alert.alert(
+        t("common.errors.invalidInput"),
+        t("health.invalidExerciseValues")
+      );
+      return;
+    }
+
+    if (user?.id) {
+      const now = new Date();
+      const exerciseData = {
+        user_id: user.id,
+        date: now.toISOString().split("T")[0],
+        time: now.toTimeString().split(" ")[0],
+        exercise_type: exerciseType,
+        duration: parseInt(exerciseDuration),
+        intensity: exerciseIntensity,
+        modified_positions: modifiedPositions,
+        heart_rate: heartRate ? parseInt(heartRate) : undefined,
+        felt_contractions: feltContractions,
+        felt_discomfort: feltDiscomfort,
+        notes: exerciseNotes.trim() || undefined,
+      };
+
+      if (editingExerciseLog) {
+        dispatch(
+          updateExerciseLog({
+            id: editingExerciseLog,
+            updates: exerciseData,
+          })
+        );
+      } else {
+        dispatch(addExerciseLog(exerciseData));
+      }
+
+      setExerciseModalVisible(false);
+      setExerciseType("");
+      setExerciseDuration("");
+      setExerciseIntensity(3);
+      setHeartRate("");
+      setModifiedPositions(false);
+      setFeltContractions(false);
+      setFeltDiscomfort(false);
+      setExerciseNotes("");
+      setEditingExerciseLog(null);
     }
   };
 
@@ -1493,6 +1633,175 @@ const HealthTrackerScreen = () => {
               </View>
             </View>
           </ThemedView>
+
+          {/* Exercise Tracker Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.exerciseTracker")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.exerciseTrackerDescription")}
+            </FontedText>
+
+            <View className="mb-4">
+              <TouchableOpacity
+                className="bg-primary dark:bg-primary-dark px-6 py-3 rounded-full w-full items-center mb-4"
+                onPress={handleAddExercise}
+              >
+                <FontedText className="text-white font-bold">
+                  {t("health.addExercise")}
+                </FontedText>
+              </TouchableOpacity>
+
+              <FontedText
+                variant="body"
+                fontFamily="comfortaa"
+                className="mb-2"
+              >
+                {t("health.exerciseHistory")}
+              </FontedText>
+
+              {exerciseLogs.loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#87D9C4"
+                  className="my-4"
+                />
+              ) : exerciseLogs.items.length === 0 ? (
+                <FontedText className="text-center text-gray-500 my-4">
+                  {t("health.noExerciseData")}
+                </FontedText>
+              ) : (
+                exerciseLogs.items.slice(0, 5).map((exerciseLog) => (
+                  <ThemedView
+                    key={exerciseLog.id}
+                    backgroundColor="background"
+                    className="rounded-lg p-3 mb-3 border border-gray-200 dark:border-gray-700"
+                  >
+                    <View className="flex-row justify-between mb-1">
+                      <FontedText
+                        variant="body"
+                        colorVariant="primary"
+                        className="font-medium"
+                      >
+                        {t(`health.exerciseTypes.${exerciseLog.exercise_type}`)}
+                      </FontedText>
+                      <FontedText variant="body-small" textType="secondary">
+                        {formatDate(exerciseLog.date)}
+                      </FontedText>
+                    </View>
+
+                    <View className="flex-row flex-wrap mb-1">
+                      <ThemedView
+                        backgroundColor="primary"
+                        className="rounded-full px-2 py-1 mr-2 mb-1"
+                      >
+                        <FontedText variant="caption" className="text-white">
+                          {exerciseLog.duration} {t("health.minutes")}
+                        </FontedText>
+                      </ThemedView>
+
+                      <ThemedView
+                        backgroundColor="primary"
+                        className="rounded-full px-2 py-1 mr-2 mb-1"
+                      >
+                        <FontedText variant="caption" className="text-white">
+                          {t("health.intensity")}: {exerciseLog.intensity}/5
+                        </FontedText>
+                      </ThemedView>
+
+                      {exerciseLog.heart_rate && (
+                        <ThemedView
+                          backgroundColor="primary"
+                          className="rounded-full px-2 py-1 mr-2 mb-1"
+                        >
+                          <FontedText variant="caption" className="text-white">
+                            {exerciseLog.heart_rate} {t("health.bpm")}
+                          </FontedText>
+                        </ThemedView>
+                      )}
+
+                      {exerciseLog.modified_positions && (
+                        <ThemedView
+                          backgroundColor="primary"
+                          className="rounded-full px-2 py-1 mr-2 mb-1"
+                        >
+                          <FontedText variant="caption" className="text-white">
+                            {t("health.modifiedPositions")}
+                          </FontedText>
+                        </ThemedView>
+                      )}
+
+                      {exerciseLog.felt_contractions && (
+                        <ThemedView
+                          backgroundColor="accent"
+                          className="rounded-full px-2 py-1 mr-2 mb-1"
+                        >
+                          <FontedText variant="caption" className="text-white">
+                            {t("health.feltContractions")}
+                          </FontedText>
+                        </ThemedView>
+                      )}
+
+                      {exerciseLog.felt_discomfort && (
+                        <ThemedView
+                          backgroundColor="accent"
+                          className="rounded-full px-2 py-1 mr-2 mb-1"
+                        >
+                          <FontedText variant="caption" className="text-white">
+                            {t("health.feltDiscomfort")}
+                          </FontedText>
+                        </ThemedView>
+                      )}
+                    </View>
+
+                    {exerciseLog.notes && (
+                      <FontedText variant="caption" className="mt-1 italic">
+                        {exerciseLog.notes}
+                      </FontedText>
+                    )}
+
+                    <View className="flex-row justify-end mt-2">
+                      <TouchableOpacity
+                        className="mr-4"
+                        onPress={() => handleEditExercise(exerciseLog)}
+                      >
+                        <FontedText variant="body-small" colorVariant="primary">
+                          {t("common.buttons.edit")}
+                        </FontedText>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        onPress={() => handleDeleteExercise(exerciseLog.id)}
+                      >
+                        <FontedText variant="body-small" colorVariant="accent">
+                          {t("common.buttons.delete")}
+                        </FontedText>
+                      </TouchableOpacity>
+                    </View>
+                  </ThemedView>
+                ))
+              )}
+            </View>
+
+            <FontedText
+              variant="caption"
+              textType="secondary"
+              className="text-center mt-2"
+            >
+              {t("health.exerciseWarning")}
+            </FontedText>
+          </ThemedView>
         </View>
       </ScrollView>
 
@@ -2027,6 +2336,287 @@ const HealthTrackerScreen = () => {
               <TouchableOpacity
                 className="bg-primary px-5 py-2 rounded-md"
                 onPress={saveSleepLog}
+              >
+                <FontedText className="text-white">
+                  {t("common.buttons.save")}
+                </FontedText>
+              </TouchableOpacity>
+            </View>
+          </ThemedView>
+        </View>
+      </Modal>
+
+      {/* Exercise Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={exerciseModalVisible}
+        onRequestClose={() => setExerciseModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <ThemedView
+            backgroundColor="surface"
+            className="w-[90%] rounded-xl p-6 max-w-md shadow-md"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="text-center mb-4"
+            >
+              {editingExerciseLog
+                ? t("health.editExercise")
+                : t("health.addExercise")}
+            </FontedText>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.exerciseType")}
+              </FontedText>
+              <View className="flex-row flex-wrap justify-start mb-2">
+                {EXERCISE_TYPES.map((type) => (
+                  <TouchableOpacity
+                    key={type.id}
+                    className={`mb-2 mr-2 py-1 px-3 rounded-full ${
+                      exerciseType === type.id
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                    }`}
+                    onPress={() => setExerciseType(type.id)}
+                  >
+                    <FontedText
+                      className={`${
+                        exerciseType === type.id
+                          ? "text-white"
+                          : "text-gray-800 dark:text-gray-100"
+                      }`}
+                    >
+                      {t(`health.exerciseTypes.${type.id}`)}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.duration")} ({t("health.minutes")})
+              </FontedText>
+              <View className="flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4">
+                <TextInput
+                  className="flex-1 text-base text-gray-800 dark:text-gray-200"
+                  value={exerciseDuration}
+                  onChangeText={setExerciseDuration}
+                  keyboardType="number-pad"
+                  placeholder={t("health.durationPlaceholder")}
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.intensity")} (1-5)
+              </FontedText>
+              <View className="flex-row justify-between mb-2">
+                {[1, 2, 3, 4, 5].map((intensity) => (
+                  <TouchableOpacity
+                    key={intensity}
+                    className={`w-[18%] py-2 rounded-full ${
+                      exerciseIntensity === intensity
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                    }`}
+                    onPress={() => setExerciseIntensity(intensity)}
+                  >
+                    <FontedText
+                      className={`text-center ${
+                        exerciseIntensity === intensity
+                          ? "text-white"
+                          : "text-gray-800 dark:text-gray-100"
+                      }`}
+                    >
+                      {intensity}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.heartRate")} (bpm)
+              </FontedText>
+              <View className="flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4">
+                <TextInput
+                  className="flex-1 text-base text-gray-800 dark:text-gray-200"
+                  value={heartRate}
+                  onChangeText={setHeartRate}
+                  keyboardType="number-pad"
+                  placeholder={t("health.heartRatePlaceholder")}
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.modifiedPositions")}
+              </FontedText>
+              <View className="flex-row justify-between mb-2">
+                <TouchableOpacity
+                  className={`w-[48%] py-2 rounded-full ${
+                    modifiedPositions
+                      ? "bg-primary dark:bg-primary-dark border-0"
+                      : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                  }`}
+                  onPress={() => setModifiedPositions(!modifiedPositions)}
+                >
+                  <FontedText
+                    className={`text-center ${
+                      modifiedPositions
+                        ? "text-white"
+                        : "text-gray-800 dark:text-gray-100"
+                    }`}
+                  >
+                    {t("health.yes")}
+                  </FontedText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`w-[48%] py-2 rounded-full ${
+                    !modifiedPositions
+                      ? "bg-primary dark:bg-primary-dark border-0"
+                      : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                  }`}
+                  onPress={() => setModifiedPositions(!modifiedPositions)}
+                >
+                  <FontedText
+                    className={`text-center ${
+                      !modifiedPositions
+                        ? "text-white"
+                        : "text-gray-800 dark:text-gray-100"
+                    }`}
+                  >
+                    {t("health.no")}
+                  </FontedText>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.feltContractions")}
+              </FontedText>
+              <View className="flex-row justify-between mb-2">
+                <TouchableOpacity
+                  className={`w-[48%] py-2 rounded-full ${
+                    feltContractions
+                      ? "bg-primary dark:bg-primary-dark border-0"
+                      : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                  }`}
+                  onPress={() => setFeltContractions(!feltContractions)}
+                >
+                  <FontedText
+                    className={`text-center ${
+                      feltContractions
+                        ? "text-white"
+                        : "text-gray-800 dark:text-gray-100"
+                    }`}
+                  >
+                    {t("health.yes")}
+                  </FontedText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`w-[48%] py-2 rounded-full ${
+                    !feltContractions
+                      ? "bg-primary dark:bg-primary-dark border-0"
+                      : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                  }`}
+                  onPress={() => setFeltContractions(!feltContractions)}
+                >
+                  <FontedText
+                    className={`text-center ${
+                      !feltContractions
+                        ? "text-white"
+                        : "text-gray-800 dark:text-gray-100"
+                    }`}
+                  >
+                    {t("health.no")}
+                  </FontedText>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.feltDiscomfort")}
+              </FontedText>
+              <View className="flex-row justify-between mb-2">
+                <TouchableOpacity
+                  className={`w-[48%] py-2 rounded-full ${
+                    feltDiscomfort
+                      ? "bg-primary dark:bg-primary-dark border-0"
+                      : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                  }`}
+                  onPress={() => setFeltDiscomfort(!feltDiscomfort)}
+                >
+                  <FontedText
+                    className={`text-center ${
+                      feltDiscomfort
+                        ? "text-white"
+                        : "text-gray-800 dark:text-gray-100"
+                    }`}
+                  >
+                    {t("health.yes")}
+                  </FontedText>
+                </TouchableOpacity>
+                <TouchableOpacity
+                  className={`w-[48%] py-2 rounded-full ${
+                    !feltDiscomfort
+                      ? "bg-primary dark:bg-primary-dark border-0"
+                      : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                  }`}
+                  onPress={() => setFeltDiscomfort(!feltDiscomfort)}
+                >
+                  <FontedText
+                    className={`text-center ${
+                      !feltDiscomfort
+                        ? "text-white"
+                        : "text-gray-800 dark:text-gray-100"
+                    }`}
+                  >
+                    {t("health.no")}
+                  </FontedText>
+                </TouchableOpacity>
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.notesLabel")}
+              </FontedText>
+              <TextInput
+                className="bg-neutral-100 dark:bg-neutral-800 p-3 rounded-md min-h-[80px] text-neutral-900 dark:text-white"
+                placeholder={t("health.exerciseNotesPlaceholder")}
+                value={exerciseNotes}
+                onChangeText={setExerciseNotes}
+                multiline
+                textAlignVertical="top"
+              />
+            </View>
+
+            <View className="flex-row justify-end">
+              <TouchableOpacity
+                className="px-5 py-2 mr-3"
+                onPress={() => {
+                  setExerciseModalVisible(false);
+                  setEditingExerciseLog(null);
+                }}
+              >
+                <FontedText>{t("common.buttons.cancel")}</FontedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-primary px-5 py-2 rounded-md"
+                onPress={saveExerciseLog}
               >
                 <FontedText className="text-white">
                   {t("common.buttons.save")}

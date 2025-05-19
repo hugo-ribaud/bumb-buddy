@@ -80,10 +80,20 @@ _Last Updated: 2024-06-12_
 - Created sleep history view with editing capabilities
 - Added comprehensive internationalization support for sleep tracking (English, French, Spanish)
 - Ensured proper metric system usage for sleep tracking
+- Exercise tracking functionality implemented
+- Added exercise tracking UI to HealthTrackerScreen
+- Integrated with existing healthService for exercise data management
+- Implemented UI for recording exercise type, duration, intensity, and heart rate
+- Added specific pregnancy-related tracking for modified positions and discomfort
+- Created exercise history view with editing capabilities
+- Ensured proper internationalization support for exercise tracking
+- Fixed missing translation keys for exercise tracking
+- Added specialized placeholder text for exercise notes in all languages
+- Added proper validation messages for exercise tracking
 
 ## In Progress
 
-- Implementing additional health tracking features (sleep, exercise)
+- Implementing user profile management
 
 ## Pending Tasks
 
@@ -107,12 +117,12 @@ _Last Updated: 2024-06-12_
 - ✅ Implement internationalization (i18n) support
 - ✅ Food safety database implementation
 - ✅ Pregnancy timeline tracker
-- 🔄 Basic health tracking features
+- ✅ Basic health tracking features
   - ✅ Contraction tracking with timer
   - ✅ Blood pressure tracking
   - ✅ Mood tracking
   - ✅ Sleep tracking
-  - ⬜ Exercise tracking
+  - ✅ Exercise tracking
 - ⬜ User profile management
 - ⬜ Offline functionality foundation
 

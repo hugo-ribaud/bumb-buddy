@@ -1,7 +1,7 @@
 {
   "common": {
     "buttons": {
-      "save": "Enregistrer",
+      "save": "Sauvegarder",
       "cancel": "Annuler",
       "delete": "Supprimer",
       "edit": "Modifier",
@@ -9,11 +9,12 @@
       "confirm": "Confirmer",
       "back": "Retour",
       "editProfile": "Modifier le Profil",
-      "logout": "Déconnexion"
+      "logout": "Déconnexion",
+      "remove": "Supprimer"
     },
     "validation": {
       "required": "Ce champ est obligatoire",
-      "email": "Veuillez entrer un email valide",
+      "email": "Veuillez entrer un e-mail valide",
       "minLength": "Ce champ doit contenir au moins {{count}} caractères",
       "maxLength": "Ce champ doit contenir moins de {{count}} caractères",
       "passwordMatch": "Les mots de passe ne correspondent pas",
@@ -21,15 +22,16 @@
     },
     "placeholders": {
       "search": "Rechercher...",
-      "email": "Entrez votre email",
+      "email": "Entrez votre e-mail",
       "password": "Entrez votre mot de passe",
       "date": "Sélectionnez une date"
     },
     "errors": {
       "generic": "Une erreur s'est produite. Veuillez réessayer.",
-      "network": "Erreur de réseau. Veuillez vérifier votre connexion.",
+      "network": "Erreur réseau. Veuillez vérifier votre connexion.",
       "unauthorized": "Vous n'êtes pas autorisé à accéder à cette fonctionnalité.",
-      "notFound": "La ressource demandée n'a pas été trouvée."
+      "notFound": "La ressource demandée n'a pas été trouvée.",
+      "invalidInput": "Entrée invalide. Veuillez vérifier votre saisie."
     },
     "labels": {
       "loading": "Chargement...",
@@ -40,7 +42,7 @@
     },
     "yes": "Oui",
     "no": "Non",
-    "goBack": "Retourner"
+    "goBack": "Retour"
   },
   "auth": {
     "login": {
@@ -290,7 +292,41 @@
       "anxiety": "Anxiété/Stress",
       "noise": "Bruit/Environnement",
       "partner": "Perturbation du Partenaire"
-    }
+    },
+    "exerciseTracker": "Suivi d'Exercice",
+    "exerciseTrackerDescription": "Suivez votre exercice physique pendant la grossesse",
+    "addExercise": "Ajouter un Exercice",
+    "editExercise": "Modifier l'Exercice",
+    "deleteExercise": "Supprimer l'Exercice",
+    "confirmDeleteExercise": "Êtes-vous sûre de vouloir supprimer cet enregistrement d'exercice?",
+    "exerciseHistory": "Historique d'Exercice",
+    "noExerciseData": "Aucune donnée d'exercice enregistrée",
+    "exerciseType": "Type d'Exercice",
+    "exerciseTypes": {
+      "walking": "Marche",
+      "swimming": "Natation",
+      "yoga": "Yoga Prénatal",
+      "stretching": "Étirements",
+      "pilates": "Pilates",
+      "cycling": "Vélo Stationnaire",
+      "strength": "Renforcement Léger",
+      "dance": "Danse",
+      "water": "Aquagym",
+      "other": "Autre"
+    },
+    "intensity": "Intensité",
+    "heartRate": "Fréquence Cardiaque",
+    "bpm": "BPM",
+    "heartRatePlaceholder": "Entrez la fréquence cardiaque (optionnel)",
+    "modifiedPositions": "Positions Modifiées",
+    "modifiedPositionsHint": "Avez-vous modifié les positions pour la grossesse?",
+    "feltContractions": "Contractions Ressenties",
+    "feltDiscomfort": "Inconfort Ressenti",
+    "exerciseWarning": "Consultez toujours votre professionnel de santé avant de commencer un nouveau programme d'exercice pendant la grossesse.",
+    "yes": "Oui",
+    "no": "Non",
+    "exerciseNotesPlaceholder": "Ajoutez des notes sur votre exercice...",
+    "invalidExerciseValues": "Veuillez entrer un type d'exercice et une durée valides"
   },
   "healthTracker": {
     "title": "Suivi de Santé",

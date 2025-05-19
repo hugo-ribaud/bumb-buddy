@@ -48,6 +48,11 @@ interface HealthState {
     loading: boolean;
     error: string | null;
   };
+  exerciseLogs: {
+    items: ExerciseLog[];
+    loading: boolean;
+    error: string | null;
+  };
 }
 
 // Initial state
@@ -85,6 +90,11 @@ const initialState: HealthState = {
     error: null,
   },
   sleepLogs: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  exerciseLogs: {
     items: [],
     loading: false,
     error: null,
@@ -455,6 +465,64 @@ export const deleteSleepLog = createAsyncThunk(
   }
 );
 
+// Exercise tracking thunks
+export const fetchExerciseLogs = createAsyncThunk(
+  "health/fetchExerciseLogs",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      const exerciseLogs = await healthService.getExerciseLogs(userId);
+      return exerciseLogs;
+    } catch (error) {
+      return rejectWithValue("Failed to fetch exercise logs");
+    }
+  }
+);
+
+export const addExerciseLog = createAsyncThunk(
+  "health/addExerciseLog",
+  async (
+    exerciseLog: Omit<ExerciseLog, "id" | "created_at" | "updated_at">,
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.addExerciseLog(exerciseLog);
+      if (!result) return rejectWithValue("Failed to add exercise log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to add exercise log");
+    }
+  }
+);
+
+export const updateExerciseLog = createAsyncThunk(
+  "health/updateExerciseLog",
+  async (
+    { id, updates }: { id: string; updates: Partial<ExerciseLog> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.updateExerciseLog(id, updates);
+      if (!result) return rejectWithValue("Failed to update exercise log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to update exercise log");
+    }
+  }
+);
+
+export const deleteExerciseLog = createAsyncThunk(
+  "health/deleteExerciseLog",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const success = await healthService.deleteExerciseLog(id);
+      if (!success) return rejectWithValue("Failed to delete exercise log");
+      return id;
+    } catch (error) {
+      return rejectWithValue("Failed to delete exercise log");
+    }
+  }
+);
+
 // Create slice
 const healthSlice = createSlice({
   name: "health",
@@ -468,6 +536,7 @@ const healthSlice = createSlice({
       state.bloodPressureLogs.error = null;
       state.moodLogs.error = null;
       state.sleepLogs.error = null;
+      state.exerciseLogs.error = null;
     },
     resetCurrentKickCount: (state) => {
       state.kickCounts.currentSession = null;
@@ -782,6 +851,48 @@ const healthSlice = createSlice({
         (state, action: PayloadAction<string>) => {
           state.sleepLogs.items = state.sleepLogs.items.filter(
             (log) => log.id !== action.payload
+          );
+        }
+      )
+
+      // Exercise logs
+      .addCase(fetchExerciseLogs.pending, (state) => {
+        state.exerciseLogs.loading = true;
+        state.exerciseLogs.error = null;
+      })
+      .addCase(
+        fetchExerciseLogs.fulfilled,
+        (state, action: PayloadAction<ExerciseLog[]>) => {
+          state.exerciseLogs.loading = false;
+          state.exerciseLogs.items = action.payload;
+        }
+      )
+      .addCase(fetchExerciseLogs.rejected, (state, action) => {
+        state.exerciseLogs.loading = false;
+        state.exerciseLogs.error = action.payload as string;
+      })
+      .addCase(
+        addExerciseLog.fulfilled,
+        (state, action: PayloadAction<ExerciseLog>) => {
+          state.exerciseLogs.items.unshift(action.payload);
+        }
+      )
+      .addCase(
+        updateExerciseLog.fulfilled,
+        (state, action: PayloadAction<ExerciseLog>) => {
+          const index = state.exerciseLogs.items.findIndex(
+            (log: ExerciseLog) => log.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.exerciseLogs.items[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        deleteExerciseLog.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.exerciseLogs.items = state.exerciseLogs.items.filter(
+            (log: ExerciseLog) => log.id !== action.payload
           );
         }
       );

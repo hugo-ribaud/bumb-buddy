@@ -7,9 +7,10 @@
       "edit": "Editar",
       "add": "Añadir",
       "confirm": "Confirmar",
-      "back": "Atrás",
+      "back": "Volver",
       "editProfile": "Editar Perfil",
-      "logout": "Cerrar Sesión"
+      "logout": "Cerrar Sesión",
+      "remove": "Eliminar"
     },
     "validation": {
       "required": "Este campo es obligatorio",
@@ -28,8 +29,9 @@
     "errors": {
       "generic": "Algo salió mal. Por favor, inténtalo de nuevo.",
       "network": "Error de red. Por favor, comprueba tu conexión.",
-      "unauthorized": "No tienes autorización para acceder a esta función.",
-      "notFound": "El recurso solicitado no se encontró."
+      "unauthorized": "No estás autorizado para acceder a esta función.",
+      "notFound": "El recurso solicitado no fue encontrado.",
+      "invalidInput": "Entrada no válida. Por favor, revisa tu entrada."
     },
     "labels": {
       "loading": "Cargando...",
@@ -40,7 +42,7 @@
     },
     "yes": "Sí",
     "no": "No",
-    "goBack": "Volver Atrás"
+    "goBack": "Volver"
   },
   "auth": {
     "login": {
@@ -290,7 +292,41 @@
       "anxiety": "Ansiedad/Estrés",
       "noise": "Ruido/Ambiente",
       "partner": "Interrupción de la Pareja"
-    }
+    },
+    "exerciseTracker": "Seguimiento de Ejercicio",
+    "exerciseTrackerDescription": "Haz seguimiento de tu actividad física durante el embarazo",
+    "addExercise": "Añadir Ejercicio",
+    "editExercise": "Editar Ejercicio",
+    "deleteExercise": "Eliminar Ejercicio",
+    "confirmDeleteExercise": "¿Estás segura de que quieres eliminar este registro de ejercicio?",
+    "exerciseHistory": "Historial de Ejercicio",
+    "noExerciseData": "No hay datos de ejercicio registrados aún",
+    "exerciseType": "Tipo de Ejercicio",
+    "exerciseTypes": {
+      "walking": "Caminar",
+      "swimming": "Natación",
+      "yoga": "Yoga Prenatal",
+      "stretching": "Estiramientos",
+      "pilates": "Pilates",
+      "cycling": "Bicicleta Estática",
+      "strength": "Entrenamiento de Fuerza Ligero",
+      "dance": "Baile",
+      "water": "Aeróbicos Acuáticos",
+      "other": "Otro"
+    },
+    "intensity": "Intensidad",
+    "heartRate": "Frecuencia Cardíaca",
+    "bpm": "LPM",
+    "heartRatePlaceholder": "Introduce la frecuencia cardíaca (opcional)",
+    "modifiedPositions": "Posiciones Modificadas",
+    "modifiedPositionsHint": "¿Has modificado las posiciones para el embarazo?",
+    "feltContractions": "Contracciones Sentidas",
+    "feltDiscomfort": "Malestar Sentido",
+    "exerciseWarning": "Consulta siempre con tu profesional de la salud antes de comenzar cualquier nueva rutina de ejercicio durante el embarazo.",
+    "yes": "Sí",
+    "no": "No",
+    "exerciseNotesPlaceholder": "Añade cualquier nota sobre tu ejercicio...",
+    "invalidExerciseValues": "Por favor, introduce un tipo de ejercicio y duración válidos"
   },
   "healthTracker": {
     "title": "Seguimiento de Salud",
