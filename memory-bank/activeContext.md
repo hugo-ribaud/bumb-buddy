@@ -1,12 +1,12 @@
 # Active Context: BumpBuddy
 
-_Version: 1.0_
-_Created: 2024-06-09_
-_Last Updated: 2024-06-12_
+_Version: 1.1_
+_Created: 2025-05-06_
+_Last Updated: 2025-05-19_
 
 ## Current Focus
 
-Working on health tracking features for the pregnancy app. The initial contraction tracking functionality has been implemented, which allows users to time and record their contractions. This feature includes a timer, intensity rating, notes field, and a history view of recent contractions. The system is fully integrated with Redux and Supabase for persistent storage.
+Working on user profile management and data persistence for the pregnancy app. We've implemented database triggers to auto-sync auth.users to public.users, added theme and language preference storage in both AsyncStorage and the database, and ensured profile updates are properly synchronized. The welcome message now displays the user's first name instead of email, with appropriate fallbacks.
 
 ## Immediate Next Steps
 
@@ -19,53 +19,54 @@ Working on health tracking features for the pregnancy app. The initial contracti
 7. ✅ Implement internationalization (i18n) support
 8. ✅ Implement food safety database
 9. ✅ Implement pregnancy timeline tracker
-10. 🔄 Develop basic health tracking features (Current priority)
-
-- ✅ Contraction tracking/timer functionality
-- ⬜ Blood pressure tracking
-- ⬜ Mood tracking
-- ⬜ Sleep tracking
-- ⬜ Exercise tracking
-
-11. ⬜ Create user profile management
+10. ✅ Develop basic health tracking features
+    - ✅ Contraction tracking/timer functionality
+    - ✅ Blood pressure tracking
+    - ✅ Mood tracking
+    - ✅ Sleep tracking
+    - ✅ Exercise tracking
+11. ✅ Create user profile management
+    - ✅ Add database trigger for auth.users to public.users sync
+    - ✅ Implement theme persistence in both AsyncStorage and database
+    - ✅ Add language preference saving to database
+    - ✅ Improve profile screen with realtime updates
 12. ⬜ Implement offline functionality foundation
 
 ## Current Development Priorities
 
 1. ✅ Food safety database implementation
 2. ✅ Implement pregnancy timeline tracker
-3. 🔄 Develop basic health tracking features (Current focus)
-4. ⬜ Create user profile management
+3. ✅ Develop basic health tracking features
+4. ✅ Create user profile management
 5. ⬜ Implement offline functionality foundation
 
 ## Recent Decisions
 
-- Implemented contraction tracking with persistence via Redux and Supabase
-- Built a contraction timer UI with start/stop functionality
-- Added contraction intensity rating and notes capabilities
-- Created a history view to show recent contractions with timing details
-- Integrated the health tracking UI with internationalization support
-- Developed an architecture that allows for easily adding more health metrics
+- Created database triggers to automatically create public.users records when auth users sign up
+- Implemented theme persistence in both AsyncStorage and user profile database
+- Added language preference saving to database profile
+- Updated welcome message to use user's first name instead of email
+- Established a system for syncing user preferences across devices via database
+- Enhanced profile screen to respond to realtime updates from other devices
 
 ## Current Challenges
 
-- Designing a consistent user experience across different health tracking features
-- Ensuring that health data is properly synchronized with the server
-- Handling edge cases like app being closed during an active contraction
-- Providing meaningful visualization for health data trends
-- Planning the integration of health data with the pregnancy timeline for context
-- Maintaining type safety across complex nested data structures
+- Ensuring a seamless experience when switching between devices with different theme/language settings
+- Handling edge cases in user profile synchronization
+- Balancing local storage for performance with server sync for consistency
+- Managing state correctly when user properties are updated from multiple sources
+- Determining the right approach for offline functionality implementation
 
 ## Current Mode
 
-EXECUTE: Implementing health tracking features one by one, starting with contraction tracking
+EXECUTE: Implementing user profile management and data persistence features
 
 ## Team Allocation
 
 - Project setup and architecture: Completed
 - UI/UX design: In progress
-- Backend development: Schema implemented, Realtime enabled
-- Feature development: Food safety database and pregnancy timeline completed, health tracking in progress
+- Backend development: Schema implemented, Realtime enabled, Database triggers added
+- Feature development: Food safety database, pregnancy timeline, health tracking, and profile management completed
 - Testing: Infrastructure set up
 - Deployment preparation: Not started
 
@@ -74,18 +75,17 @@ EXECUTE: Implementing health tracking features one by one, starting with contrac
 - Project brief: Completed
 - Technical context: Completed and updated with implemented features
 - System patterns: Completed and updated with data models
-- Active context: Updated with contraction tracking completion
-- Progress tracking: Updated to reflect health tracking implementation progress
-- Internal documentation : all documentations related to the can be found in /bumbbuddy/docs/
+- Active context: Updated with profile management completion
+- Progress tracking: Updated to reflect latest implementations
+- Internal documentation: all documentation related to the app can be found in /bumbbuddy/docs/
 
-## Key Insights from Health Tracking Implementation
+## Key Insights from Profile Management Implementation
 
-- Redux integration is critical for maintaining consistent state across the app
-- Local timer state combined with server-side persistence provides a good user experience
-- Modal interfaces work well for collecting detailed health information
-- Careful state management is needed when dealing with time-based features like timers
-- Calculating time intervals and durations requires robust date handling
-- FlatList component is effective for displaying historical health data entries
+- Database triggers are effective for maintaining consistency between auth.users and public.users
+- AsyncStorage provides fast local access while database persistence enables cross-device synchronization
+- The Redux store serves as a single source of truth for user data, with proper field mapping from database
+- Realtime subscriptions enable immediate UI updates when profile changes occur on other devices
+- A proper fallback strategy for user identification enhances the user experience
 
 ---
 

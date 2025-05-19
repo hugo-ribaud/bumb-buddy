@@ -34,13 +34,25 @@ const ThemeToggle: React.FC<ThemeToggleProps> = ({ className = "" }) => {
     // Then save to user profile in database if user is logged in
     if (user) {
       try {
+        // Get current app settings to avoid overwriting other settings
+        const { data: userData, error: fetchError } =
+          await authService.getProfile(user.id);
+
+        if (fetchError) {
+          console.error("Failed to fetch current app settings:", fetchError);
+          return;
+        }
+
+        // Merge with existing app settings
+        const currentSettings = userData?.app_settings || {};
+        const updatedSettings = { ...currentSettings, theme: newTheme };
+
         await authService.updateProfile({
           id: user.id,
-          appSettings: {
-            theme: newTheme,
-          },
+          appSettings: updatedSettings,
         });
-        console.log("Theme preference saved to user profile");
+
+        console.log("Theme preference saved to user profile:", newTheme);
       } catch (error) {
         console.error("Failed to save theme preference to profile:", error);
       }

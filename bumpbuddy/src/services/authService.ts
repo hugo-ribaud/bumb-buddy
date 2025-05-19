@@ -91,6 +91,25 @@ const authService = {
     }
   },
 
+  // Get user profile
+  getProfile: async (userId: string) => {
+    try {
+      const { data, error } = await supabase
+        .from("users")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error) throw error;
+      return { data, error: null };
+    } catch (error: any) {
+      return {
+        data: null,
+        error: error.message || "Failed to get user profile",
+      };
+    }
+  },
+
   // Update user profile
   updateProfile: async ({
     id,

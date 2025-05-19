@@ -1,8 +1,8 @@
 # System Patterns: BumpBuddy
 
-_Version: 1.0_
-_Created: 2024-06-09_
-_Last Updated: 2024-06-11_
+_Version: 1.1_
+_Created: 2025-05-06_
+_Last Updated: 2025-05-19_
 
 ## Architecture Overview
 
@@ -31,6 +31,7 @@ BumpBuddy follows a modular architecture pattern with clear separation of concer
 - **Supabase Storage**: Manages user-uploaded images and media
 - **Supabase Functions**: Handles server-side logic and scheduled tasks
 - **Supabase Realtime**: Provides real-time updates for collaborative features and live data synchronization
+- **Database Triggers**: Automates synchronization between auth.users and public.users tables
 
 ## Design Patterns in Use
 
@@ -43,6 +44,9 @@ BumpBuddy follows a modular architecture pattern with clear separation of concer
 - **Adapter Pattern**: For handling offline/online mode transitions seamlessly
 - **Service Pattern**: Used for service abstractions like `timelineService.ts` with caching strategies
 - **Caching Pattern**: Implemented for timeline data with expiration policy
+- **Decorator Pattern**: Used in theme and language contexts to add persistent storage capabilities
+- **Bridge Pattern**: Used to decouple user preferences from their storage/retrieval mechanisms
+- **Mediator Pattern**: Implemented in profile management to coordinate updates across components
 - **Icon library**: Always use lucide-react icon library
 
 ## Data Models and Relationships
@@ -54,6 +58,8 @@ BumpBuddy follows a modular architecture pattern with clear separation of concer
    - Central entity representing the pregnant user
    - Connected to all personal data (health logs, appointments, etc.)
    - Stores pregnancy details (due date, week) and app preferences
+   - Synchronized with auth.users via database triggers
+   - Contains app_settings for theme, language, and other preferences
 
 2. **Food Safety System**
 
@@ -84,6 +90,12 @@ BumpBuddy follows a modular architecture pattern with clear separation of concer
    - Reference data for fetal development by week
    - Curated content for each stage of pregnancy
    - Personal journal entries linked to pregnancy weeks
+7. **User Preferences**
+   - Stored in both AsyncStorage (for fast local access) and database (for cross-device sync)
+   - Theme settings (light/dark/system)
+   - Language preferences with RTL support when needed
+   - Unit system preferences (metric/imperial)
+   - Notification settings
 
 ### Database Relationships
 
@@ -116,6 +128,13 @@ flowchart TD
     WeeklyInfo --> Symptoms[Common Symptoms]
     WeeklyInfo --> Checkups[Medical Checkups]
     WeeklyInfo --> SizeComp[Size Comparisons]
+
+    AuthUsers[auth.users] --> DBTrigger[Database Trigger]
+    DBTrigger --> PublicUsers[public.users]
+    PublicUsers --> AppSettings[app_settings JSONB]
+    AppSettings --> ThemeSettings[Theme]
+    AppSettings --> LanguageSettings[Language]
+    AppSettings --> UnitSettings[Units]
 ```
 
 ## Data Flow
@@ -144,6 +163,11 @@ flowchart TD
 
     LocalCache -.-> SyncQueue[Sync Queue]
     SyncQueue -.-> API
+
+    ThemeContext[Theme Context] --> AsyncStorage[(AsyncStorage)]
+    ThemeContext --> SupabaseClient[Supabase Client]
+    LanguageContext[Language Context] --> AsyncStorage
+    LanguageContext --> SupabaseClient
 ```
 
 ## Data Access Patterns
@@ -176,6 +200,11 @@ flowchart TD
    - Reference data like pregnancy timeline cached with expiration policy
    - Service layer handles cache invalidation and refreshing
    - Fallback to cached data when network is unavailable
+6. **Preference Synchronization**
+   - User preferences (theme, language) stored in both AsyncStorage and database
+   - Local storage for immediate access and performance
+   - Database storage for cross-device synchronization
+   - Context providers manage the persistence logic transparently to components
 
 ## Key Technical Decisions
 
@@ -188,6 +217,8 @@ flowchart TD
 - **Realtime Implementation**: Supabase Realtime enabled with Metro bundler workarounds for Expo compatibility
 - **Database Schema**: Structured with a focus on security, flexibility, and future extensibility
 - **Caching Strategy**: 24-hour cache expiration for reference data with manual refresh option
+- **User Synchronization**: Database triggers for automatic public.users creation when auth users sign up
+- **Preference Storage**: Dual storage in AsyncStorage and database for optimal performance and sync
 
 ## Component Relationships
 
@@ -198,6 +229,7 @@ flowchart TD
 3. Supabase client attempts authentication
 4. On success, JWT stored securely and user profile loaded
 5. App state updated to reflect authenticated status
+6. Database trigger creates public.users record if it doesn't exist
 
 ### Data Synchronization Flow
 
@@ -229,6 +261,16 @@ flowchart TD
 8. UI components render data from Redux
 9. Manual refresh option clears cache and forces fresh fetch
 
+### User Preference Flow
+
+1. User changes theme/language in UI
+2. Context provider updates local state
+3. State change saved to AsyncStorage for immediate local persistence
+4. If user is authenticated, preference also saved to database via Supabase
+5. Other devices receive update through Realtime subscription
+6. Context providers on other devices reflect the updated preferences
+7. UI components automatically re-render with new settings
+
 ### Feature Module Relationships
 
 - **Auth Module** provides user context to all other modules
@@ -236,31 +278,81 @@ flowchart TD
 - **Food Safety** and **Health Module** share nutrition-related data
 - **Appointment Manager** integrates with device calendar and notifications
 - **Settings & Preferences** affects behavior across all modules
+- **User Profile** synchronizes preferences across all modules and devices
 
 ## Security Considerations
 
 - Sensitive health data encrypted at rest
 - Authentication using JWT with secure storage
 - Row-level security in Supabase for data isolation
+- Database triggers implemented with SECURITY DEFINER to ensure integrity
 - Regular security audits and vulnerability testing
 - Compliance with health data regulations
 
-## Pregnancy Timeline Schema
+## User Profile Schema and Triggers
 
 ```sql
-CREATE TABLE public.pregnancy_weeks (
-    week INTEGER PRIMARY KEY CHECK (week >= 1 AND week <= 42),
-    fetal_development TEXT NOT NULL,
-    maternal_changes TEXT NOT NULL,
-    tips TEXT,
-    nutrition_advice TEXT,
-    common_symptoms TEXT,
-    medical_checkups TEXT,
-    image_url TEXT
+-- User table with app_settings for preferences
+CREATE TABLE public.users (
+    id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
+    email TEXT UNIQUE NOT NULL,
+    first_name TEXT,
+    last_name TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW() NOT NULL,
+    due_date DATE,
+    pregnancy_week INTEGER,
+    birth_date DATE,
+    avatar_url TEXT,
+    notification_preferences JSONB DEFAULT '{"appointments": true, "weeklyUpdates": true, "foodSafety": true}',
+    app_settings JSONB DEFAULT '{"theme": "system", "units": "metric", "language": "en"}'
 );
-```
 
-This schema provides a comprehensive structure for storing all pregnancy-related information by week, with appropriate constraints and relationships. The timeline data is reference data available to all authenticated users.
+-- Trigger function to sync auth users to public.users
+CREATE OR REPLACE FUNCTION public.handle_new_user()
+RETURNS TRIGGER AS $$
+DECLARE
+  system_settings JSONB := '{"theme": "system", "units": "metric", "language": "en"}';
+BEGIN
+  INSERT INTO public.users (id, email, created_at, updated_at, app_settings)
+  VALUES (NEW.id, NEW.email, NEW.created_at, NEW.updated_at, system_settings);
+  RETURN NEW;
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE LOG 'Error in handle_new_user function: %', SQLERRM;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger to create public.users record on auth.users insert
+CREATE TRIGGER on_auth_user_created
+  AFTER INSERT ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_new_user();
+
+-- Trigger function to sync email updates
+CREATE OR REPLACE FUNCTION public.handle_user_update()
+RETURNS TRIGGER AS $$
+BEGIN
+  IF NEW.email <> OLD.email THEN
+    UPDATE public.users
+    SET email = NEW.email, updated_at = NEW.updated_at
+    WHERE id = NEW.id;
+  END IF;
+  RETURN NEW;
+EXCEPTION
+  WHEN OTHERS THEN
+    RAISE LOG 'Error in handle_user_update function: %', SQLERRM;
+    RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Trigger to update public.users when auth.users is updated
+CREATE TRIGGER on_auth_user_updated
+  AFTER UPDATE ON auth.users
+  FOR EACH ROW
+  EXECUTE FUNCTION public.handle_user_update();
+```
 
 ---
 

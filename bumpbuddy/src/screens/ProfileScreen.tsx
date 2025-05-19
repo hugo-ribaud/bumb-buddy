@@ -15,8 +15,10 @@ import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
 import LanguageSwitcher from "../components/LanguageSwitcher";
+import PreferencesPanel from "../components/PreferencesPanel";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
+import { usePreferences } from "../contexts/PreferencesContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { RootState } from "../redux/store";
 import authService from "../services/authService";
@@ -27,7 +29,8 @@ const ProfileScreen = () => {
   const dispatch = useDispatch();
   const { user } = useSelector((state: RootState) => state.auth);
   const colorScheme = useColorScheme();
-  const { setTheme } = useTheme();
+  const { isDark } = useTheme();
+  const { updateTheme } = usePreferences();
 
   const [editing, setEditing] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -74,7 +77,7 @@ const ProfileScreen = () => {
                 savedTheme === "dark" ||
                 savedTheme === "system"
               ) {
-                setTheme(savedTheme);
+                updateTheme(savedTheme);
                 console.log("Theme updated from remote:", savedTheme);
               }
             }
@@ -212,6 +215,9 @@ const ProfileScreen = () => {
               </FontedText>
             )}
           </ThemedView>
+
+          {/* Preferences Panel */}
+          <PreferencesPanel />
 
           {/* Language Settings Section */}
           <ThemedView

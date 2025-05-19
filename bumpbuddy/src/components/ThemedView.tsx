@@ -1,4 +1,4 @@
-import { View, ViewProps } from "react-native";
+import { TouchableOpacity, View, ViewProps } from "react-native";
 
 import React from "react";
 import { useTheme } from "../contexts/ThemeContext";
@@ -11,6 +11,8 @@ interface ThemedViewProps extends ViewProps {
     | "background"
     | "surface";
   className?: string;
+  pressable?: boolean;
+  onPress?: () => void;
 }
 
 // Component that renders a View with theme-appropriate background colors
@@ -18,6 +20,8 @@ const ThemedView: React.FC<ThemedViewProps> = ({
   backgroundColor = "background",
   className = "",
   children,
+  pressable = false,
+  onPress,
   ...rest
 }) => {
   const { isDark } = useTheme();
@@ -39,6 +43,20 @@ const ThemedView: React.FC<ThemedViewProps> = ({
     }
   };
 
+  // Render as TouchableOpacity if pressable is true
+  if (pressable && onPress) {
+    return (
+      <TouchableOpacity
+        className={`${getBackgroundClass()} ${className}`}
+        onPress={onPress}
+        {...rest}
+      >
+        {children}
+      </TouchableOpacity>
+    );
+  }
+
+  // Otherwise render as a normal View
   return (
     <View className={`${getBackgroundClass()} ${className}`} {...rest}>
       {children}

@@ -1,8 +1,8 @@
 # Progress Tracking: BumpBuddy
 
-_Version: 1.0_
-_Created: 2024-06-09_
-_Last Updated: 2024-06-12_
+_Version: 1.1_
+_Created: 2025-05-06_
+_Last Updated: 2025-05-19_
 
 ## Project Status: DEVELOPMENT
 
@@ -90,10 +90,19 @@ _Last Updated: 2024-06-12_
 - Fixed missing translation keys for exercise tracking
 - Added specialized placeholder text for exercise notes in all languages
 - Added proper validation messages for exercise tracking
+- User profile management implemented
+- Created SQL migration for database triggers to sync auth.users with public.users
+- Implemented auto-creation of public.users records when users register
+- Added email sync between auth.users and public.users tables
+- Updated ThemeContext to save theme preference to AsyncStorage
+- Enhanced ThemeContext to save theme preference to user profile in database
+- Updated LanguageContext to save language preference to user profile in database
+- Enhanced ProfileScreen to handle app_settings updates from Realtime
+- Modified HomeScreen to display user's first name instead of email
 
 ## In Progress
 
-- Implementing user profile management
+- Planning offline functionality foundation
 
 ## Pending Tasks
 
@@ -123,7 +132,12 @@ _Last Updated: 2024-06-12_
   - ✅ Mood tracking
   - ✅ Sleep tracking
   - ✅ Exercise tracking
-- ⬜ User profile management
+- ✅ User profile management
+  - ✅ Database triggers for auth/users sync
+  - ✅ Theme persistence in AsyncStorage and database
+  - ✅ Language persistence in AsyncStorage and database
+  - ✅ Automatic preference synchronization across devices
+  - ✅ Improved user identification in UI components
 - ⬜ Offline functionality foundation
 
 ### Phase 3: Secondary Features (Medium Priority)
@@ -175,6 +189,7 @@ _Last Updated: 2024-06-12_
 - Implement reminders for health tracking activities
 - Implement post natal follow up (follow the baby develompent - height, weight, head tour size etc ...)
 - Implement a way to connect future moms between each other (with the approximative same due date.)
+- Support for multiple pregnancies tracking in the same account
 
 ## Milestones
 
@@ -184,7 +199,9 @@ _Last Updated: 2024-06-12_
 - ✅ Food Safety Database Complete: 2024-06-10 (Completed)
 - ✅ Pregnancy Timeline Tracker Complete: 2024-06-11 (Completed)
 - ✅ Contraction Tracking Complete: 2024-06-12 (Completed)
-- ⬜ Health Tracking Features Complete: TBD
+- ✅ Health Tracking Features Complete: 2025-05-15 (Completed)
+- ✅ User Profile Management Complete: 2025-05-19 (Completed)
+- ⬜ Offline Functionality Complete: TBD
 - ⬜ Core Features Complete: TBD
 - ⬜ Secondary Features Complete: TBD
 - ⬜ Polish Complete: TBD
@@ -233,27 +250,39 @@ _Last Updated: 2024-06-12_
 - Added cache refresh functionality for timeline data updates
 - Implemented internationalization support for all timeline screens
 
-## Completed Contraction Tracking Implementation
+## Completed Health Tracking Implementation
 
-- Defined Contraction interface and database schema with needed fields
-- Created contraction management methods in healthService:
-  - getContractions: Fetches user's contraction history
-  - startContraction: Begins a new contraction session
-  - endContraction: Completes a contraction with intensity rating and notes
-  - deleteContraction: Removes a contraction record
-- Updated Redux healthSlice with:
-  - Contraction state management
-  - Async thunks for all contraction operations
-  - Reducers for handling contraction state changes
-- Enhanced HealthTrackerScreen for contraction tracking:
-  - Timer display with start/stop functionality
-  - Intensity rating selection (1-5 scale)
-  - Notes field for additional context
-  - History view showing recent contractions
-  - Duration and interval calculations
-- Integrated with internationalization for multilingual support
-- Implemented proper error handling for all operations
-- Ensured data persistence with Supabase and local Redux state
+- Created comprehensive database schema for all health metrics:
+  - Contraction tracking
+  - Blood pressure monitoring
+  - Mood tracking
+  - Sleep tracking
+  - Exercise logging
+- Implemented a unified health service with specialized methods for each metric
+- Created Redux slice for centralized health data management
+- Built UI components for recording and tracking each health metric
+- Added data visualization for trends and patterns
+- Implemented editing and deletion capabilities for all health records
+- Ensured internationalization support across all health tracking screens
+- Added proper validation and data integrity checks
+- Integrated with AsyncStorage for offline capabilities
+- Implemented auto-sync with Supabase when connection is available
+
+## Completed User Profile Management Implementation
+
+- Created database trigger system for auth.users and public.users synchronization
+- Implemented automatic creation of public.users record on signup
+- Added fields for storing user preferences in the database:
+  - Theme preference (light/dark/system)
+  - Language selection
+  - Unit preferences (metric/imperial)
+- Enhanced ThemeContext to persist theme in both AsyncStorage and database
+- Updated LanguageContext to store language preference in database
+- Modified ProfileScreen to handle realtime updates from other devices
+- Improved welcome message on HomeScreen to use user's first name
+- Created proper field mapping between database schema and Redux state
+- Implemented fallback strategy for user identification (name → email → default)
+- Added realtime subscription for profile changes with immediate UI updates
 
 ---
 
