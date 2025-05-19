@@ -10,6 +10,7 @@ _Last Updated: 2025-05-19_
 
 - React Native (Expo framework)
 - TypeScript for type safety
+- Nativewind for styling (TailwindCSS for react native)
 - Redux Toolkit for state management
 - React Navigation for routing
 - i18next and react-i18next for internationalization
@@ -60,12 +61,33 @@ _Last Updated: 2025-05-19_
 }
 ```
 
+## Styling Implementation
+
+We've established a consistent styling approach using NativeWind (Tailwind CSS for React Native). Key aspects of our styling strategy include:
+
+- Using className prop instead of StyleSheet.create for styling components
+- Applying theme-aware conditional classes based on dark/light mode
+- Implementing a design system with standardized color tokens and typography
+- Creating reusable ThemedView and FontedText components for theme-aware styling
+- Using inline style objects only when className is not supported by third-party components
+- Converting all StyleSheet-based components to NativeWind for consistency
+- Handling edge cases like flag icons in language selection for proper dark mode appearance
+
+This approach ensures:
+
+- Consistent styling throughout the application
+- Better dark mode compatibility
+- Improved code readability and maintainability
+- Easier theme customization through a central design system
+
 ## File Structure
 
 ```
 bumpbuddy/
 ├── App.tsx                  # Root component
 ├── app.json                 # Expo configuration
+├── global.css               # CSS file configuration
+├── tailwind.config.js       # Tailwind CSS file configuration
 ├── assets/                  # Static assets like images
 ├── babel.config.js          # Babel configuration
 ├── index.js                 # Entry point
@@ -91,7 +113,6 @@ bumpbuddy/
 │   │   ├── foodService.ts   # Food database service
 │   │   ├── realtimeService.ts # Realtime updates
 │   │   └── timelineService.ts # Pregnancy timeline service
-│   ├── styles/              # Global styles
 │   ├── types/               # TypeScript interfaces and types
 │   └── utils/               # Utility functions
 └── supabase/                # Supabase migrations and seeds

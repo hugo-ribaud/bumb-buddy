@@ -1,5 +1,6 @@
+import { Text, View, useColorScheme } from "react-native";
+
 import React from "react";
-import { StyleSheet, Text, View, useColorScheme } from "react-native";
 import { getLanguageFlag } from "../i18n/languages";
 
 interface LanguageFlagProps {
@@ -23,48 +24,26 @@ const LanguageFlag: React.FC<LanguageFlagProps> = ({
   };
 
   const fontSize = sizeMap[size];
+  const containerSize = fontSize * 1.2;
 
   // Get the flag from language settings
   const flag = getLanguageFlag(languageCode);
 
   return (
     <View
-      style={[
-        styles.flagContainer,
-        { height: fontSize * 1.2, width: fontSize * 1.2 },
-        isDark ? styles.flagDark : styles.flagLight,
-      ]}
+      className={`items-center justify-center rounded-full overflow-hidden ${
+        isDark
+          ? "bg-[#333] border-[#555] border-[0.5px]"
+          : "bg-white border border-[#f0f0f0]"
+      } ${isDark ? "shadow-sm" : "shadow"}`}
+      style={{
+        height: containerSize,
+        width: containerSize,
+      }}
     >
-      <Text style={[styles.flag, { fontSize }]}>{flag}</Text>
+      <Text style={{ fontSize }}>{flag}</Text>
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  flagContainer: {
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: 50,
-    overflow: "hidden",
-    elevation: 3,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
-  },
-  flagLight: {
-    backgroundColor: "white",
-    borderWidth: 1,
-    borderColor: "#f0f0f0",
-  },
-  flagDark: {
-    backgroundColor: "#333",
-    borderWidth: 1,
-    borderColor: "#444",
-  },
-  flag: {
-    textAlign: "center",
-  },
-});
 
 export default LanguageFlag;

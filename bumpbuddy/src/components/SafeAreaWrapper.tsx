@@ -26,7 +26,7 @@ const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({
         className={`flex-1 ${
           isDark ? "bg-background-dark" : "bg-background-light"
         } ${className}`}
-        edges={["top", "right", "left"]}
+        edges={["top", "right", "left", "bottom"]}
       >
         {children}
       </SafeAreaView>

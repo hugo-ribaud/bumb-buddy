@@ -1,16 +1,17 @@
 import React, { useState } from "react";
-import { useTranslation } from "react-i18next";
 import { ActivityIndicator, Switch, View } from "react-native";
-import { Dropdown } from "react-native-element-dropdown";
-
-import { usePreferences } from "../contexts/PreferencesContext";
-import { useTheme } from "../contexts/ThemeContext";
 import {
   LanguageCode,
   ThemeMode,
   UnitSystem,
 } from "../redux/slices/preferencesSlice";
+
+import { useTranslation } from "react-i18next";
+import { Dropdown } from "react-native-element-dropdown";
+import { usePreferences } from "../contexts/PreferencesContext";
+import { useTheme } from "../contexts/ThemeContext";
 import FontedText from "./FontedText";
+import PreferencesLanguageSwitcher from "./PreferencesLanguageSwitcher";
 import ThemedView from "./ThemedView";
 
 const PreferencesPanel = () => {
@@ -58,8 +59,8 @@ const PreferencesPanel = () => {
 
   // Units options
   const unitsOptions = [
-    { label: t("preferences.units.metric"), value: "metric" },
-    { label: t("preferences.units.imperial"), value: "imperial" },
+    { label: t("preferences.unitTypes.metric"), value: "metric" },
+    { label: t("preferences.unitTypes.imperial"), value: "imperial" },
   ];
 
   // Handle theme change from dropdown
@@ -86,7 +87,7 @@ const PreferencesPanel = () => {
   };
 
   return (
-    <ThemedView backgroundColor="surface" className="p-4 rounded-lg mb-6">
+    <>
       <FontedText variant="heading-3" className="mb-3">
         {t("preferences.title")}
       </FontedText>
@@ -107,35 +108,33 @@ const PreferencesPanel = () => {
           />
         </View>
 
-        <View className="mb-3">
-          <FontedText className="mb-1">
-            {t("preferences.themeSelection")}
-          </FontedText>
-          <Dropdown
-            data={themeOptions}
-            labelField="label"
-            valueField="value"
-            value={theme}
-            onChange={(item) => handleThemeChange(item.value as ThemeMode)}
-            placeholder={t("preferences.selectTheme")}
-            style={{
-              height: 50,
-              borderColor: isDark ? "#444" : "#e0e0e0",
-              borderWidth: 1,
-              borderRadius: 8,
-              paddingHorizontal: 12,
-              backgroundColor: isDark ? "#333" : "#f5f5f5",
-            }}
-            placeholderStyle={{ color: isDark ? "#aaa" : "#888" }}
-            selectedTextStyle={{ color: isDark ? "#fff" : "#000" }}
-            itemTextStyle={{ color: isDark ? "#fff" : "#000" }}
-            containerStyle={{
-              backgroundColor: isDark ? "#333" : "#fff",
-              borderRadius: 8,
-            }}
-            activeColor={isDark ? "#444" : "#f0f0f0"}
-          />
-        </View>
+        <FontedText className="mb-1">
+          {t("preferences.themeSelection")}
+        </FontedText>
+        <Dropdown
+          data={themeOptions}
+          labelField="label"
+          valueField="value"
+          value={theme}
+          onChange={(item) => handleThemeChange(item.value as ThemeMode)}
+          placeholder={t("preferences.selectTheme")}
+          style={{
+            height: 50,
+            borderColor: isDark ? "#444" : "#e0e0e0",
+            borderWidth: 1,
+            borderRadius: 8,
+            paddingHorizontal: 12,
+            backgroundColor: isDark ? "#333" : "#f5f5f5",
+          }}
+          placeholderStyle={{ color: isDark ? "#aaa" : "#888" }}
+          selectedTextStyle={{ color: isDark ? "#fff" : "#000" }}
+          itemTextStyle={{ color: isDark ? "#fff" : "#000" }}
+          containerStyle={{
+            backgroundColor: isDark ? "#333" : "#fff",
+            borderRadius: 8,
+          }}
+          activeColor={isDark ? "#444" : "#f0f0f0"}
+        />
       </View>
 
       {/* Language Section */}
@@ -146,32 +145,7 @@ const PreferencesPanel = () => {
 
         <View className="mb-3">
           <FontedText className="mb-1">{t("preferences.language")}</FontedText>
-          <Dropdown
-            data={languageOptions}
-            labelField="label"
-            valueField="value"
-            value={language}
-            onChange={(item) =>
-              handleLanguageChange(item.value as LanguageCode)
-            }
-            placeholder={t("preferences.selectLanguage")}
-            style={{
-              height: 50,
-              borderColor: isDark ? "#444" : "#e0e0e0",
-              borderWidth: 1,
-              borderRadius: 8,
-              paddingHorizontal: 12,
-              backgroundColor: isDark ? "#333" : "#f5f5f5",
-            }}
-            placeholderStyle={{ color: isDark ? "#aaa" : "#888" }}
-            selectedTextStyle={{ color: isDark ? "#fff" : "#000" }}
-            itemTextStyle={{ color: isDark ? "#fff" : "#000" }}
-            containerStyle={{
-              backgroundColor: isDark ? "#333" : "#fff",
-              borderRadius: 8,
-            }}
-            activeColor={isDark ? "#444" : "#f0f0f0"}
-          />
+          <PreferencesLanguageSwitcher />
         </View>
       </View>
 
@@ -226,13 +200,13 @@ const PreferencesPanel = () => {
                 style={{ marginRight: 8 }}
               />
             ) : null}
-            <FontedText className="text-white font-medium">
+            <FontedText className="font-medium text-white">
               {syncing ? t("preferences.syncing") : t("preferences.syncNow")}
             </FontedText>
           </View>
         </ThemedView>
       </View>
-    </ThemedView>
+    </>
   );
 };
 

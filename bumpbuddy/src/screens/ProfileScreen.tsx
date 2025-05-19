@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Modal,
+  Pressable,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -11,10 +13,10 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { logout, updateUser } from "../redux/slices/authSlice";
 
+import { Feather } from "@expo/vector-icons";
 import DateTimePicker from "@react-native-community/datetimepicker";
 import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
-import LanguageSwitcher from "../components/LanguageSwitcher";
 import PreferencesPanel from "../components/PreferencesPanel";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
@@ -43,6 +45,7 @@ const ProfileScreen = () => {
   );
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [name, setName] = useState(user?.name || "");
+  const [preferencesVisible, setPreferencesVisible] = useState(false);
 
   // Set up Realtime subscription
   useEffect(() => {
@@ -192,7 +195,19 @@ const ProfileScreen = () => {
 
   return (
     <SafeAreaWrapper>
-      <ScrollView className="flex-1 bg-background-light dark:bg-background-dark">
+      {/* Header with options icon */}
+      <View className="flex-row items-center justify-end px-5 pt-3">
+        <Pressable
+          onPress={() => setPreferencesVisible(true)}
+          accessibilityLabel={t("preferences.title")}
+        >
+          <Feather name="settings" size={28} color={isDark ? "#fff" : "#222"} />
+        </Pressable>
+      </View>
+      <ScrollView
+        className="flex-1 bg-background-light dark:bg-background-dark"
+        contentContainerStyle={{ flexGrow: 1 }}
+      >
         <ThemedView className="flex-1 p-5">
           <FontedText variant="heading-2" className="mb-5 text-center">
             {t("profile.title")}
@@ -201,7 +216,7 @@ const ProfileScreen = () => {
           {/* Realtime Status Indicator */}
           <ThemedView
             backgroundColor="surface"
-            className="p-4 mb-5 border-l-4 border-blue-400 dark:border-blue-600 rounded-lg"
+            className="p-4 mb-5 border-l-4 border-blue-400 rounded-lg dark:border-blue-600"
           >
             <View className="flex-row items-center">
               <View className="w-2.5 h-2.5 rounded-full bg-blue-400 dark:bg-blue-600 mr-2.5" />
@@ -216,36 +231,33 @@ const ProfileScreen = () => {
             )}
           </ThemedView>
 
-          {/* Preferences Panel */}
-          <PreferencesPanel />
-
-          {/* Language Settings Section */}
-          <ThemedView
-            backgroundColor="surface"
-            className="rounded-lg shadow mb-5 overflow-hidden"
+          {/* Preferences Modal Triggered by Icon */}
+          <Modal
+            visible={preferencesVisible}
+            animationType="slide"
+            transparent
+            onRequestClose={() => setPreferencesVisible(false)}
           >
-            <View className="px-5 py-4 border-b border-gray-200 dark:border-gray-700">
-              <View className="flex-row items-center">
-                <FontedText
-                  variant="heading-4"
-                  colorVariant="primary"
-                  className="flex-1"
+            <View className="items-center justify-center flex-1 bg-black/40">
+              <ThemedView
+                backgroundColor="surface"
+                className="w-[90%] max-w-md p-6 rounded-2xl shadow-lg relative"
+              >
+                <Pressable
+                  onPress={() => setPreferencesVisible(false)}
+                  className="absolute z-10 top-4 right-4"
+                  accessibilityLabel={t("common.buttons.cancel")}
                 >
-                  {t("profile.languageSettings")}
-                </FontedText>
-                <FontedText
-                  variant="caption"
-                  colorVariant="secondary"
-                  className="text-right"
-                >
-                  {t("profile.selectYourLanguage")}
-                </FontedText>
-              </View>
+                  <Feather
+                    name="x"
+                    size={24}
+                    color={isDark ? "#fff" : "#222"}
+                  />
+                </Pressable>
+                <PreferencesPanel />
+              </ThemedView>
             </View>
-            <View className="p-5">
-              <LanguageSwitcher />
-            </View>
-          </ThemedView>
+          </Modal>
 
           {/* User Details Section */}
           <ThemedView
@@ -280,7 +292,7 @@ const ProfileScreen = () => {
                 >
                   {t("profile.name")}
                 </FontedText>
-                <View className="border border-gray-300 dark:border-gray-600 rounded-xl px-3 py-3 mt-1 mb-4 bg-white dark:bg-gray-800">
+                <View className="px-3 py-3 mt-1 mb-4 bg-white border border-gray-300 dark:border-gray-600 rounded-xl dark:bg-gray-800">
                   <TextInput
                     value={name}
                     onChangeText={setName}
@@ -391,7 +403,7 @@ const ProfileScreen = () => {
             )}
 
             <TouchableOpacity
-              className="items-center p-3 bg-red-500 dark:bg-red-600 rounded mt-7"
+              className="items-center p-3 bg-red-500 rounded dark:bg-red-600 mt-7"
               onPress={handleLogout}
               disabled={loading}
             >

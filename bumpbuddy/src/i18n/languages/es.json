@@ -387,5 +387,29 @@
     "privacyPolicyLabel": "Política de Privacidad",
     "termsOfServiceLabel": "Términos de Servicio",
     "feedbackLabel": "Enviar Comentarios"
+  },
+  "preferences": {
+    "title": "Preferencias",
+    "themeSettings": "Configuración de tema",
+    "darkMode": "Modo oscuro",
+    "themeSelection": "Selección de tema",
+    "selectTheme": "Seleccionar tema",
+    "themes": {
+      "light": "Claro",
+      "dark": "Oscuro",
+      "system": "Predeterminado del sistema"
+    },
+    "languageSettings": "Configuración de idioma",
+    "language": "Idioma",
+    "selectLanguage": "Seleccionar idioma",
+    "measurementSettings": "Configuración de medidas",
+    "units": "Unidades",
+    "selectUnits": "Seleccionar unidades",
+    "unitTypes": {
+      "metric": "Métrico (kg, cm)",
+      "imperial": "Imperial (lb, in)"
+    },
+    "syncNow": "Sincronizar ahora",
+    "syncing": "Sincronizando..."
   }
 }
