@@ -411,5 +411,21 @@
     },
     "syncNow": "Sync Now",
     "syncing": "Syncing..."
+  },
+  "network": {
+    "online": "Online",
+    "offline": "Offline",
+    "syncPending": "Syncing {{count}} changes...",
+    "pendingSync": "{{count}} changes pending",
+    "lastOnline": "Last online",
+    "unknown": "Unknown",
+    "connectionLost": "Connection lost",
+    "connectionRestored": "Connection restored",
+    "offlineMode": "Offline mode",
+    "syncCompleted": "Sync completed",
+    "syncFailed": "Sync failed",
+    "retrying": "Retrying...",
+    "savedLocally": "Saved locally",
+    "waitingToSync": "Waiting to sync"
   }
 }

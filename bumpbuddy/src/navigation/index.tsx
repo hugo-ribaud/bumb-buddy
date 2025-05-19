@@ -1,11 +1,18 @@
-import React, { useEffect } from "react";
+import {
+  DarkTheme,
+  DefaultTheme,
+  NavigationContainer,
+  useNavigationContainerRef,
+} from "@react-navigation/native";
+import React, { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { authFailure, authSuccess } from "../redux/slices/authSlice";
 
 import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
+import { useTranslation } from "react-i18next";
+import NetworkStatusIndicator from "../components/NetworkStatusIndicator";
 import supabase from "../config/supabaseConfig";
 import { useTheme } from "../contexts/ThemeContext";
 import { RootState } from "../redux/store";
@@ -39,9 +46,15 @@ export type TimelineStackParamList = {
   WeekDetail: undefined;
 };
 
+export type MainStackParamList = {
+  MainTabs: undefined;
+  WeekDetail: { weekId: number };
+};
+
 const Stack = createStackNavigator<RootStackParamList>();
 const Tab = createBottomTabNavigator<MainTabParamList>();
 const TimelineStack = createStackNavigator<TimelineStackParamList>();
+const MainStack = createStackNavigator<MainStackParamList>();
 
 // Timeline stack navigator
 const TimelineNavigator = () => {
@@ -121,6 +134,10 @@ const RootNavigator = () => {
     (state: RootState) => state.auth
   );
   const dispatch = useDispatch();
+  const { t } = useTranslation();
+  const navigationRef = useNavigationContainerRef();
+  const isReady = useRef(false);
+  const { isDark } = useTheme();
 
   // Check for existing session on app load
   useEffect(() => {
@@ -183,14 +200,33 @@ const RootNavigator = () => {
   }
 
   return (
-    <NavigationContainer>
-      <Stack.Navigator screenOptions={{ headerShown: false }}>
-        {!isAuthenticated ? (
-          <Stack.Screen name="Auth" component={AuthScreen} />
-        ) : (
-          <Stack.Screen name="Main" component={MainTabNavigator} />
-        )}
-      </Stack.Navigator>
+    <NavigationContainer
+      ref={navigationRef}
+      onReady={() => {
+        isReady.current = true;
+      }}
+      theme={isDark ? DarkTheme : DefaultTheme}
+    >
+      {isAuthenticated ? (
+        <MainStack.Navigator
+          screenOptions={{
+            headerShown: false,
+          }}
+        >
+          <MainStack.Screen name="MainTabs" component={MainTabNavigator} />
+          <MainStack.Screen
+            name="WeekDetail"
+            component={WeekDetailScreen}
+            options={{
+              headerShown: true,
+              title: t("navigation.weekDetail"),
+            }}
+          />
+        </MainStack.Navigator>
+      ) : (
+        <AuthScreen />
+      )}
+      <NetworkStatusIndicator />
     </NavigationContainer>
   );
 };

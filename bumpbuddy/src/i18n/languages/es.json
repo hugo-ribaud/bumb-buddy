@@ -411,5 +411,21 @@
     },
     "syncNow": "Sincronizar ahora",
     "syncing": "Sincronizando..."
+  },
+  "network": {
+    "online": "En línea",
+    "offline": "Sin conexión",
+    "syncPending": "Sincronizando {{count}} cambios...",
+    "pendingSync": "{{count}} cambios pendientes",
+    "lastOnline": "Última vez en línea",
+    "unknown": "Desconocido",
+    "connectionLost": "Conexión perdida",
+    "connectionRestored": "Conexión restaurada",
+    "offlineMode": "Modo sin conexión",
+    "syncCompleted": "Sincronización completada",
+    "syncFailed": "Sincronización fallida",
+    "retrying": "Reintentando...",
+    "savedLocally": "Guardado localmente",
+    "waitingToSync": "Esperando sincronización"
   }
 }
