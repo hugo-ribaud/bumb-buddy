@@ -12,6 +12,7 @@ import {
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit";
+import appointmentReducer from "./slices/appointmentSlice";
 import authReducer from "./slices/authSlice";
 import healthReducer from "./slices/healthSlice";
 import preferencesReducer from "./slices/preferencesSlice";
@@ -60,6 +61,12 @@ const healthPersistConfig = {
   // stateReconciler: autoMergeLevel2,
 };
 
+// Configure specific persistence settings for appointment data
+const appointmentPersistConfig = {
+  key: "appointment",
+  storage: AsyncStorage,
+};
+
 // Combine all reducers
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -67,6 +74,7 @@ const rootReducer = combineReducers({
   health: persistReducer(healthPersistConfig, healthReducer),
   preferences: preferencesReducer,
   network: networkSlice.reducer,
+  appointment: persistReducer(appointmentPersistConfig, appointmentReducer),
 });
 
 // Create persisted reducer

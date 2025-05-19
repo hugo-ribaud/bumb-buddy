@@ -155,7 +155,6 @@ _Last Updated: 2025-05-19_
 - Preview of the foetus size (comparaison to fruits with image) to enhance the timeline UX/UI
 - Content management for pregnancy information
 - Push notifications
-- Settings and preferences
 
 ### Phase 4: Polish and Optimization (Medium Priority)
 
