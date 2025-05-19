@@ -58,10 +58,15 @@ _Last Updated: 2024-06-12_
 - Added a history view for recent contractions
 - Integrated contraction tracking with Redux and Supabase persistence
 - Ensured proper internationalization support in health tracking UI
+- Blood pressure tracking functionality implemented
+- Created database schema for blood pressure logs with RLS policies
+- Integrated UI components for recording and managing blood pressure readings
+- Added position and arm tracking for more accurate measurements
+- Implemented blood pressure history view with editing capabilities
 
 ## In Progress
 
-- Implementing additional health tracking features (blood pressure, mood, sleep, exercise)
+- Implementing additional health tracking features (mood, sleep, exercise)
 
 ## Pending Tasks
 
@@ -87,7 +92,7 @@ _Last Updated: 2024-06-12_
 - ✅ Pregnancy timeline tracker
 - 🔄 Basic health tracking features
   - ✅ Contraction tracking with timer
-  - ⬜ Blood pressure tracking
+  - ✅ Blood pressure tracking
   - ⬜ Mood tracking
   - ⬜ Sleep tracking
   - ⬜ Exercise tracking

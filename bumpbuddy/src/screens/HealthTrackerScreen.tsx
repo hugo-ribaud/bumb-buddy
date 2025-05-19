@@ -1,14 +1,16 @@
+import React, { useEffect, useRef, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
+  Modal,
   ScrollView,
   StyleSheet,
   Switch,
+  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { AppDispatch, RootState } from "../redux/store";
-import React, { useEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import {
   addBloodPressureLog,
   addSymptom,
@@ -27,14 +29,14 @@ import {
   updateBloodPressureLog,
   updateKickCount,
 } from "../redux/slices/healthSlice";
-import { useDispatch, useSelector } from "react-redux";
+import { AppDispatch, RootState } from "../redux/store";
 
-import { BloodPressureLog } from "../services/healthService";
+import { format } from "date-fns";
+import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
 import ThemedView from "../components/ThemedView";
-import { format } from "date-fns";
 import { useTheme } from "../contexts/ThemeContext";
-import { useTranslation } from "react-i18next";
+import { BloodPressureLog } from "../services/healthService";
 
 // Define common symptom types
 const SYMPTOM_TYPES = [
@@ -724,23 +726,31 @@ const HealthTrackerScreen = () => {
               ) : (
                 <>
                   {bloodPressureLogs.items.length > 0 ? (
-                    <View className="flex-row items-center justify-between mb-4">
+                    <View className="flex-row items-center justify-between mb-4 w-full">
                       <FontedText variant="body" className="font-medium">
                         {t("health.currentBloodPressure")}
                       </FontedText>
-                      <FontedText variant="body" className="font-bold">
-                        {bloodPressureLogs.items[0].systolic}/
-                        {bloodPressureLogs.items[0].diastolic} mmHg
-                      </FontedText>
+                      <View className="items-end">
+                        <FontedText variant="heading-4" className="font-bold">
+                          {bloodPressureLogs.items[0].systolic}/
+                          {bloodPressureLogs.items[0].diastolic} mmHg
+                        </FontedText>
+                        {bloodPressureLogs.items[0].pulse && (
+                          <FontedText variant="caption" textType="secondary">
+                            {t("health.pulse")}:{" "}
+                            {bloodPressureLogs.items[0].pulse} bpm
+                          </FontedText>
+                        )}
+                      </View>
                     </View>
                   ) : (
-                    <FontedText className="text-center text-gray-500">
+                    <FontedText className="text-center text-gray-500 mb-4">
                       {t("health.noBloodPressureData")}
                     </FontedText>
                   )}
 
                   <TouchableOpacity
-                    className="px-6 py-3 rounded-full bg-primary dark:bg-primary-dark"
+                    className="px-6 py-3 rounded-full bg-primary dark:bg-primary-dark mb-4"
                     onPress={handleAddBloodPressure}
                   >
                     <FontedText className="text-white font-bold">
@@ -750,6 +760,73 @@ const HealthTrackerScreen = () => {
                 </>
               )}
             </View>
+
+            {/* Blood Pressure History */}
+            {bloodPressureLogs.items.length > 0 && (
+              <View className="mt-2">
+                <FontedText
+                  variant="heading-4"
+                  fontFamily="comfortaa"
+                  className="mb-2"
+                >
+                  {t("health.history")}
+                </FontedText>
+
+                {bloodPressureLogs.items.slice(0, 5).map((bpLog) => (
+                  <ThemedView
+                    key={bpLog.id}
+                    backgroundColor="background"
+                    className="rounded-lg p-3 mb-2 flex-row justify-between items-center"
+                  >
+                    <View className="flex-1">
+                      <FontedText variant="body" className="font-bold">
+                        {bpLog.systolic}/{bpLog.diastolic} mmHg
+                      </FontedText>
+                      <View className="flex-row items-center mt-1">
+                        <FontedText variant="caption" textType="secondary">
+                          {formatDate(bpLog.date)}
+                        </FontedText>
+                        {bpLog.pulse && (
+                          <FontedText
+                            variant="caption"
+                            textType="secondary"
+                            className="ml-3"
+                          >
+                            {bpLog.pulse} bpm
+                          </FontedText>
+                        )}
+                      </View>
+                      {bpLog.notes && (
+                        <FontedText variant="caption" className="italic mt-1">
+                          {bpLog.notes.length > 50
+                            ? `${bpLog.notes.substring(0, 50)}...`
+                            : bpLog.notes}
+                        </FontedText>
+                      )}
+                    </View>
+
+                    <View className="flex-row">
+                      <TouchableOpacity
+                        className="p-2 mr-2"
+                        onPress={() => handleEditBloodPressure(bpLog)}
+                      >
+                        <FontedText colorVariant="primary">
+                          {t("common.buttons.edit")}
+                        </FontedText>
+                      </TouchableOpacity>
+                      <TouchableOpacity
+                        className="p-2"
+                        onPress={() => handleDeleteBloodPressure(bpLog.id)}
+                      >
+                        <FontedText colorVariant="accent">
+                          {t("common.buttons.delete")}
+                        </FontedText>
+                      </TouchableOpacity>
+                    </View>
+                  </ThemedView>
+                ))}
+              </View>
+            )}
           </ThemedView>
 
           {/* Contraction Timer Section */}
@@ -811,6 +888,153 @@ const HealthTrackerScreen = () => {
           </ThemedView>
         </View>
       </ScrollView>
+
+      {/* Blood Pressure Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={bpModalVisible}
+        onRequestClose={() => setBpModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <ThemedView
+            backgroundColor="surface"
+            className="w-[90%] rounded-xl p-6 max-w-md shadow-md"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="text-center mb-4"
+            >
+              {editingBpLog
+                ? t("health.editBloodPressure")
+                : t("health.addBloodPressure")}
+            </FontedText>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-2">
+                {t("health.systolic")} (mmHg) *
+              </FontedText>
+              <View className="flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4">
+                <TextInput
+                  className="flex-1 text-base text-gray-800 dark:text-gray-200"
+                  value={bpSystolic}
+                  onChangeText={setBpSystolic}
+                  keyboardType="number-pad"
+                  placeholder={t("health.systolicPlaceholder")}
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
+
+              <FontedText variant="body" className="mb-2">
+                {t("health.diastolic")} (mmHg) *
+              </FontedText>
+              <View className="flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4">
+                <TextInput
+                  className="flex-1 text-base text-gray-800 dark:text-gray-200"
+                  value={bpDiastolic}
+                  onChangeText={setBpDiastolic}
+                  keyboardType="number-pad"
+                  placeholder={t("health.diastolicPlaceholder")}
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
+
+              <FontedText variant="body" className="mb-2">
+                {t("health.pulse")} (bpm)
+              </FontedText>
+              <View className="flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4">
+                <TextInput
+                  className="flex-1 text-base text-gray-800 dark:text-gray-200"
+                  value={bpPulse}
+                  onChangeText={setBpPulse}
+                  keyboardType="number-pad"
+                  placeholder={t("health.pulsePlaceholder")}
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
+
+              <FontedText variant="body" className="mb-2">
+                {t("health.position")}
+              </FontedText>
+              <View className="flex-row justify-between mb-4">
+                {["sitting", "standing", "lying"].map((pos) => (
+                  <TouchableOpacity
+                    key={pos}
+                    className={`py-2 px-4 rounded-full border ${
+                      bpPosition === pos
+                        ? "bg-primary dark:bg-primary-dark border-primary dark:border-primary-dark"
+                        : "border-gray-300 dark:border-gray-600"
+                    }`}
+                    onPress={() => setBpPosition(pos)}
+                  >
+                    <FontedText
+                      className={bpPosition === pos ? "text-white" : ""}
+                    >
+                      {t(`health.positions.${pos}`)}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <FontedText variant="body" className="mb-2">
+                {t("health.arm")}
+              </FontedText>
+              <View className="flex-row justify-around mb-4">
+                {["left", "right"].map((arm) => (
+                  <TouchableOpacity
+                    key={arm}
+                    className={`py-2 px-8 rounded-full border ${
+                      bpArm === arm
+                        ? "bg-primary dark:bg-primary-dark border-primary dark:border-primary-dark"
+                        : "border-gray-300 dark:border-gray-600"
+                    }`}
+                    onPress={() => setBpArm(arm)}
+                  >
+                    <FontedText className={bpArm === arm ? "text-white" : ""}>
+                      {t(`health.arms.${arm}`)}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <FontedText variant="body" className="mb-2">
+                {t("health.notes")}
+              </FontedText>
+              <View className="border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4">
+                <TextInput
+                  className="h-20 text-base text-gray-800 dark:text-gray-200"
+                  value={bpNotes}
+                  onChangeText={setBpNotes}
+                  placeholder={t("health.notesPlaceholder")}
+                  placeholderTextColor="#9CA3AF"
+                  multiline
+                  textAlignVertical="top"
+                />
+              </View>
+            </View>
+
+            <View className="flex-row justify-between">
+              <TouchableOpacity
+                className="flex-1 py-3 bg-gray-400 dark:bg-gray-600 rounded-lg mr-2"
+                onPress={() => setBpModalVisible(false)}
+              >
+                <FontedText className="text-center text-white font-bold">
+                  {t("common.buttons.cancel")}
+                </FontedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="flex-1 py-3 bg-primary dark:bg-primary-dark rounded-lg ml-2"
+                onPress={saveBloodPressureLog}
+              >
+                <FontedText className="text-center text-white font-bold">
+                  {t("common.buttons.save")}
+                </FontedText>
+              </TouchableOpacity>
+            </View>
+          </ThemedView>
+        </View>
+      </Modal>
     </ThemedView>
   );
 };
