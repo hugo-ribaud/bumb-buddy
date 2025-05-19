@@ -61,12 +61,26 @@ export interface BloodPressureLog {
   updated_at: string;
 }
 
+export interface MoodLog {
+  id: string;
+  user_id: string;
+  date: string;
+  time: string;
+  mood_rating: number; // Scale of 1-5, where 1 is very low mood and 5 is very high
+  mood_type: string; // e.g., 'happy', 'sad', 'anxious', 'calm', etc.
+  triggers?: string[]; // Factors that might have contributed to the mood
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Cache keys
 const SYMPTOMS_CACHE_KEY = "health_symptoms_cache";
 const KICK_COUNTS_CACHE_KEY = "health_kick_counts_cache";
 const WEIGHT_LOGS_CACHE_KEY = "health_weight_logs_cache";
 const CONTRACTIONS_CACHE_KEY = "health_contractions_cache";
 const BLOOD_PRESSURE_LOGS_CACHE_KEY = "health_bp_logs_cache";
+const MOOD_LOGS_CACHE_KEY = "health_mood_logs_cache";
 
 // Health tracking service
 const healthService = {
@@ -683,6 +697,141 @@ const healthService = {
       return true;
     } catch (error) {
       console.error("Error in deleteBloodPressureLog:", error);
+      return false;
+    }
+  },
+
+  // Mood logs
+  getMoodLogs: async (userId: string): Promise<MoodLog[]> => {
+    try {
+      // Try to get from cache first
+      const cachedData = await AsyncStorage.getItem(MOOD_LOGS_CACHE_KEY);
+      let moodLogs: MoodLog[] = [];
+
+      if (cachedData) {
+        moodLogs = JSON.parse(cachedData);
+      }
+
+      // Fetch from API
+      const { data, error } = await supabase
+        .from("mood_logs")
+        .select("*")
+        .eq("user_id", userId)
+        .order("date", { ascending: false })
+        .order("time", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching mood logs:", error);
+        return moodLogs; // Return cached data if available
+      }
+
+      // Update cache
+      if (data) {
+        await AsyncStorage.setItem(MOOD_LOGS_CACHE_KEY, JSON.stringify(data));
+        return data;
+      }
+
+      return moodLogs;
+    } catch (error) {
+      console.error("Error in getMoodLogs:", error);
+      return [];
+    }
+  },
+
+  addMoodLog: async (
+    moodLog: Omit<MoodLog, "id" | "created_at" | "updated_at">
+  ): Promise<MoodLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("mood_logs")
+        .insert(moodLog)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error adding mood log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(MOOD_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const moodLogs: MoodLog[] = JSON.parse(cachedData);
+        moodLogs.unshift(data);
+        await AsyncStorage.setItem(
+          MOOD_LOGS_CACHE_KEY,
+          JSON.stringify(moodLogs)
+        );
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in addMoodLog:", error);
+      return null;
+    }
+  },
+
+  updateMoodLog: async (
+    id: string,
+    updates: Partial<MoodLog>
+  ): Promise<MoodLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("mood_logs")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating mood log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(MOOD_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const moodLogs: MoodLog[] = JSON.parse(cachedData);
+        const index = moodLogs.findIndex((log) => log.id === id);
+        if (index !== -1) {
+          moodLogs[index] = { ...moodLogs[index], ...updates };
+          await AsyncStorage.setItem(
+            MOOD_LOGS_CACHE_KEY,
+            JSON.stringify(moodLogs)
+          );
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in updateMoodLog:", error);
+      return null;
+    }
+  },
+
+  deleteMoodLog: async (id: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase.from("mood_logs").delete().eq("id", id);
+
+      if (error) {
+        console.error("Error deleting mood log:", error);
+        return false;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(MOOD_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const moodLogs: MoodLog[] = JSON.parse(cachedData);
+        const updatedLogs = moodLogs.filter((log) => log.id !== id);
+        await AsyncStorage.setItem(
+          MOOD_LOGS_CACHE_KEY,
+          JSON.stringify(updatedLogs)
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error in deleteMoodLog:", error);
       return false;
     }
   },

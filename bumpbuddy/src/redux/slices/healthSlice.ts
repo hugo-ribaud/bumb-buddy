@@ -3,6 +3,7 @@ import healthService, {
   BloodPressureLog,
   Contraction,
   KickCount,
+  MoodLog,
   Symptom,
   WeightLog,
 } from "../../services/healthService";
@@ -36,6 +37,11 @@ interface HealthState {
     loading: boolean;
     error: string | null;
   };
+  moodLogs: {
+    items: MoodLog[];
+    loading: boolean;
+    error: string | null;
+  };
 }
 
 // Initial state
@@ -63,6 +69,11 @@ const initialState: HealthState = {
     error: null,
   },
   bloodPressureLogs: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  moodLogs: {
     items: [],
     loading: false,
     error: null,
@@ -319,6 +330,63 @@ export const deleteBloodPressureLog = createAsyncThunk(
   }
 );
 
+// Mood tracking thunks
+export const fetchMoodLogs = createAsyncThunk(
+  "health/fetchMoodLogs",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      return await healthService.getMoodLogs(userId);
+    } catch (error) {
+      return rejectWithValue("Failed to fetch mood logs");
+    }
+  }
+);
+
+export const addMoodLog = createAsyncThunk(
+  "health/addMoodLog",
+  async (
+    moodLog: Omit<MoodLog, "id" | "created_at" | "updated_at">,
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.addMoodLog(moodLog);
+      if (!result) return rejectWithValue("Failed to add mood log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to add mood log");
+    }
+  }
+);
+
+export const updateMoodLog = createAsyncThunk(
+  "health/updateMoodLog",
+  async (
+    { id, updates }: { id: string; updates: Partial<MoodLog> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.updateMoodLog(id, updates);
+      if (!result) return rejectWithValue("Failed to update mood log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to update mood log");
+    }
+  }
+);
+
+export const deleteMoodLog = createAsyncThunk(
+  "health/deleteMoodLog",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const success = await healthService.deleteMoodLog(id);
+      if (!success) return rejectWithValue("Failed to delete mood log");
+      return id;
+    } catch (error) {
+      return rejectWithValue("Failed to delete mood log");
+    }
+  }
+);
+
 // Create slice
 const healthSlice = createSlice({
   name: "health",
@@ -330,6 +398,7 @@ const healthSlice = createSlice({
       state.weightLogs.error = null;
       state.contractions.error = null;
       state.bloodPressureLogs.error = null;
+      state.moodLogs.error = null;
     },
     resetCurrentKickCount: (state) => {
       state.kickCounts.currentSession = null;
@@ -560,6 +629,48 @@ const healthSlice = createSlice({
         (state, action: PayloadAction<string>) => {
           state.bloodPressureLogs.items = state.bloodPressureLogs.items.filter(
             (bp) => bp.id !== action.payload
+          );
+        }
+      )
+
+      // Mood logs
+      .addCase(fetchMoodLogs.pending, (state) => {
+        state.moodLogs.loading = true;
+        state.moodLogs.error = null;
+      })
+      .addCase(
+        fetchMoodLogs.fulfilled,
+        (state, action: PayloadAction<MoodLog[]>) => {
+          state.moodLogs.loading = false;
+          state.moodLogs.items = action.payload;
+        }
+      )
+      .addCase(fetchMoodLogs.rejected, (state, action) => {
+        state.moodLogs.loading = false;
+        state.moodLogs.error = action.payload as string;
+      })
+      .addCase(
+        addMoodLog.fulfilled,
+        (state, action: PayloadAction<MoodLog>) => {
+          state.moodLogs.items.unshift(action.payload);
+        }
+      )
+      .addCase(
+        updateMoodLog.fulfilled,
+        (state, action: PayloadAction<MoodLog>) => {
+          const index = state.moodLogs.items.findIndex(
+            (log) => log.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.moodLogs.items[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        deleteMoodLog.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.moodLogs.items = state.moodLogs.items.filter(
+            (log) => log.id !== action.payload
           );
         }
       );

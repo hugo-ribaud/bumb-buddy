@@ -63,10 +63,17 @@ _Last Updated: 2024-06-12_
 - Integrated UI components for recording and managing blood pressure readings
 - Added position and arm tracking for more accurate measurements
 - Implemented blood pressure history view with editing capabilities
+- Mood tracking functionality implemented
+- Created database schema for mood logs with RLS policies
+- Implemented UI for recording and tracking mood with custom ratings
+- Added mood type and trigger selection with customization options
+- Created comprehensive mood history view with editing capabilities
+- Integrated mood tracking with Redux and Supabase persistence
+- Ensured proper internationalization support in mood tracking UI
 
 ## In Progress
 
-- Implementing additional health tracking features (mood, sleep, exercise)
+- Implementing additional health tracking features (sleep, exercise)
 
 ## Pending Tasks
 
@@ -93,7 +100,7 @@ _Last Updated: 2024-06-12_
 - 🔄 Basic health tracking features
   - ✅ Contraction tracking with timer
   - ✅ Blood pressure tracking
-  - ⬜ Mood tracking
+  - ✅ Mood tracking
   - ⬜ Sleep tracking
   - ⬜ Exercise tracking
 - ⬜ User profile management
@@ -133,6 +140,7 @@ _Last Updated: 2024-06-12_
 - Healthcare provider integration
 - Multi-language support beyond current languages (Arabic, Hebrew, Polish, etc.)
 - Baby registry integration
+- Make sure to converse unity of mesure using the metric system for countries that are not using the imperial system
 - AI food scanner (Scan an aliment to see if it's allowed or restricted)
 - Shopping recommendations
 - Personalized content based on user preferences

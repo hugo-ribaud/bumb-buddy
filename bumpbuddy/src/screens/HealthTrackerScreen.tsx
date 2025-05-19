@@ -13,21 +13,25 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import {
   addBloodPressureLog,
+  addMoodLog,
   addSymptom,
   addWeightLog,
   deleteBloodPressureLog,
+  deleteMoodLog,
   deleteSymptom,
   endContraction,
   endKickCount,
   fetchBloodPressureLogs,
   fetchContractions,
   fetchKickCounts,
+  fetchMoodLogs,
   fetchSymptoms,
   fetchWeightLogs,
   startContraction,
   startKickCount,
   updateBloodPressureLog,
   updateKickCount,
+  updateMoodLog,
 } from "../redux/slices/healthSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
@@ -36,7 +40,7 @@ import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
-import { BloodPressureLog } from "../services/healthService";
+import { BloodPressureLog, MoodLog } from "../services/healthService";
 
 // Define common symptom types
 const SYMPTOM_TYPES = [
@@ -72,13 +76,45 @@ const SYMPTOM_TYPES = [
   },
 ];
 
+// Define common mood types
+const MOOD_TYPES = [
+  { id: "happy", name: "Happy" },
+  { id: "calm", name: "Calm" },
+  { id: "anxious", name: "Anxious" },
+  { id: "sad", name: "Sad" },
+  { id: "irritable", name: "Irritable" },
+  { id: "energetic", name: "Energetic" },
+  { id: "tired", name: "Tired" },
+  { id: "emotional", name: "Emotional" },
+  { id: "stressed", name: "Stressed" },
+  { id: "excited", name: "Excited" },
+];
+
+// Define common mood triggers
+const COMMON_TRIGGERS = [
+  { id: "sleep", name: "Poor Sleep" },
+  { id: "food", name: "Food/Hunger" },
+  { id: "hormones", name: "Hormones" },
+  { id: "work", name: "Work Stress" },
+  { id: "family", name: "Family Issues" },
+  { id: "physical", name: "Physical Discomfort" },
+  { id: "health", name: "Health Concerns" },
+  { id: "social", name: "Social Situation" },
+];
+
 const HealthTrackerScreen = () => {
   const { t } = useTranslation();
   const { isDark } = useTheme();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
-  const { symptoms, kickCounts, weightLogs, contractions, bloodPressureLogs } =
-    useSelector((state: RootState) => state.health);
+  const {
+    symptoms,
+    kickCounts,
+    weightLogs,
+    contractions,
+    bloodPressureLogs,
+    moodLogs,
+  } = useSelector((state: RootState) => state.health);
 
   // Local state for UI
   const [modalVisible, setModalVisible] = useState(false);
@@ -119,6 +155,15 @@ const HealthTrackerScreen = () => {
   const [bpNotes, setBpNotes] = useState("");
   const [editingBpLog, setEditingBpLog] = useState<string | null>(null);
 
+  // Mood tracking state
+  const [moodModalVisible, setMoodModalVisible] = useState(false);
+  const [moodRating, setMoodRating] = useState(3);
+  const [moodType, setMoodType] = useState("");
+  const [selectedTriggers, setSelectedTriggers] = useState<string[]>([]);
+  const [customTrigger, setCustomTrigger] = useState("");
+  const [moodNotes, setMoodNotes] = useState("");
+  const [editingMoodLog, setEditingMoodLog] = useState<string | null>(null);
+
   // Load data on component mount
   useEffect(() => {
     if (user?.id) {
@@ -127,6 +172,7 @@ const HealthTrackerScreen = () => {
       dispatch(fetchWeightLogs(user.id));
       dispatch(fetchContractions(user.id));
       dispatch(fetchBloodPressureLogs(user.id));
+      dispatch(fetchMoodLogs(user.id));
     }
   }, [dispatch, user]);
 
@@ -469,6 +515,105 @@ const HealthTrackerScreen = () => {
       return format(new Date(dateString), "MMM d, yyyy");
     } catch (error) {
       return dateString;
+    }
+  };
+
+  // Mood tracking handlers
+  const handleAddMood = () => {
+    setMoodRating(3);
+    setMoodType("");
+    setSelectedTriggers([]);
+    setCustomTrigger("");
+    setMoodNotes("");
+    setEditingMoodLog(null);
+    setMoodModalVisible(true);
+  };
+
+  const handleEditMood = (moodLog: MoodLog) => {
+    setMoodRating(moodLog.mood_rating);
+    setMoodType(moodLog.mood_type);
+    setSelectedTriggers(moodLog.triggers || []);
+    setCustomTrigger("");
+    setMoodNotes(moodLog.notes || "");
+    setEditingMoodLog(moodLog.id);
+    setMoodModalVisible(true);
+  };
+
+  const handleDeleteMood = (id: string) => {
+    Alert.alert(t("health.deleteMood"), t("health.confirmDeleteMood"), [
+      {
+        text: t("common.cancel"),
+        style: "cancel",
+      },
+      {
+        text: t("common.delete"),
+        onPress: () => {
+          if (user?.id) {
+            dispatch(deleteMoodLog(id));
+          }
+        },
+        style: "destructive",
+      },
+    ]);
+  };
+
+  const toggleTrigger = (triggerId: string) => {
+    if (selectedTriggers.includes(triggerId)) {
+      setSelectedTriggers(selectedTriggers.filter((id) => id !== triggerId));
+    } else {
+      setSelectedTriggers([...selectedTriggers, triggerId]);
+    }
+  };
+
+  const addCustomTrigger = () => {
+    if (
+      customTrigger.trim() !== "" &&
+      !selectedTriggers.includes(customTrigger.trim())
+    ) {
+      setSelectedTriggers([...selectedTriggers, customTrigger.trim()]);
+      setCustomTrigger("");
+    }
+  };
+
+  const saveMoodLog = () => {
+    if (!moodType || moodRating < 1) {
+      Alert.alert(
+        t("common.errors.invalidInput"),
+        t("health.invalidMoodValues")
+      );
+      return;
+    }
+
+    if (user?.id) {
+      const currentDate = new Date();
+      const moodData = {
+        user_id: user.id,
+        date: currentDate.toISOString().split("T")[0],
+        time: currentDate.toISOString().split("T")[1].substring(0, 8),
+        mood_rating: moodRating,
+        mood_type: moodType,
+        triggers: selectedTriggers.length > 0 ? selectedTriggers : undefined,
+        notes: moodNotes.trim() || undefined,
+      };
+
+      if (editingMoodLog) {
+        dispatch(
+          updateMoodLog({
+            id: editingMoodLog,
+            updates: moodData,
+          })
+        );
+      } else {
+        dispatch(addMoodLog(moodData));
+      }
+
+      setMoodModalVisible(false);
+      setMoodRating(3);
+      setMoodType("");
+      setSelectedTriggers([]);
+      setCustomTrigger("");
+      setMoodNotes("");
+      setEditingMoodLog(null);
     }
   };
 
@@ -829,6 +974,149 @@ const HealthTrackerScreen = () => {
             )}
           </ThemedView>
 
+          {/* Mood Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.moodTracker")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.moodTrackerDescription")}
+            </FontedText>
+
+            <View className="items-center mb-4">
+              {moodLogs.loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#87D9C4"
+                  className="my-4"
+                />
+              ) : (
+                <>
+                  <TouchableOpacity
+                    className="bg-primary-light py-3 px-6 rounded-full mb-4"
+                    onPress={handleAddMood}
+                  >
+                    <FontedText className="text-white font-semibold text-center">
+                      {t("health.addMood")}
+                    </FontedText>
+                  </TouchableOpacity>
+
+                  {moodLogs.items.length > 0 && (
+                    <View className="w-full mt-2">
+                      <FontedText
+                        variant="body"
+                        className="mb-2 mt-4 font-bold"
+                      >
+                        {t("health.moodHistory")}
+                      </FontedText>
+
+                      {moodLogs.items.slice(0, 5).map((log) => (
+                        <TouchableOpacity
+                          key={log.id}
+                          className="flex-row justify-between items-center mb-3 p-3 border border-neutral-200 dark:border-neutral-700 rounded-xl"
+                          onPress={() => handleEditMood(log)}
+                        >
+                          <View className="flex-1">
+                            <View className="flex-row justify-between mb-1">
+                              <FontedText variant="body" className="font-bold">
+                                {t(`health.moodTypes.${log.mood_type}`) ||
+                                  log.mood_type}
+                              </FontedText>
+                              <FontedText
+                                variant="body-small"
+                                textType="secondary"
+                              >
+                                {formatDate(log.date)},{" "}
+                                {log.time.substring(0, 5)}
+                              </FontedText>
+                            </View>
+
+                            <View className="flex-row mb-1">
+                              <FontedText
+                                variant="body-small"
+                                textType="secondary"
+                                className="mr-1"
+                              >
+                                {t("health.moodRating")}:
+                              </FontedText>
+                              <FontedText variant="body-small">
+                                {log.mood_rating}/5
+                              </FontedText>
+                            </View>
+
+                            {log.triggers && log.triggers.length > 0 && (
+                              <View className="flex-row flex-wrap">
+                                <FontedText
+                                  variant="body-small"
+                                  textType="secondary"
+                                  className="mr-1"
+                                >
+                                  {t("health.triggers")}:
+                                </FontedText>
+                                <FontedText
+                                  variant="body-small"
+                                  className="flex-1"
+                                >
+                                  {log.triggers
+                                    .map(
+                                      (trigger) =>
+                                        t(`health.commonTriggers.${trigger}`) ||
+                                        trigger
+                                    )
+                                    .join(", ")}
+                                </FontedText>
+                              </View>
+                            )}
+
+                            {log.notes && (
+                              <FontedText variant="body-small" className="mt-1">
+                                {log.notes}
+                              </FontedText>
+                            )}
+                          </View>
+
+                          <TouchableOpacity
+                            className="ml-2 p-2"
+                            onPress={() => handleDeleteMood(log.id)}
+                          >
+                            <FontedText
+                              variant="body-small"
+                              textType="secondary"
+                              className="text-red-500"
+                            >
+                              ✕
+                            </FontedText>
+                          </TouchableOpacity>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+
+                  {moodLogs.items.length === 0 && (
+                    <FontedText
+                      variant="body"
+                      textType="secondary"
+                      className="text-center mt-2"
+                    >
+                      {t("health.noMoodData")}
+                    </FontedText>
+                  )}
+                </>
+              )}
+            </View>
+          </ThemedView>
+
           {/* Contraction Timer Section */}
           <ThemedView
             backgroundColor="surface"
@@ -1028,6 +1316,189 @@ const HealthTrackerScreen = () => {
                 onPress={saveBloodPressureLog}
               >
                 <FontedText className="text-center text-white font-bold">
+                  {t("common.buttons.save")}
+                </FontedText>
+              </TouchableOpacity>
+            </View>
+          </ThemedView>
+        </View>
+      </Modal>
+
+      {/* Mood Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={moodModalVisible}
+        onRequestClose={() => setMoodModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <ThemedView
+            backgroundColor="surface"
+            className="w-[90%] rounded-xl p-6 max-w-md shadow-md"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="text-center mb-4"
+            >
+              {editingMoodLog ? t("health.editMood") : t("health.addMood")}
+            </FontedText>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.moodRating")} (1-5)
+              </FontedText>
+              <View className="flex-row justify-between mb-2">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <TouchableOpacity
+                    key={rating}
+                    className={`w-[18%] py-2 rounded-full ${
+                      moodRating === rating
+                        ? "bg-primary"
+                        : "bg-neutral-200 dark:bg-neutral-700"
+                    }`}
+                    onPress={() => setMoodRating(rating)}
+                  >
+                    <FontedText
+                      className={`text-center ${
+                        moodRating === rating ? "text-white" : ""
+                      }`}
+                    >
+                      {rating}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.moodType")}
+              </FontedText>
+              <View className="flex-row flex-wrap justify-start">
+                {MOOD_TYPES.map((type) => (
+                  <TouchableOpacity
+                    key={type.id}
+                    className={`mb-2 mr-2 py-1 px-3 rounded-full ${
+                      moodType === type.id
+                        ? "bg-primary"
+                        : "bg-neutral-200 dark:bg-neutral-700"
+                    }`}
+                    onPress={() => setMoodType(type.id)}
+                  >
+                    <FontedText
+                      className={`${moodType === type.id ? "text-white" : ""}`}
+                    >
+                      {t(`health.moodTypes.${type.id}`)}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.triggers")}
+              </FontedText>
+              <View className="flex-row flex-wrap justify-start mb-2">
+                {COMMON_TRIGGERS.map((trigger) => (
+                  <TouchableOpacity
+                    key={trigger.id}
+                    className={`mb-2 mr-2 py-1 px-3 rounded-full ${
+                      selectedTriggers.includes(trigger.id)
+                        ? "bg-primary"
+                        : "bg-neutral-200 dark:bg-neutral-700"
+                    }`}
+                    onPress={() => toggleTrigger(trigger.id)}
+                  >
+                    <FontedText
+                      className={`${
+                        selectedTriggers.includes(trigger.id)
+                          ? "text-white"
+                          : ""
+                      }`}
+                    >
+                      {t(`health.commonTriggers.${trigger.id}`)}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View className="flex-row items-center mb-2">
+                <TextInput
+                  className="flex-1 px-3 py-2 mr-2 rounded-md bg-neutral-100 dark:bg-neutral-800"
+                  placeholder={t("health.triggerPlaceholder")}
+                  value={customTrigger}
+                  onChangeText={setCustomTrigger}
+                />
+                <TouchableOpacity
+                  className="bg-primary py-2 px-3 rounded-md"
+                  onPress={addCustomTrigger}
+                >
+                  <FontedText className="text-white">
+                    {t("health.addTrigger")}
+                  </FontedText>
+                </TouchableOpacity>
+              </View>
+
+              {selectedTriggers.filter(
+                (t) => !COMMON_TRIGGERS.map((ct) => ct.id).includes(t)
+              ).length > 0 && (
+                <View className="flex-row flex-wrap">
+                  {selectedTriggers
+                    .filter(
+                      (t) => !COMMON_TRIGGERS.map((ct) => ct.id).includes(t)
+                    )
+                    .map((trigger, index) => (
+                      <View
+                        key={index}
+                        className="bg-primary mb-2 mr-2 py-1 px-3 rounded-full flex-row items-center"
+                      >
+                        <FontedText className="text-white mr-1">
+                          {trigger}
+                        </FontedText>
+                        <TouchableOpacity
+                          onPress={() => toggleTrigger(trigger)}
+                        >
+                          <FontedText className="text-white font-bold">
+                            ×
+                          </FontedText>
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                </View>
+              )}
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.notesLabel")}
+              </FontedText>
+              <TextInput
+                className="bg-neutral-100 dark:bg-neutral-800 p-3 rounded-md min-h-[80px] text-neutral-900 dark:text-white"
+                placeholder={t("health.moodNotesPlaceholder")}
+                value={moodNotes}
+                onChangeText={setMoodNotes}
+                multiline
+                textAlignVertical="top"
+              />
+            </View>
+
+            <View className="flex-row justify-end">
+              <TouchableOpacity
+                className="px-5 py-2 mr-3"
+                onPress={() => {
+                  setMoodModalVisible(false);
+                  setEditingMoodLog(null);
+                }}
+              >
+                <FontedText>{t("common.buttons.cancel")}</FontedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-primary px-5 py-2 rounded-md"
+                onPress={saveMoodLog}
+              >
+                <FontedText className="text-white">
                   {t("common.buttons.save")}
                 </FontedText>
               </TouchableOpacity>
