@@ -151,8 +151,8 @@ _Last Updated: 2025-05-19_
 
 ### Phase 3: Secondary Features (Medium Priority)
 
-- Appointment scheduling and reminders -
 - Preview of the foetus size (comparaison to fruits with image) to enhance the timeline UX/UI
+- Improve appointment scheduling and reminders
 - Content management for pregnancy information
 - Push notifications
 - Settings and preferences
