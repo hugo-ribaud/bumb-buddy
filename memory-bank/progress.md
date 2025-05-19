@@ -151,7 +151,7 @@ _Last Updated: 2025-05-19_
 
 ### Phase 3: Secondary Features (Medium Priority)
 
-- Appointment scheduling and reminders (link with Dotcolib for france, find the alternative for other countries)
+- Appointment scheduling and reminders -
 - Preview of the foetus size (comparaison to fruits with image) to enhance the timeline UX/UI
 - Content management for pregnancy information
 - Push notifications
@@ -201,17 +201,17 @@ _Last Updated: 2025-05-19_
 
 ## Milestones
 
-- ✅ Project Initialization: 2024-06-09 (Completed)
-- ✅ Foundation Complete: 2024-06-09 (Completed)
-- ✅ Internationalization Complete: 2024-06-09 (Completed)
-- ✅ Food Safety Database Complete: 2024-06-10 (Completed)
-- ✅ Pregnancy Timeline Tracker Complete: 2024-06-11 (Completed)
-- ✅ Contraction Tracking Complete: 2024-06-12 (Completed)
-- ✅ Health Tracking Features Complete: 2025-05-15 (Completed)
+- ✅ Project Initialization: 2025-05-06 (Completed)
+- ✅ Foundation Complete: 2025-05-06 (Completed)
+- ✅ Internationalization Complete: 2025-05-06 (Completed)
+- ✅ Food Safety Database Complete: 2025-05-10 (Completed)
+- ✅ Pregnancy Timeline Tracker Complete: 2025-05-10 (Completed)
+- ✅ Contraction Tracking Complete: 2025-05-11 (Completed)
+- ✅ Health Tracking Features Complete: 2025-05-19 (Completed)
 - ✅ User Profile Management Complete: 2025-05-19 (Completed)
-- ✅ UI Styling Improvements Complete: 2025-05-20 (Completed)
-- ✅ Offline Functionality Complete: 2025-05-25 (Completed)
-- ⬜ Core Features Complete: TBD
+- ✅ UI Styling Improvements Complete: 2025-05-19 (Completed)
+- ✅ Offline Functionality Complete: 2025-05-19 (Completed)
+- ✅ Core Features Complete: 2025-05-19 (Completed)
 - ⬜ Secondary Features Complete: TBD
 - ⬜ Polish Complete: TBD
 - ⬜ Beta Release: TBD
