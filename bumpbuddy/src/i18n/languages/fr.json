@@ -257,6 +257,39 @@
       "physical": "Inconfort Physique",
       "health": "Préoccupations de Santé",
       "social": "Situation Sociale"
+    },
+    "sleepTracker": "Suivi du Sommeil",
+    "sleepTrackerDescription": "Suivez vos habitudes de sommeil et sa qualité pendant votre grossesse",
+    "addSleep": "Ajouter un Sommeil",
+    "editSleep": "Modifier un Sommeil",
+    "deleteSleep": "Supprimer un Sommeil",
+    "confirmDeleteSleep": "Êtes-vous sûre de vouloir supprimer cet enregistrement de sommeil ?",
+    "sleepHistory": "Historique du Sommeil",
+    "noSleepData": "Aucune donnée de sommeil enregistrée",
+    "duration": "Durée",
+    "minutes": "minutes",
+    "durationPlaceholder": "Entrez la durée en minutes",
+    "quality": "Qualité",
+    "sleepQuality": "Qualité du Sommeil",
+    "sleepType": "Type de Sommeil",
+    "disruptions": "Perturbations",
+    "disruptionPlaceholder": "Ajouter une perturbation personnalisée",
+    "addDisruption": "Ajouter",
+    "invalidSleepValues": "Veuillez entrer des détails de sommeil valides",
+    "invalidSleepDuration": "Veuillez entrer une durée de sommeil valide",
+    "sleepNotesPlaceholder": "Ajoutez des notes sur votre sommeil...",
+    "sleepTypes": {
+      "night": "Sommeil de Nuit",
+      "nap": "Sieste"
+    },
+    "commonDisruptions": {
+      "bathroom": "Pauses Toilettes",
+      "discomfort": "Inconfort Physique",
+      "movement": "Mouvements du Bébé",
+      "heartburn": "Brûlures d'Estomac",
+      "anxiety": "Anxiété/Stress",
+      "noise": "Bruit/Environnement",
+      "partner": "Perturbation du Partenaire"
     }
   },
   "healthTracker": {

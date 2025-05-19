@@ -14,10 +14,12 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   addBloodPressureLog,
   addMoodLog,
+  addSleepLog,
   addSymptom,
   addWeightLog,
   deleteBloodPressureLog,
   deleteMoodLog,
+  deleteSleepLog,
   deleteSymptom,
   endContraction,
   endKickCount,
@@ -25,6 +27,7 @@ import {
   fetchContractions,
   fetchKickCounts,
   fetchMoodLogs,
+  fetchSleepLogs,
   fetchSymptoms,
   fetchWeightLogs,
   startContraction,
@@ -32,6 +35,7 @@ import {
   updateBloodPressureLog,
   updateKickCount,
   updateMoodLog,
+  updateSleepLog,
 } from "../redux/slices/healthSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
@@ -40,7 +44,7 @@ import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
-import { BloodPressureLog, MoodLog } from "../services/healthService";
+import { BloodPressureLog, MoodLog, SleepLog } from "../services/healthService";
 
 // Define common symptom types
 const SYMPTOM_TYPES = [
@@ -102,6 +106,23 @@ const COMMON_TRIGGERS = [
   { id: "social", name: "Social Situation" },
 ];
 
+// Define common sleep types
+const SLEEP_TYPES = [
+  { id: "night", name: "Night Sleep" },
+  { id: "nap", name: "Nap" },
+];
+
+// Define common sleep disruptions
+const COMMON_DISRUPTIONS = [
+  { id: "bathroom", name: "Bathroom Breaks" },
+  { id: "discomfort", name: "Physical Discomfort" },
+  { id: "movement", name: "Baby Movement" },
+  { id: "heartburn", name: "Heartburn" },
+  { id: "anxiety", name: "Anxiety/Stress" },
+  { id: "noise", name: "Noise/Environment" },
+  { id: "partner", name: "Partner Disruption" },
+];
+
 const HealthTrackerScreen = () => {
   const { t } = useTranslation();
   const { isDark } = useTheme();
@@ -114,6 +135,7 @@ const HealthTrackerScreen = () => {
     contractions,
     bloodPressureLogs,
     moodLogs,
+    sleepLogs,
   } = useSelector((state: RootState) => state.health);
 
   // Local state for UI
@@ -164,6 +186,16 @@ const HealthTrackerScreen = () => {
   const [moodNotes, setMoodNotes] = useState("");
   const [editingMoodLog, setEditingMoodLog] = useState<string | null>(null);
 
+  // Sleep tracking state
+  const [sleepModalVisible, setSleepModalVisible] = useState(false);
+  const [sleepDuration, setSleepDuration] = useState("");
+  const [sleepQuality, setSleepQuality] = useState(3);
+  const [sleepType, setSleepType] = useState("night");
+  const [selectedDisruptions, setSelectedDisruptions] = useState<string[]>([]);
+  const [customDisruption, setCustomDisruption] = useState("");
+  const [sleepNotes, setSleepNotes] = useState("");
+  const [editingSleepLog, setEditingSleepLog] = useState<string | null>(null);
+
   // Load data on component mount
   useEffect(() => {
     if (user?.id) {
@@ -173,6 +205,7 @@ const HealthTrackerScreen = () => {
       dispatch(fetchContractions(user.id));
       dispatch(fetchBloodPressureLogs(user.id));
       dispatch(fetchMoodLogs(user.id));
+      dispatch(fetchSleepLogs(user.id));
     }
   }, [dispatch, user]);
 
@@ -614,6 +647,135 @@ const HealthTrackerScreen = () => {
       setCustomTrigger("");
       setMoodNotes("");
       setEditingMoodLog(null);
+    }
+  };
+
+  // Sleep tracking handlers
+  const handleAddSleep = () => {
+    setSleepDuration("");
+    setSleepQuality(3);
+    setSleepType("night");
+    setSelectedDisruptions([]);
+    setCustomDisruption("");
+    setSleepNotes("");
+    setEditingSleepLog(null);
+    setSleepModalVisible(true);
+  };
+
+  const handleEditSleep = (sleepLog: SleepLog) => {
+    // Calculate duration in hours and minutes for display
+    setSleepDuration(sleepLog.duration.toString());
+    setSleepQuality(sleepLog.sleep_quality);
+    setSleepType(sleepLog.sleep_type || "night");
+    setSelectedDisruptions(sleepLog.disruptions || []);
+    setCustomDisruption("");
+    setSleepNotes(sleepLog.notes || "");
+    setEditingSleepLog(sleepLog.id);
+    setSleepModalVisible(true);
+  };
+
+  const handleDeleteSleep = (id: string) => {
+    Alert.alert(t("health.deleteSleep"), t("health.confirmDeleteSleep"), [
+      {
+        text: t("common.cancel"),
+        style: "cancel",
+      },
+      {
+        text: t("common.delete"),
+        onPress: () => {
+          if (user?.id) {
+            dispatch(deleteSleepLog(id));
+          }
+        },
+        style: "destructive",
+      },
+    ]);
+  };
+
+  const toggleDisruption = (disruptionId: string) => {
+    if (selectedDisruptions.includes(disruptionId)) {
+      setSelectedDisruptions(
+        selectedDisruptions.filter((id) => id !== disruptionId)
+      );
+    } else {
+      setSelectedDisruptions([...selectedDisruptions, disruptionId]);
+    }
+  };
+
+  const addCustomDisruption = () => {
+    if (
+      customDisruption.trim() !== "" &&
+      !selectedDisruptions.includes(customDisruption.trim())
+    ) {
+      setSelectedDisruptions([...selectedDisruptions, customDisruption.trim()]);
+      setCustomDisruption("");
+    }
+  };
+
+  const saveSleepLog = () => {
+    if (!user?.id || !sleepDuration) {
+      Alert.alert(
+        t("common.errors.invalidInput"),
+        t("health.invalidSleepValues")
+      );
+      return;
+    }
+
+    const durationValue = parseInt(sleepDuration, 10);
+
+    if (isNaN(durationValue) || durationValue <= 0) {
+      Alert.alert(
+        t("common.errors.invalidInput"),
+        t("health.invalidSleepDuration")
+      );
+      return;
+    }
+
+    const currentDate = new Date();
+    const sleepData = {
+      user_id: user.id,
+      date: currentDate.toISOString().split("T")[0],
+      time: currentDate.toISOString().split("T")[1].substring(0, 8),
+      duration: durationValue,
+      sleep_quality: sleepQuality,
+      sleep_type: sleepType,
+      disruptions:
+        selectedDisruptions.length > 0 ? selectedDisruptions : undefined,
+      notes: sleepNotes.trim() || undefined,
+    };
+
+    if (editingSleepLog) {
+      dispatch(
+        updateSleepLog({
+          id: editingSleepLog,
+          updates: sleepData,
+        })
+      );
+    } else {
+      dispatch(addSleepLog(sleepData));
+    }
+
+    setSleepModalVisible(false);
+    setSleepDuration("");
+    setSleepQuality(3);
+    setSleepType("night");
+    setSelectedDisruptions([]);
+    setCustomDisruption("");
+    setSleepNotes("");
+    setEditingSleepLog(null);
+  };
+
+  // Format duration from minutes to hours and minutes
+  const formatSleepDuration = (minutes: number) => {
+    const hours = Math.floor(minutes / 60);
+    const mins = minutes % 60;
+
+    if (hours > 0 && mins > 0) {
+      return `${hours}h ${mins}m`;
+    } else if (hours > 0) {
+      return `${hours}h`;
+    } else {
+      return `${mins}m`;
     }
   };
 
@@ -1117,6 +1279,163 @@ const HealthTrackerScreen = () => {
             </View>
           </ThemedView>
 
+          {/* Sleep Tracking Section */}
+          <ThemedView
+            backgroundColor="surface"
+            className="rounded-xl p-4 mb-6 shadow-sm"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="mb-2"
+            >
+              {t("health.sleepTracker")}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              className="mb-4"
+            >
+              {t("health.sleepTrackerDescription")}
+            </FontedText>
+
+            <View className="items-center mb-4">
+              {sleepLogs.loading ? (
+                <ActivityIndicator
+                  size="large"
+                  color="#87D9C4"
+                  className="my-4"
+                />
+              ) : (
+                <>
+                  <TouchableOpacity
+                    className="bg-primary-light py-3 px-6 rounded-full mb-4"
+                    onPress={handleAddSleep}
+                  >
+                    <FontedText className="text-white font-semibold text-center">
+                      {t("health.addSleep")}
+                    </FontedText>
+                  </TouchableOpacity>
+
+                  {sleepLogs.items.length > 0 && (
+                    <View className="w-full mt-2">
+                      <FontedText
+                        variant="body"
+                        className="mb-2 mt-4 font-bold"
+                      >
+                        {t("health.sleepHistory")}
+                      </FontedText>
+
+                      {sleepLogs.items.slice(0, 5).map((log) => (
+                        <TouchableOpacity
+                          key={log.id}
+                          className="flex-row justify-between items-center mb-3 p-3 border border-neutral-200 dark:border-neutral-700 rounded-xl"
+                          onPress={() => handleEditSleep(log)}
+                        >
+                          <View className="flex-1">
+                            <View className="flex-row justify-between mb-1">
+                              <FontedText variant="body" className="font-bold">
+                                {t(`health.sleepTypes.${log.sleep_type}`) ||
+                                  log.sleep_type}
+                              </FontedText>
+                              <FontedText
+                                variant="body-small"
+                                textType="secondary"
+                              >
+                                {formatDate(log.date)},{" "}
+                                {log.time.substring(0, 5)}
+                              </FontedText>
+                            </View>
+
+                            <View className="flex-row mb-1">
+                              <FontedText
+                                variant="body-small"
+                                textType="secondary"
+                                className="mr-1"
+                              >
+                                {t("health.duration")}:
+                              </FontedText>
+                              <FontedText variant="body-small">
+                                {formatSleepDuration(log.duration)}
+                              </FontedText>
+                            </View>
+
+                            <View className="flex-row mb-1">
+                              <FontedText
+                                variant="body-small"
+                                textType="secondary"
+                                className="mr-1"
+                              >
+                                {t("health.quality")}:
+                              </FontedText>
+                              <FontedText variant="body-small">
+                                {log.sleep_quality}/5
+                              </FontedText>
+                            </View>
+
+                            {log.disruptions && log.disruptions.length > 0 && (
+                              <View className="flex-row flex-wrap">
+                                <FontedText
+                                  variant="body-small"
+                                  textType="secondary"
+                                  className="mr-1"
+                                >
+                                  {t("health.disruptions")}:
+                                </FontedText>
+                                <FontedText
+                                  variant="body-small"
+                                  className="flex-1"
+                                >
+                                  {log.disruptions
+                                    .map(
+                                      (disruption) =>
+                                        t(
+                                          `health.commonDisruptions.${disruption}`
+                                        ) || disruption
+                                    )
+                                    .join(", ")}
+                                </FontedText>
+                              </View>
+                            )}
+
+                            {log.notes && (
+                              <FontedText variant="body-small" className="mt-1">
+                                {log.notes}
+                              </FontedText>
+                            )}
+                          </View>
+
+                          <TouchableOpacity
+                            className="ml-2 p-2"
+                            onPress={() => handleDeleteSleep(log.id)}
+                          >
+                            <FontedText
+                              variant="body-small"
+                              textType="secondary"
+                              className="text-red-500"
+                            >
+                              ✕
+                            </FontedText>
+                          </TouchableOpacity>
+                        </TouchableOpacity>
+                      ))}
+                    </View>
+                  )}
+
+                  {sleepLogs.items.length === 0 && (
+                    <FontedText
+                      variant="body"
+                      textType="secondary"
+                      className="text-center mt-2"
+                    >
+                      {t("health.noSleepData")}
+                    </FontedText>
+                  )}
+                </>
+              )}
+            </View>
+          </ThemedView>
+
           {/* Contraction Timer Section */}
           <ThemedView
             backgroundColor="surface"
@@ -1354,14 +1673,16 @@ const HealthTrackerScreen = () => {
                     key={rating}
                     className={`w-[18%] py-2 rounded-full ${
                       moodRating === rating
-                        ? "bg-primary"
-                        : "bg-neutral-200 dark:bg-neutral-700"
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
                     }`}
                     onPress={() => setMoodRating(rating)}
                   >
                     <FontedText
                       className={`text-center ${
-                        moodRating === rating ? "text-white" : ""
+                        moodRating === rating
+                          ? "text-white"
+                          : "text-gray-800 dark:text-gray-100"
                       }`}
                     >
                       {rating}
@@ -1381,13 +1702,17 @@ const HealthTrackerScreen = () => {
                     key={type.id}
                     className={`mb-2 mr-2 py-1 px-3 rounded-full ${
                       moodType === type.id
-                        ? "bg-primary"
-                        : "bg-neutral-200 dark:bg-neutral-700"
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
                     }`}
                     onPress={() => setMoodType(type.id)}
                   >
                     <FontedText
-                      className={`${moodType === type.id ? "text-white" : ""}`}
+                      className={`${
+                        moodType === type.id
+                          ? "text-white"
+                          : "text-gray-800 dark:text-gray-100"
+                      }`}
                     >
                       {t(`health.moodTypes.${type.id}`)}
                     </FontedText>
@@ -1406,8 +1731,8 @@ const HealthTrackerScreen = () => {
                     key={trigger.id}
                     className={`mb-2 mr-2 py-1 px-3 rounded-full ${
                       selectedTriggers.includes(trigger.id)
-                        ? "bg-primary"
-                        : "bg-neutral-200 dark:bg-neutral-700"
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
                     }`}
                     onPress={() => toggleTrigger(trigger.id)}
                   >
@@ -1415,7 +1740,7 @@ const HealthTrackerScreen = () => {
                       className={`${
                         selectedTriggers.includes(trigger.id)
                           ? "text-white"
-                          : ""
+                          : "text-gray-800 dark:text-gray-100"
                       }`}
                     >
                       {t(`health.commonTriggers.${trigger.id}`)}
@@ -1452,7 +1777,7 @@ const HealthTrackerScreen = () => {
                     .map((trigger, index) => (
                       <View
                         key={index}
-                        className="bg-primary mb-2 mr-2 py-1 px-3 rounded-full flex-row items-center"
+                        className="bg-primary dark:bg-primary-dark mb-2 mr-2 py-1 px-3 rounded-full flex-row items-center"
                       >
                         <FontedText className="text-white mr-1">
                           {trigger}
@@ -1497,6 +1822,211 @@ const HealthTrackerScreen = () => {
               <TouchableOpacity
                 className="bg-primary px-5 py-2 rounded-md"
                 onPress={saveMoodLog}
+              >
+                <FontedText className="text-white">
+                  {t("common.buttons.save")}
+                </FontedText>
+              </TouchableOpacity>
+            </View>
+          </ThemedView>
+        </View>
+      </Modal>
+
+      {/* Sleep Modal */}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={sleepModalVisible}
+        onRequestClose={() => setSleepModalVisible(false)}
+      >
+        <View className="flex-1 justify-center items-center bg-black/50">
+          <ThemedView
+            backgroundColor="surface"
+            className="w-[90%] rounded-xl p-6 max-w-md shadow-md"
+          >
+            <FontedText
+              variant="heading-3"
+              fontFamily="comfortaa"
+              className="text-center mb-4"
+            >
+              {editingSleepLog ? t("health.editSleep") : t("health.addSleep")}
+            </FontedText>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.duration")} ({t("health.minutes")})
+              </FontedText>
+              <View className="flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4">
+                <TextInput
+                  className="flex-1 text-base text-gray-800 dark:text-gray-200"
+                  value={sleepDuration}
+                  onChangeText={setSleepDuration}
+                  keyboardType="number-pad"
+                  placeholder={t("health.durationPlaceholder")}
+                  placeholderTextColor="#9CA3AF"
+                />
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.sleepQuality")} (1-5)
+              </FontedText>
+              <View className="flex-row justify-between mb-2">
+                {[1, 2, 3, 4, 5].map((rating) => (
+                  <TouchableOpacity
+                    key={rating}
+                    className={`w-[18%] py-2 rounded-full ${
+                      sleepQuality === rating
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                    }`}
+                    onPress={() => setSleepQuality(rating)}
+                  >
+                    <FontedText
+                      className={`text-center ${
+                        sleepQuality === rating
+                          ? "text-white"
+                          : "text-gray-800 dark:text-gray-100"
+                      }`}
+                    >
+                      {rating}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.sleepType")}
+              </FontedText>
+              <View className="flex-row justify-around mb-2">
+                {SLEEP_TYPES.map((type) => (
+                  <TouchableOpacity
+                    key={type.id}
+                    className={`py-2 px-6 rounded-full ${
+                      sleepType === type.id
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                    }`}
+                    onPress={() => setSleepType(type.id)}
+                  >
+                    <FontedText
+                      className={`${
+                        sleepType === type.id
+                          ? "text-white"
+                          : "text-gray-800 dark:text-gray-100"
+                      }`}
+                    >
+                      {t(`health.sleepTypes.${type.id}`)}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.disruptions")}
+              </FontedText>
+              <View className="flex-row flex-wrap justify-start mb-2">
+                {COMMON_DISRUPTIONS.map((disruption) => (
+                  <TouchableOpacity
+                    key={disruption.id}
+                    className={`mb-2 mr-2 py-1 px-3 rounded-full ${
+                      selectedDisruptions.includes(disruption.id)
+                        ? "bg-primary dark:bg-primary-dark border-0"
+                        : "bg-neutral-200 dark:bg-neutral-700 border border-transparent dark:border-neutral-500"
+                    }`}
+                    onPress={() => toggleDisruption(disruption.id)}
+                  >
+                    <FontedText
+                      className={`${
+                        selectedDisruptions.includes(disruption.id)
+                          ? "text-white"
+                          : "text-gray-800 dark:text-gray-100"
+                      }`}
+                    >
+                      {t(`health.commonDisruptions.${disruption.id}`)}
+                    </FontedText>
+                  </TouchableOpacity>
+                ))}
+              </View>
+
+              <View className="flex-row items-center mb-2">
+                <TextInput
+                  className="flex-1 px-3 py-2 mr-2 rounded-md bg-neutral-100 dark:bg-neutral-800"
+                  placeholder={t("health.disruptionPlaceholder")}
+                  value={customDisruption}
+                  onChangeText={setCustomDisruption}
+                />
+                <TouchableOpacity
+                  className="bg-primary py-2 px-3 rounded-md"
+                  onPress={addCustomDisruption}
+                >
+                  <FontedText className="text-white">
+                    {t("health.addDisruption")}
+                  </FontedText>
+                </TouchableOpacity>
+              </View>
+
+              {selectedDisruptions.filter(
+                (d) => !COMMON_DISRUPTIONS.map((cd) => cd.id).includes(d)
+              ).length > 0 && (
+                <View className="flex-row flex-wrap">
+                  {selectedDisruptions
+                    .filter(
+                      (d) => !COMMON_DISRUPTIONS.map((cd) => cd.id).includes(d)
+                    )
+                    .map((disruption, index) => (
+                      <View
+                        key={index}
+                        className="bg-primary dark:bg-primary-dark mb-2 mr-2 py-1 px-3 rounded-full flex-row items-center"
+                      >
+                        <FontedText className="text-white mr-1">
+                          {disruption}
+                        </FontedText>
+                        <TouchableOpacity
+                          onPress={() => toggleDisruption(disruption)}
+                        >
+                          <FontedText className="text-white font-bold">
+                            ×
+                          </FontedText>
+                        </TouchableOpacity>
+                      </View>
+                    ))}
+                </View>
+              )}
+            </View>
+
+            <View className="mb-4">
+              <FontedText variant="body" className="mb-1">
+                {t("health.notesLabel")}
+              </FontedText>
+              <TextInput
+                className="bg-neutral-100 dark:bg-neutral-800 p-3 rounded-md min-h-[80px] text-neutral-900 dark:text-white"
+                placeholder={t("health.sleepNotesPlaceholder")}
+                value={sleepNotes}
+                onChangeText={setSleepNotes}
+                multiline
+                textAlignVertical="top"
+              />
+            </View>
+
+            <View className="flex-row justify-end">
+              <TouchableOpacity
+                className="px-5 py-2 mr-3"
+                onPress={() => {
+                  setSleepModalVisible(false);
+                  setEditingSleepLog(null);
+                }}
+              >
+                <FontedText>{t("common.buttons.cancel")}</FontedText>
+              </TouchableOpacity>
+              <TouchableOpacity
+                className="bg-primary px-5 py-2 rounded-md"
+                onPress={saveSleepLog}
               >
                 <FontedText className="text-white">
                   {t("common.buttons.save")}

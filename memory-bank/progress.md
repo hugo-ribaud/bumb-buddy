@@ -70,6 +70,16 @@ _Last Updated: 2024-06-12_
 - Created comprehensive mood history view with editing capabilities
 - Integrated mood tracking with Redux and Supabase persistence
 - Ensured proper internationalization support in mood tracking UI
+- Sleep tracking functionality implemented
+- Created database schema for sleep logs with RLS policies
+- Applied database migration for sleep_logs table
+- Extended healthService.ts with sleep tracking methods
+- Updated Redux health slice to manage sleep log state
+- Implemented UI for recording sleep duration, quality, and type
+- Added sleep disruption tracking with customizable options
+- Created sleep history view with editing capabilities
+- Added comprehensive internationalization support for sleep tracking (English, French, Spanish)
+- Ensured proper metric system usage for sleep tracking
 
 ## In Progress
 
@@ -101,7 +111,7 @@ _Last Updated: 2024-06-12_
   - ✅ Contraction tracking with timer
   - ✅ Blood pressure tracking
   - ✅ Mood tracking
-  - ⬜ Sleep tracking
+  - ✅ Sleep tracking
   - ⬜ Exercise tracking
 - ⬜ User profile management
 - ⬜ Offline functionality foundation

@@ -4,6 +4,7 @@ import healthService, {
   Contraction,
   KickCount,
   MoodLog,
+  SleepLog,
   Symptom,
   WeightLog,
 } from "../../services/healthService";
@@ -42,6 +43,11 @@ interface HealthState {
     loading: boolean;
     error: string | null;
   };
+  sleepLogs: {
+    items: SleepLog[];
+    loading: boolean;
+    error: string | null;
+  };
 }
 
 // Initial state
@@ -74,6 +80,11 @@ const initialState: HealthState = {
     error: null,
   },
   moodLogs: {
+    items: [],
+    loading: false,
+    error: null,
+  },
+  sleepLogs: {
     items: [],
     loading: false,
     error: null,
@@ -387,6 +398,63 @@ export const deleteMoodLog = createAsyncThunk(
   }
 );
 
+// Sleep tracking thunks
+export const fetchSleepLogs = createAsyncThunk(
+  "health/fetchSleepLogs",
+  async (userId: string, { rejectWithValue }) => {
+    try {
+      return await healthService.getSleepLogs(userId);
+    } catch (error) {
+      return rejectWithValue("Failed to fetch sleep logs");
+    }
+  }
+);
+
+export const addSleepLog = createAsyncThunk(
+  "health/addSleepLog",
+  async (
+    sleepLog: Omit<SleepLog, "id" | "created_at" | "updated_at">,
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.addSleepLog(sleepLog);
+      if (!result) return rejectWithValue("Failed to add sleep log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to add sleep log");
+    }
+  }
+);
+
+export const updateSleepLog = createAsyncThunk(
+  "health/updateSleepLog",
+  async (
+    { id, updates }: { id: string; updates: Partial<SleepLog> },
+    { rejectWithValue }
+  ) => {
+    try {
+      const result = await healthService.updateSleepLog(id, updates);
+      if (!result) return rejectWithValue("Failed to update sleep log");
+      return result;
+    } catch (error) {
+      return rejectWithValue("Failed to update sleep log");
+    }
+  }
+);
+
+export const deleteSleepLog = createAsyncThunk(
+  "health/deleteSleepLog",
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const success = await healthService.deleteSleepLog(id);
+      if (!success) return rejectWithValue("Failed to delete sleep log");
+      return id;
+    } catch (error) {
+      return rejectWithValue("Failed to delete sleep log");
+    }
+  }
+);
+
 // Create slice
 const healthSlice = createSlice({
   name: "health",
@@ -399,6 +467,7 @@ const healthSlice = createSlice({
       state.contractions.error = null;
       state.bloodPressureLogs.error = null;
       state.moodLogs.error = null;
+      state.sleepLogs.error = null;
     },
     resetCurrentKickCount: (state) => {
       state.kickCounts.currentSession = null;
@@ -670,6 +739,48 @@ const healthSlice = createSlice({
         deleteMoodLog.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.moodLogs.items = state.moodLogs.items.filter(
+            (log) => log.id !== action.payload
+          );
+        }
+      )
+
+      // Sleep logs
+      .addCase(fetchSleepLogs.pending, (state) => {
+        state.sleepLogs.loading = true;
+        state.sleepLogs.error = null;
+      })
+      .addCase(
+        fetchSleepLogs.fulfilled,
+        (state, action: PayloadAction<SleepLog[]>) => {
+          state.sleepLogs.loading = false;
+          state.sleepLogs.items = action.payload;
+        }
+      )
+      .addCase(fetchSleepLogs.rejected, (state, action) => {
+        state.sleepLogs.loading = false;
+        state.sleepLogs.error = action.payload as string;
+      })
+      .addCase(
+        addSleepLog.fulfilled,
+        (state, action: PayloadAction<SleepLog>) => {
+          state.sleepLogs.items.unshift(action.payload);
+        }
+      )
+      .addCase(
+        updateSleepLog.fulfilled,
+        (state, action: PayloadAction<SleepLog>) => {
+          const index = state.sleepLogs.items.findIndex(
+            (log: SleepLog) => log.id === action.payload.id
+          );
+          if (index !== -1) {
+            state.sleepLogs.items[index] = action.payload;
+          }
+        }
+      )
+      .addCase(
+        deleteSleepLog.fulfilled,
+        (state, action: PayloadAction<string>) => {
+          state.sleepLogs.items = state.sleepLogs.items.filter(
             (log) => log.id !== action.payload
           );
         }

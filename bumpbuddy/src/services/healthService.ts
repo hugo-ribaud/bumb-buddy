@@ -74,6 +74,20 @@ export interface MoodLog {
   updated_at: string;
 }
 
+export interface SleepLog {
+  id: string;
+  user_id: string;
+  date: string;
+  time: string;
+  duration: number; // Sleep duration in minutes
+  sleep_quality: number; // Scale of 1-5, where 1 is very poor and 5 is excellent
+  sleep_type?: string; // e.g., 'night', 'nap'
+  disruptions?: string[]; // Reasons for sleep disruption if any
+  notes?: string;
+  created_at: string;
+  updated_at: string;
+}
+
 // Cache keys
 const SYMPTOMS_CACHE_KEY = "health_symptoms_cache";
 const KICK_COUNTS_CACHE_KEY = "health_kick_counts_cache";
@@ -81,6 +95,7 @@ const WEIGHT_LOGS_CACHE_KEY = "health_weight_logs_cache";
 const CONTRACTIONS_CACHE_KEY = "health_contractions_cache";
 const BLOOD_PRESSURE_LOGS_CACHE_KEY = "health_bp_logs_cache";
 const MOOD_LOGS_CACHE_KEY = "health_mood_logs_cache";
+const SLEEP_LOGS_CACHE_KEY = "health_sleep_logs_cache";
 
 // Health tracking service
 const healthService = {
@@ -832,6 +847,141 @@ const healthService = {
       return true;
     } catch (error) {
       console.error("Error in deleteMoodLog:", error);
+      return false;
+    }
+  },
+
+  // Sleep logs
+  getSleepLogs: async (userId: string): Promise<SleepLog[]> => {
+    try {
+      // Try to get from cache first
+      const cachedData = await AsyncStorage.getItem(SLEEP_LOGS_CACHE_KEY);
+      let sleepLogs: SleepLog[] = [];
+
+      if (cachedData) {
+        sleepLogs = JSON.parse(cachedData);
+      }
+
+      // Fetch from API
+      const { data, error } = await supabase
+        .from("sleep_logs")
+        .select("*")
+        .eq("user_id", userId)
+        .order("date", { ascending: false })
+        .order("time", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching sleep logs:", error);
+        return sleepLogs; // Return cached data if available
+      }
+
+      // Update cache
+      if (data) {
+        await AsyncStorage.setItem(SLEEP_LOGS_CACHE_KEY, JSON.stringify(data));
+        return data;
+      }
+
+      return sleepLogs;
+    } catch (error) {
+      console.error("Error in getSleepLogs:", error);
+      return [];
+    }
+  },
+
+  addSleepLog: async (
+    sleepLog: Omit<SleepLog, "id" | "created_at" | "updated_at">
+  ): Promise<SleepLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("sleep_logs")
+        .insert(sleepLog)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error adding sleep log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(SLEEP_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const sleepLogs: SleepLog[] = JSON.parse(cachedData);
+        sleepLogs.unshift(data);
+        await AsyncStorage.setItem(
+          SLEEP_LOGS_CACHE_KEY,
+          JSON.stringify(sleepLogs)
+        );
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in addSleepLog:", error);
+      return null;
+    }
+  },
+
+  updateSleepLog: async (
+    id: string,
+    updates: Partial<SleepLog>
+  ): Promise<SleepLog | null> => {
+    try {
+      const { data, error } = await supabase
+        .from("sleep_logs")
+        .update(updates)
+        .eq("id", id)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("Error updating sleep log:", error);
+        return null;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(SLEEP_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const sleepLogs: SleepLog[] = JSON.parse(cachedData);
+        const index = sleepLogs.findIndex((log) => log.id === id);
+        if (index !== -1) {
+          sleepLogs[index] = { ...sleepLogs[index], ...updates };
+          await AsyncStorage.setItem(
+            SLEEP_LOGS_CACHE_KEY,
+            JSON.stringify(sleepLogs)
+          );
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Error in updateSleepLog:", error);
+      return null;
+    }
+  },
+
+  deleteSleepLog: async (id: string): Promise<boolean> => {
+    try {
+      const { error } = await supabase.from("sleep_logs").delete().eq("id", id);
+
+      if (error) {
+        console.error("Error deleting sleep log:", error);
+        return false;
+      }
+
+      // Update cache
+      const cachedData = await AsyncStorage.getItem(SLEEP_LOGS_CACHE_KEY);
+      if (cachedData) {
+        const sleepLogs: SleepLog[] = JSON.parse(cachedData);
+        const updatedLogs = sleepLogs.filter((log) => log.id !== id);
+        await AsyncStorage.setItem(
+          SLEEP_LOGS_CACHE_KEY,
+          JSON.stringify(updatedLogs)
+        );
+      }
+
+      return true;
+    } catch (error) {
+      console.error("Error in deleteSleepLog:", error);
       return false;
     }
   },

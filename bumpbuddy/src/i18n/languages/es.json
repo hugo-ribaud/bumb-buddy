@@ -257,6 +257,39 @@
       "physical": "Malestar Físico",
       "health": "Preocupaciones de Salud",
       "social": "Situación Social"
+    },
+    "sleepTracker": "Seguimiento del Sueño",
+    "sleepTrackerDescription": "Registra tus patrones de sueño y calidad durante tu embarazo",
+    "addSleep": "Añadir Registro de Sueño",
+    "editSleep": "Editar Registro de Sueño",
+    "deleteSleep": "Eliminar Registro de Sueño",
+    "confirmDeleteSleep": "¿Estás segura de que quieres eliminar este registro de sueño?",
+    "sleepHistory": "Historial de Sueño",
+    "noSleepData": "No hay datos de sueño registrados aún",
+    "duration": "Duración",
+    "minutes": "minutos",
+    "durationPlaceholder": "Introduce la duración en minutos",
+    "quality": "Calidad",
+    "sleepQuality": "Calidad del Sueño",
+    "sleepType": "Tipo de Sueño",
+    "disruptions": "Interrupciones",
+    "disruptionPlaceholder": "Añadir interrupción personalizada",
+    "addDisruption": "Añadir",
+    "invalidSleepValues": "Por favor, introduce detalles válidos de sueño",
+    "invalidSleepDuration": "Por favor, introduce una duración válida de sueño",
+    "sleepNotesPlaceholder": "Añade cualquier nota sobre tu sueño...",
+    "sleepTypes": {
+      "night": "Sueño Nocturno",
+      "nap": "Siesta"
+    },
+    "commonDisruptions": {
+      "bathroom": "Visitas al Baño",
+      "discomfort": "Malestar Físico",
+      "movement": "Movimientos del Bebé",
+      "heartburn": "Acidez",
+      "anxiety": "Ansiedad/Estrés",
+      "noise": "Ruido/Ambiente",
+      "partner": "Interrupción de la Pareja"
     }
   },
   "healthTracker": {

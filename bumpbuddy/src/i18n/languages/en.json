@@ -259,6 +259,39 @@
       "physical": "Physical Discomfort",
       "health": "Health Concerns",
       "social": "Social Situation"
+    },
+    "sleepTracker": "Sleep Tracker",
+    "sleepTrackerDescription": "Track your sleep patterns and quality throughout your pregnancy",
+    "addSleep": "Add Sleep Log",
+    "editSleep": "Edit Sleep Log",
+    "deleteSleep": "Delete Sleep Log",
+    "confirmDeleteSleep": "Are you sure you want to delete this sleep log?",
+    "sleepHistory": "Sleep History",
+    "noSleepData": "No sleep data recorded yet",
+    "duration": "Duration",
+    "minutes": "minutes",
+    "durationPlaceholder": "Enter duration in minutes",
+    "quality": "Quality",
+    "sleepQuality": "Sleep Quality",
+    "sleepType": "Sleep Type",
+    "disruptions": "Disruptions",
+    "disruptionPlaceholder": "Add custom disruption",
+    "addDisruption": "Add",
+    "invalidSleepValues": "Please enter valid sleep details",
+    "invalidSleepDuration": "Please enter a valid sleep duration",
+    "sleepNotesPlaceholder": "Add any notes about your sleep...",
+    "sleepTypes": {
+      "night": "Night Sleep",
+      "nap": "Nap"
+    },
+    "commonDisruptions": {
+      "bathroom": "Bathroom Breaks",
+      "discomfort": "Physical Discomfort",
+      "movement": "Baby Movement",
+      "heartburn": "Heartburn",
+      "anxiety": "Anxiety/Stress",
+      "noise": "Noise/Environment",
+      "partner": "Partner Disruption"
     }
   },
   "healthTracker": {
