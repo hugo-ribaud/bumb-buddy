@@ -2,7 +2,7 @@
 
 _Version: 1.1_
 _Created: 2025-05-06_
-_Last Updated: 2025-05-19_
+_Last Updated: 2025-05-20_
 
 ## Project Status: DEVELOPMENT
 
@@ -101,14 +101,25 @@ _Last Updated: 2025-05-19_
 - Modified HomeScreen to display user's first name instead of email
 - UI styling improvements implemented
 - Enhanced dark mode compatibility of language flag components
-- Converted LanguageFlag component from StyleSheet to NativeWind classes
+- Converted LanguageFlag component from NativeWind to StyleSheet classes
 - Updated PreferencesLanguageSwitcher component to use more NativeWind styling
 - Fixed white background issue with flag icons in dark mode
 - Improved the styling consistency across the app using NativeWind
+- Fetal size comparison feature design completed
+- Created database schema for fetal size comparisons with RLS policies
+- Implemented TypeScript interfaces for fetal size comparison data
+- Developed fetalSizeService with caching and offline support
+- Created Redux slice for fetal size data management
+- Built reusable FetalSizeComparison component with support for compact and detailed views
+- Implemented UnitToggle component for switching between metric and imperial
+- Added internationalization support for fetal size comparison feature
+- Created DALL-E prompt templates for generating consistent fruit comparison images
+- Developed migration script to link pregnancy_weeks table to fetal_size_comparisons
 
 ## In Progress
 
-- Planning offline functionality foundation
+- Generating fruit comparison images with DALL-E
+- Integrating fetal size comparison component into timeline screens
 
 ## Pending Tasks
 
@@ -151,26 +162,32 @@ _Last Updated: 2025-05-19_
 
 ### Phase 3: Secondary Features (Medium Priority)
 
-- Preview of the foetus size (comparaison to fruits with image) to enhance the timeline UX/UI
-- Improve appointment scheduling and reminders
-- Content management for pregnancy information
-- Push notifications
-- Settings and preferences
+- ⬜ Preview of the foetus size (comparaison to fruits with image) to enhance the timeline UX/UI
+  - ✅ Database schema and seeding
+  - ✅ TypeScript interfaces and service implementation
+  - ✅ Redux slice for state management
+  - ✅ Reusable UI components with unit toggle
+  - ⬜ Generate and upload fruit comparison images
+  - ⬜ Integrate with existing timeline screens
+- ⬜ Improve appointment scheduling and reminders
+- ⬜ Content management for pregnancy information
+- ⬜ Push notifications
+- ⬜ Settings and preferences
 
 ### Phase 4: Polish and Optimization (Medium Priority)
 
-- UI/UX refinement
-- Performance optimization
-- Accessibility improvements
-- Beta testing program setup
-- Analytics implementation
+- ⬜ UI/UX refinement
+- ⬜ Performance optimization
+- ⬜ Accessibility improvements
+- ⬜ Beta testing program setup
+- ⬜ Analytics implementation
 
 ### Phase 5: Deployment (Medium Priority)
 
-- App Store preparation
-- Google Play preparation
-- Privacy policy and terms of service
-- Marketing materials preparation
+- ⬜ App Store preparation
+- ⬜ Google Play preparation
+- ⬜ Privacy policy and terms of service
+- ⬜ Marketing materials preparation
 
 ## Known Issues
 
@@ -212,6 +229,7 @@ _Last Updated: 2025-05-19_
 - ✅ UI Styling Improvements Complete: 2025-05-19 (Completed)
 - ✅ Offline Functionality Complete: 2025-05-19 (Completed)
 - ✅ Core Features Complete: 2025-05-19 (Completed)
+- ⬜ Fetal Size Comparison Complete: In Progress (Started: 2025-05-20)
 - ⬜ Secondary Features Complete: TBD
 - ⬜ Polish Complete: TBD
 - ⬜ Beta Release: TBD
@@ -318,6 +336,24 @@ _Last Updated: 2025-05-19_
 - Ensured seamless synchronization when connectivity is restored
 - Built proper conflict resolution strategy for offline changes
 - Added appropriate visual feedback for offline and syncing states
+
+## Fetal Size Comparison Feature Implementation
+
+- Created database schema for fetal size comparisons with detailed measurements
+- Seeded initial data for weeks 5-40 with fruit comparisons and descriptions
+- Implemented TypeScript interfaces for type safety and data mapping
+- Developed fetalSizeService with proper caching and offline support
+- Created Redux slice for state management with selectors and async thunks
+- Built reusable FetalSizeComparison component with support for:
+  - Compact view for timeline cards
+  - Detailed view for week details screen
+  - Dynamic unit switching (metric/imperial)
+  - Accessibility considerations
+- Added UnitToggle component for switching measurement systems
+- Implemented comprehensive internationalization support
+- Created DALL-E prompt templates for generating consistent comparison images
+- Developed SQL migration to link pregnancy_weeks with fetal_size_comparisons
+- Created implementation plan and documentation for the feature
 
 ---
 

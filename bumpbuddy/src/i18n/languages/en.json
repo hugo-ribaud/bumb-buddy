@@ -146,6 +146,14 @@
     "safe": "Safe",
     "caution": "Caution"
   },
+  "fetalSize": {
+    "title": "Baby Size Comparison",
+    "sizeAs": "Size: As big as a {{fruit}}",
+    "length": "Length:",
+    "weight": "Weight:",
+    "noDataAvailable": "Size comparison data not available",
+    "accessibilityImageLabel": "Image showing a {{fruit}} that's about {{size}} in size"
+  },
   "health": {
     "title": "Health Tracker",
     "dailySymptoms": "Daily Symptoms",
@@ -243,96 +251,7 @@
     "invalidMoodValues": "Please select a mood rating and type",
     "currentMood": "Current Mood",
     "moodHistory": "Mood History",
-    "moodNotesPlaceholder": "Add any notes about your mood...",
-    "moodTypes": {
-      "happy": "Happy",
-      "calm": "Calm",
-      "anxious": "Anxious",
-      "sad": "Sad",
-      "irritable": "Irritable",
-      "energetic": "Energetic",
-      "tired": "Tired",
-      "emotional": "Emotional",
-      "stressed": "Stressed",
-      "excited": "Excited"
-    },
-    "commonTriggers": {
-      "sleep": "Poor Sleep",
-      "food": "Food/Hunger",
-      "hormones": "Hormones",
-      "work": "Work Stress",
-      "family": "Family Issues",
-      "physical": "Physical Discomfort",
-      "health": "Health Concerns",
-      "social": "Social Situation"
-    },
-    "sleepTracker": "Sleep Tracker",
-    "sleepTrackerDescription": "Track your sleep patterns and quality throughout your pregnancy",
-    "addSleep": "Add Sleep Log",
-    "editSleep": "Edit Sleep Log",
-    "deleteSleep": "Delete Sleep Log",
-    "confirmDeleteSleep": "Are you sure you want to delete this sleep log?",
-    "sleepHistory": "Sleep History",
-    "noSleepData": "No sleep data recorded yet",
-    "duration": "Duration",
-    "minutes": "minutes",
-    "durationPlaceholder": "Enter duration in minutes",
-    "quality": "Quality",
-    "sleepQuality": "Sleep Quality",
-    "sleepType": "Sleep Type",
-    "disruptions": "Disruptions",
-    "disruptionPlaceholder": "Add custom disruption",
-    "addDisruption": "Add",
-    "invalidSleepValues": "Please enter valid sleep details",
-    "invalidSleepDuration": "Please enter a valid sleep duration",
-    "sleepNotesPlaceholder": "Add any notes about your sleep...",
-    "sleepTypes": {
-      "night": "Night Sleep",
-      "nap": "Nap"
-    },
-    "commonDisruptions": {
-      "bathroom": "Bathroom Breaks",
-      "discomfort": "Physical Discomfort",
-      "movement": "Baby Movement",
-      "heartburn": "Heartburn",
-      "anxiety": "Anxiety/Stress",
-      "noise": "Noise/Environment",
-      "partner": "Partner Disruption"
-    },
-    "exerciseTracker": "Exercise Tracker",
-    "exerciseTrackerDescription": "Track your exercise and physical activity during pregnancy",
-    "addExercise": "Add Exercise",
-    "editExercise": "Edit Exercise",
-    "deleteExercise": "Delete Exercise",
-    "confirmDeleteExercise": "Are you sure you want to delete this exercise log?",
-    "exerciseHistory": "Exercise History",
-    "noExerciseData": "No exercise data recorded yet",
-    "exerciseType": "Exercise Type",
-    "exerciseTypes": {
-      "walking": "Walking",
-      "swimming": "Swimming",
-      "yoga": "Prenatal Yoga",
-      "stretching": "Stretching",
-      "pilates": "Pilates",
-      "cycling": "Stationary Cycling",
-      "strength": "Light Strength Training",
-      "dance": "Dance",
-      "water": "Water Aerobics",
-      "other": "Other"
-    },
-    "intensity": "Intensity",
-    "heartRate": "Heart Rate",
-    "bpm": "BPM",
-    "heartRatePlaceholder": "Enter heart rate (optional)",
-    "modifiedPositions": "Modified Positions",
-    "modifiedPositionsHint": "Did you modify positions for pregnancy?",
-    "feltContractions": "Felt Contractions",
-    "feltDiscomfort": "Felt Discomfort",
-    "exerciseWarning": "Always consult your healthcare provider before starting any new exercise regimen during pregnancy.",
-    "yes": "Yes",
-    "no": "No",
-    "exerciseNotesPlaceholder": "Add any notes about your exercise...",
-    "invalidExerciseValues": "Please enter a valid exercise type and duration"
+    "moodNotesPlaceholder": "Add any notes about your mood..."
   },
   "healthTracker": {
     "title": "Health Tracker",
@@ -386,7 +305,20 @@
     "versionLabel": "App Version",
     "privacyPolicyLabel": "Privacy Policy",
     "termsOfServiceLabel": "Terms of Service",
-    "feedbackLabel": "Send Feedback"
+    "feedbackLabel": "Send Feedback",
+    "theme": "Theme",
+    "language": "Language",
+    "units": "Measurement Units",
+    "metric": "Metric",
+    "imperial": "Imperial",
+    "metricSystem": "Metric system",
+    "imperialSystem": "Imperial system",
+    "metricSystemHint": "Switch to metric units (centimeters, grams)",
+    "imperialSystemHint": "Switch to imperial units (inches, ounces)",
+    "notifications": "Notifications",
+    "sound": "Sound",
+    "dataSync": "Data Synchronization",
+    "privacySettings": "Privacy Settings"
   },
   "preferences": {
     "title": "Preferences",
@@ -427,5 +359,11 @@
     "retrying": "Retrying...",
     "savedLocally": "Saved locally",
     "waitingToSync": "Waiting to sync"
+  },
+  "units": {
+    "cm": "cm",
+    "inches": "in",
+    "grams": "g",
+    "oz": "oz"
   }
 }

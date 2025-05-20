@@ -13,6 +13,7 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
+import fetalSizeReducer from "./slices/fetalSizeSlice";
 import healthReducer from "./slices/healthSlice";
 import preferencesReducer from "./slices/preferencesSlice";
 import timelineReducer from "./slices/timelineSlice";
@@ -60,6 +61,12 @@ const healthPersistConfig = {
   // stateReconciler: autoMergeLevel2,
 };
 
+// Configure specific persistence settings for fetal size data
+const fetalSizePersistConfig = {
+  key: "fetalSize",
+  storage: AsyncStorage,
+};
+
 // Combine all reducers
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -67,6 +74,7 @@ const rootReducer = combineReducers({
   health: persistReducer(healthPersistConfig, healthReducer),
   preferences: preferencesReducer,
   network: networkSlice.reducer,
+  fetalSize: persistReducer(fetalSizePersistConfig, fetalSizeReducer),
 });
 
 // Create persisted reducer
