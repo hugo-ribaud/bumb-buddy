@@ -166,7 +166,7 @@ const HomeScreen = () => {
                     weekNumber={pregnancyWeek}
                     itemName={fetalSize.name}
                     imageUrl={fetalSize.image_url}
-                    sizeInMm={fetalSize.size_mm}
+                    sizeInCm={fetalSize.size_cm}
                     sizeInInches={fetalSize.size_inches}
                     weightInG={fetalSize.weight_g}
                     weightInOz={fetalSize.weight_oz}

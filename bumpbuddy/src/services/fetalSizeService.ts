@@ -9,7 +9,9 @@ const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 (async () => {
   try {
     await AsyncStorage.removeItem(CACHE_KEY);
-    console.log("DEBUG: Fetal size cache cleared on load");
+    console.log(
+      "DEBUG: Fetal size cache cleared on load to get fresh data with size_cm"
+    );
   } catch (error) {
     console.error("Error clearing cache:", error);
   }

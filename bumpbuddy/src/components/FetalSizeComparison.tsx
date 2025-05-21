@@ -11,7 +11,7 @@ interface FetalSizeComparisonProps {
   weekNumber: number;
   itemName: string;
   imageUrl: string;
-  sizeInMm?: number;
+  sizeInCm?: number;
   sizeInInches?: number;
   weightInG?: number;
   weightInOz?: number;
@@ -22,7 +22,7 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   weekNumber,
   itemName = "",
   imageUrl = "",
-  sizeInMm,
+  sizeInCm,
   sizeInInches,
   weightInG,
   weightInOz,
@@ -36,7 +36,7 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   console.log(`FetalSizeComparison for week ${weekNumber}:`, {
     itemName,
     imageUrl,
-    sizeInMm,
+    sizeInCm,
     sizeInInches,
     weightInG,
     weightInOz,
@@ -95,11 +95,11 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
 
           {!compact && (
             <View className="mt-1">
-              {(sizeInMm || sizeInInches) && (
+              {(sizeInCm || sizeInInches) && (
                 <FontedText variant="caption" colorVariant="secondary">
                   {t("fetalSize.sizeLabel")}:{" "}
-                  {isMetric && sizeInMm ? `${sizeInMm} mm` : ""}
-                  {isMetric && sizeInMm && sizeInInches ? " / " : ""}
+                  {isMetric && sizeInCm ? `${sizeInCm} cm` : ""}
+                  {isMetric && sizeInCm && sizeInInches ? " / " : ""}
                   {!isMetric && sizeInInches ? `${sizeInInches} in` : ""}
                 </FontedText>
               )}
