@@ -152,7 +152,12 @@
     "length": "Length:",
     "weight": "Weight:",
     "noDataAvailable": "Size comparison data not available",
-    "accessibilityImageLabel": "Image showing a {{fruit}} that's about {{size}} in size"
+    "accessibilityImageLabel": "Image showing a {{fruit}} that's about {{size}} in size",
+    "comparisonTitle": "Size Comparison",
+    "thisWeekSize": "Baby's Size This Week",
+    "sizeLabel": "Size",
+    "weightLabel": "Weight",
+    "notAvailable": "Size comparison not available"
   },
   "health": {
     "title": "Health Tracker",

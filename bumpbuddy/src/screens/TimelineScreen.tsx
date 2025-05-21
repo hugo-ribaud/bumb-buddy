@@ -17,10 +17,12 @@ import { AppDispatch, RootState } from "../redux/store";
 
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import FetalSizeComparison from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
+import { fetchAllFetalSizes } from "../redux/slices/fetalSizeSlice";
 import timelineService from "../services/timelineService";
 
 type Props = {};
@@ -36,11 +38,15 @@ const TimelineScreen: React.FC<Props> = () => {
   const { currentWeek, allWeeks, loading, error } = useSelector(
     (state: RootState) => state.timeline
   );
+  const fetalSizeData = useSelector(
+    (state: RootState) => state.fetalSize.allComparisons
+  );
   const { user } = useSelector((state: RootState) => state.auth);
 
   // Fetch weeks data on component mount
   useEffect(() => {
     dispatch(fetchAllWeeks());
+    dispatch(fetchAllFetalSizes());
     if (user?.dueDate) {
       dispatch(fetchCurrentWeekData(user.dueDate));
     }
@@ -97,6 +103,7 @@ const TimelineScreen: React.FC<Props> = () => {
   // Render each week item
   const renderWeekItem = ({ item }: { item: any }) => {
     const isCurrentWeek = item.week === currentWeek;
+    const weekFetalSize = fetalSizeData.find((size) => size.week === item.week);
 
     return (
       <Pressable
@@ -123,14 +130,24 @@ const TimelineScreen: React.FC<Props> = () => {
           )}
         </View>
 
-        <FontedText variant="body" className="mb-2 capitalize">
-          {getFoodNameFromImageUrl(item.image_url)}
-        </FontedText>
+        {weekFetalSize ? (
+          <FetalSizeComparison
+            weekNumber={item.week}
+            itemName={weekFetalSize.name}
+            imageUrl={weekFetalSize.image_url}
+            compact={true}
+          />
+        ) : (
+          <FontedText variant="body" className="mb-2 capitalize">
+            {getFoodNameFromImageUrl(item.image_url)}
+          </FontedText>
+        )}
 
         <FontedText
           variant="body-small"
           colorVariant="secondary"
           numberOfLines={2}
+          className="mt-2"
         >
           {item.fetal_development}
         </FontedText>

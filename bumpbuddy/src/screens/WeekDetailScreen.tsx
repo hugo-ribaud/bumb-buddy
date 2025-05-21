@@ -11,10 +11,12 @@ import { AppDispatch, RootState } from "../redux/store";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import FetalSizeComparison from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
+import { fetchFetalSizeByWeek } from "../redux/slices/fetalSizeSlice";
 import { fetchWeekData } from "../redux/slices/timelineSlice";
 
 type Props = {};
@@ -28,11 +30,15 @@ const WeekDetailScreen: React.FC<Props> = () => {
   const { selectedWeek, weekData, loading, error } = useSelector(
     (state: RootState) => state.timeline
   );
+  const fetalSize = useSelector(
+    (state: RootState) => state.fetalSize.currentComparison
+  );
 
   // Fetch week data on component mount
   useEffect(() => {
     if (selectedWeek) {
       dispatch(fetchWeekData(selectedWeek));
+      dispatch(fetchFetalSizeByWeek(selectedWeek));
     }
   }, [dispatch, selectedWeek]);
 
@@ -142,6 +148,32 @@ const WeekDetailScreen: React.FC<Props> = () => {
               {getTrimester()}
             </FontedText>
           </View>
+
+          {/* Fetal Size Comparison */}
+          {fetalSize && (
+            <ThemedView
+              backgroundColor="surface"
+              className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
+            >
+              <FontedText variant="heading-3" className="mb-3">
+                {t("fetalSize.comparisonTitle")}
+              </FontedText>
+              <FetalSizeComparison
+                weekNumber={selectedWeek || 0}
+                itemName={fetalSize.name}
+                imageUrl={fetalSize.image_url}
+                sizeInMm={fetalSize.size_mm}
+                sizeInInches={fetalSize.size_in}
+                weightInG={fetalSize.weight_g}
+                weightInOz={fetalSize.weight_oz}
+              />
+              {fetalSize.description && (
+                <FontedText variant="body" className="mt-3 leading-6">
+                  {fetalSize.description}
+                </FontedText>
+              )}
+            </ThemedView>
+          )}
 
           {/* Development information */}
           <ThemedView

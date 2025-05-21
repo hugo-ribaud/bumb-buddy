@@ -1,18 +1,25 @@
+import React, { useEffect } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
 import { RootState, persistor } from "../redux/store";
 
-import React from "react";
 import { useTranslation } from "react-i18next";
-import { useSelector } from "react-redux";
+import FetalSizeComparison from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemeToggle from "../components/ThemeToggle";
 import ThemedView from "../components/ThemedView";
+import { fetchFetalSizeByWeek } from "../redux/slices/fetalSizeSlice";
+import { AppDispatch } from "../redux/store";
 
 const HomeScreen = () => {
   const { t } = useTranslation();
+  const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const preferences = useSelector((state: RootState) => state.preferences);
+  const fetalSize = useSelector(
+    (state: RootState) => state.fetalSize.currentComparison
+  );
 
   // Get current pregnancy week from user data or default to week 1
   const pregnancyWeek = user?.pregnancyWeek || 1;
@@ -20,6 +27,13 @@ const HomeScreen = () => {
   // Get user's name or fallback to friendly default
   const userName =
     user?.name || user?.email?.split("@")[0] || t("common.labels.mom");
+
+  // Fetch fetal size data on component mount
+  useEffect(() => {
+    if (pregnancyWeek) {
+      dispatch(fetchFetalSizeByWeek(pregnancyWeek));
+    }
+  }, [dispatch, pregnancyWeek]);
 
   // Function to purge redux-persist store for debugging
   const handlePurgeStore = async () => {
@@ -129,6 +143,26 @@ const HomeScreen = () => {
               >
                 {t("home.developmentTitle", { week: pregnancyWeek })}
               </FontedText>
+
+              {fetalSize && (
+                <View className="mt-2 mb-4">
+                  <FontedText
+                    variant="body"
+                    className="font-semibold mt-1.5 mb-2.5"
+                  >
+                    {t("fetalSize.thisWeekSize")}
+                  </FontedText>
+                  <FetalSizeComparison
+                    weekNumber={pregnancyWeek}
+                    itemName={fetalSize.name}
+                    imageUrl={fetalSize.image_url}
+                    sizeInMm={fetalSize.size_mm}
+                    sizeInInches={fetalSize.size_in}
+                    weightInG={fetalSize.weight_g}
+                    weightInOz={fetalSize.weight_oz}
+                  />
+                </View>
+              )}
 
               <FontedText
                 variant="body"

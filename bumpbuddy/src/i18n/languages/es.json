@@ -414,18 +414,31 @@
   },
   "network": {
     "online": "En línea",
-    "offline": "Sin conexión",
+    "offline": "Fuera de línea",
     "syncPending": "Sincronizando {{count}} cambios...",
     "pendingSync": "{{count}} cambios pendientes",
     "lastOnline": "Última vez en línea",
     "unknown": "Desconocido",
     "connectionLost": "Conexión perdida",
     "connectionRestored": "Conexión restaurada",
-    "offlineMode": "Modo sin conexión",
+    "offlineMode": "Modo fuera de línea",
     "syncCompleted": "Sincronización completada",
-    "syncFailed": "Sincronización fallida",
+    "syncFailed": "Error de sincronización",
     "retrying": "Reintentando...",
     "savedLocally": "Guardado localmente",
-    "waitingToSync": "Esperando sincronización"
+    "waitingToSync": "Esperando para sincronizar"
+  },
+  "fetalSize": {
+    "comparisonTitle": "Comparación de Tamaño",
+    "thisWeekSize": "Tamaño del Bebé Esta Semana",
+    "sizeLabel": "Tamaño",
+    "weightLabel": "Peso",
+    "notAvailable": "Comparación de tamaño no disponible"
+  },
+  "units": {
+    "cm": "cm",
+    "inches": "pulg",
+    "grams": "g",
+    "oz": "oz"
   }
 }

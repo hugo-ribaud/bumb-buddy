@@ -427,5 +427,18 @@
     "retrying": "Nouvelle tentative...",
     "savedLocally": "Enregistré localement",
     "waitingToSync": "En attente de synchronisation"
+  },
+  "fetalSize": {
+    "comparisonTitle": "Comparaison de Taille",
+    "thisWeekSize": "Taille du Bébé Cette Semaine",
+    "sizeLabel": "Taille",
+    "weightLabel": "Poids",
+    "notAvailable": "Comparaison de taille non disponible"
+  },
+  "units": {
+    "cm": "cm",
+    "inches": "po",
+    "grams": "g",
+    "oz": "oz"
   }
 }
