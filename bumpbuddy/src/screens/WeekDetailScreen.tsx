@@ -11,10 +11,13 @@ import { AppDispatch, RootState } from "../redux/store";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { FetalSizeComparison } from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
+import UnitToggle from "../components/UnitToggle";
 import { useTheme } from "../contexts/ThemeContext";
+import { fetchSizeComparisonByWeek } from "../redux/slices/fetalSizeSlice";
 import { fetchWeekData } from "../redux/slices/timelineSlice";
 
 type Props = {};
@@ -29,10 +32,17 @@ const WeekDetailScreen: React.FC<Props> = () => {
     (state: RootState) => state.timeline
   );
 
+  const {
+    selectedWeekComparison,
+    loading: fetalSizeLoading,
+    error: fetalSizeError,
+  } = useSelector((state: RootState) => state.fetalSize);
+
   // Fetch week data on component mount
   useEffect(() => {
     if (selectedWeek) {
       dispatch(fetchWeekData(selectedWeek));
+      dispatch(fetchSizeComparisonByWeek(selectedWeek));
     }
   }, [dispatch, selectedWeek]);
 
@@ -144,39 +154,19 @@ const WeekDetailScreen: React.FC<Props> = () => {
           </View>
 
           {/* Baby size comparison */}
-          <ThemedView
-            backgroundColor="surface"
-            className="mx-4 my-4 rounded-xl p-4 shadow-sm"
-          >
-            <FontedText variant="heading-3" className="mb-3">
-              {t("timeline.sizeComparison")}
-            </FontedText>
-            <View className="flex-row items-center">
-              <View className="w-[100px] h-[100px] justify-center items-center">
-                {/* Placeholder for image - would be loaded dynamically */}
-                <View
-                  className="w-20 h-20 rounded-full justify-center items-center"
-                  style={{
-                    backgroundColor: isDark ? "#333333" : "#e5e7eb",
-                  }}
-                >
-                  <FontedText
-                    variant="body-small"
-                    className="text-center p-1 capitalize"
-                  >
-                    {getFoodNameFromImageUrl(weekData.image_url)}
-                  </FontedText>
-                </View>
-              </View>
-              <View className="flex-1 ml-4">
-                <FontedText variant="body">
-                  {t("timeline.babyIsSize", {
-                    size: getFoodNameFromImageUrl(weekData.image_url),
-                  })}
-                </FontedText>
-              </View>
+          <View className="mx-4 my-4">
+            {/* Unit toggle for size comparison */}
+            <View className="flex-row justify-end mb-2">
+              <UnitToggle compact />
             </View>
-          </ThemedView>
+
+            {/* Fetal Size Component */}
+            <FetalSizeComparison
+              sizeData={selectedWeekComparison}
+              loading={fetalSizeLoading}
+              error={fetalSizeError}
+            />
+          </View>
 
           {/* Development information */}
           <ThemedView

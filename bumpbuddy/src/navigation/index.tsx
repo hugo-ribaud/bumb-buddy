@@ -48,7 +48,6 @@ export type TimelineStackParamList = {
 
 export type MainStackParamList = {
   MainTabs: undefined;
-  WeekDetail: { weekId: number };
 };
 
 const Stack = createStackNavigator<RootStackParamList>();
@@ -58,10 +57,23 @@ const MainStack = createStackNavigator<MainStackParamList>();
 
 // Timeline stack navigator
 const TimelineNavigator = () => {
+  const { t } = useTranslation();
+
   return (
-    <TimelineStack.Navigator screenOptions={{ headerShown: false }}>
-      <TimelineStack.Screen name="TimelineMain" component={TimelineScreen} />
-      <TimelineStack.Screen name="WeekDetail" component={WeekDetailScreen} />
+    <TimelineStack.Navigator>
+      <TimelineStack.Screen
+        name="TimelineMain"
+        component={TimelineScreen}
+        options={{ headerShown: false }}
+      />
+      <TimelineStack.Screen
+        name="WeekDetail"
+        component={WeekDetailScreen}
+        options={{
+          headerShown: true,
+          title: t("navigation.weekDetail"),
+        }}
+      />
     </TimelineStack.Navigator>
   );
 };
@@ -214,14 +226,6 @@ const RootNavigator = () => {
           }}
         >
           <MainStack.Screen name="MainTabs" component={MainTabNavigator} />
-          <MainStack.Screen
-            name="WeekDetail"
-            component={WeekDetailScreen}
-            options={{
-              headerShown: true,
-              title: t("navigation.weekDetail"),
-            }}
-          />
         </MainStack.Navigator>
       ) : (
         <AuthScreen />

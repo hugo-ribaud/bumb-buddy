@@ -1,17 +1,24 @@
 import { ScrollView, TouchableOpacity, View } from "react-native";
 
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useSelector } from "react-redux";
+import { FetalSizeComparison } from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import ThemeToggle from "../components/ThemeToggle";
 import { RootState } from "../redux/store";
+import { FetalSizeComparison as FetalSizeType } from "../types/fetalSize";
 
 const HomeScreen = () => {
   const { t } = useTranslation();
   const { user } = useSelector((state: RootState) => state.auth);
+  const preferences = useSelector((state: RootState) => state.preferences);
+  const [fetalSizeData, setFetalSizeData] = useState<FetalSizeType | null>(
+    null
+  );
+  const [loading, setLoading] = useState(false);
 
   // Get current pregnancy week from user data or default to week 1
   const pregnancyWeek = user?.pregnancyWeek || 1;
@@ -20,45 +27,157 @@ const HomeScreen = () => {
   const userName =
     user?.name || user?.email?.split("@")[0] || t("common.labels.mom");
 
+  // Load fetal size data based on current week
+  useEffect(() => {
+    const generateFetalSizeData = () => {
+      setLoading(true);
+
+      // This would ideally come from an API or database
+      // Creating mock data based on pregnancy week
+      let fruitName = "";
+      let sizeCm = 0;
+      let sizeInches = 0;
+      let weightG = 0;
+      let weightOz = 0;
+      let description = "";
+
+      // Determine size based on week (simplified for example)
+      if (pregnancyWeek < 8) {
+        fruitName =
+          pregnancyWeek === 5
+            ? "Sesame seed"
+            : pregnancyWeek === 6
+            ? "Lentil"
+            : pregnancyWeek === 7
+            ? "Blueberry"
+            : "Poppy seed";
+        sizeCm =
+          pregnancyWeek === 5
+            ? 0.1
+            : pregnancyWeek === 6
+            ? 0.3
+            : pregnancyWeek === 7
+            ? 1
+            : 0.05;
+        sizeInches = sizeCm / 2.54;
+        description =
+          pregnancyWeek === 5
+            ? "The embryo is now about the size of a sesame seed (0.2 inches). The heart begins to beat and pumps blood."
+            : pregnancyWeek === 6
+            ? "The embryo is now about the size of a lentil (0.25 inches). Facial features and limb buds are forming."
+            : pregnancyWeek === 7
+            ? "The embryo is now about the size of a blueberry (0.5 inches). All essential organs are forming."
+            : "The embryo is just beginning to form.";
+      } else if (pregnancyWeek < 14) {
+        fruitName =
+          pregnancyWeek === 8
+            ? "Raspberry"
+            : pregnancyWeek === 9
+            ? "Cherry"
+            : pregnancyWeek === 10
+            ? "Strawberry"
+            : pregnancyWeek === 11
+            ? "Lime"
+            : pregnancyWeek === 12
+            ? "Plum"
+            : "Lemon";
+        sizeCm = 3 + (pregnancyWeek - 8) * 0.7;
+        sizeInches = sizeCm / 2.54;
+        weightG = (pregnancyWeek - 7) * 5;
+        weightOz = weightG / 28.35;
+        description =
+          "Your baby is growing rapidly and developing more defined features.";
+      } else if (pregnancyWeek < 20) {
+        fruitName =
+          pregnancyWeek === 14
+            ? "Peach"
+            : pregnancyWeek === 15
+            ? "Apple"
+            : pregnancyWeek === 16
+            ? "Avocado"
+            : pregnancyWeek === 17
+            ? "Pear"
+            : pregnancyWeek === 18
+            ? "Bell Pepper"
+            : "Banana";
+        sizeCm = 7 + (pregnancyWeek - 14) * 1;
+        sizeInches = sizeCm / 2.54;
+        weightG = 50 + (pregnancyWeek - 14) * 20;
+        weightOz = weightG / 28.35;
+        description =
+          "Your baby's movements are becoming more coordinated and may soon be felt.";
+      } else if (pregnancyWeek < 28) {
+        fruitName =
+          pregnancyWeek === 20
+            ? "Banana"
+            : pregnancyWeek === 22
+            ? "Papaya"
+            : pregnancyWeek === 24
+            ? "Corn"
+            : "Eggplant";
+        sizeCm = 15 + (pregnancyWeek - 20) * 1.2;
+        sizeInches = sizeCm / 2.54;
+        weightG = 300 + (pregnancyWeek - 20) * 100;
+        weightOz = weightG / 28.35;
+        description =
+          "Your baby is developing more distinct sleeping and waking cycles.";
+      } else if (pregnancyWeek < 35) {
+        fruitName =
+          pregnancyWeek === 28
+            ? "Eggplant"
+            : pregnancyWeek === 30
+            ? "Cabbage"
+            : pregnancyWeek === 32
+            ? "Squash"
+            : "Pineapple";
+        sizeCm = 25 + (pregnancyWeek - 28) * 1;
+        sizeInches = sizeCm / 2.54;
+        weightG = 1000 + (pregnancyWeek - 28) * 200;
+        weightOz = weightG / 28.35;
+        description =
+          "Your baby is gaining weight rapidly and developing layers of fat.";
+      } else {
+        fruitName =
+          pregnancyWeek === 35
+            ? "Honeydew melon"
+            : pregnancyWeek === 37
+            ? "Winter melon"
+            : pregnancyWeek === 39
+            ? "Pumpkin"
+            : "Watermelon";
+        sizeCm = 35 + (pregnancyWeek - 35) * 0.5;
+        sizeInches = sizeCm / 2.54;
+        weightG = 2500 + (pregnancyWeek - 35) * 200;
+        weightOz = weightG / 28.35;
+        description =
+          "Your baby is fully developed and ready to meet you soon!";
+      }
+
+      // Build the fetal size data object
+      const sizeData: FetalSizeType = {
+        week: pregnancyWeek,
+        fruitName,
+        sizeCm,
+        sizeInches,
+        weightG,
+        weightOz,
+        description,
+        // This would be the path to the image in Supabase Storage
+        imageUrl: `week_${String(pregnancyWeek).padStart(2, "0")}_${fruitName
+          .toLowerCase()
+          .replace(/\s+/g, "_")}.png`,
+      };
+
+      setFetalSizeData(sizeData);
+      setLoading(false);
+    };
+
+    generateFetalSizeData();
+  }, [pregnancyWeek, t]);
+
   // Mock data for weekly content - in a real app, this would come from a database
   const weeklyContent = {
     title: t("home.weekTitle", { week: pregnancyWeek }),
-    babySize:
-      pregnancyWeek < 8
-        ? "Blueberry"
-        : pregnancyWeek < 14
-        ? "Lemon"
-        : pregnancyWeek < 20
-        ? "Banana"
-        : pregnancyWeek < 28
-        ? "Eggplant"
-        : pregnancyWeek < 35
-        ? "Pineapple"
-        : "Watermelon",
-    babyLength:
-      pregnancyWeek < 8
-        ? "0.5 inches"
-        : pregnancyWeek < 14
-        ? "3 inches"
-        : pregnancyWeek < 20
-        ? "6 inches"
-        : pregnancyWeek < 28
-        ? "14 inches"
-        : pregnancyWeek < 35
-        ? "18 inches"
-        : "20 inches",
-    babyWeight:
-      pregnancyWeek < 8
-        ? "0.04 oz"
-        : pregnancyWeek < 14
-        ? "1.5 oz"
-        : pregnancyWeek < 20
-        ? "9 oz"
-        : pregnancyWeek < 28
-        ? "2 lbs"
-        : pregnancyWeek < 35
-        ? "5 lbs"
-        : "7 lbs",
     developmentHighlights: [
       "Baby's heart is beating",
       "Brain development is progressing",
@@ -159,42 +278,13 @@ const HomeScreen = () => {
                 {t("home.developmentTitle", { week: pregnancyWeek })}
               </FontedText>
 
-              <View className="flex-row justify-between mb-4">
-                <View className="flex-1">
-                  <FontedText
-                    textType="secondary"
-                    variant="caption"
-                    className="mb-0.5"
-                  >
-                    {t("home.sizeLabel")}
-                  </FontedText>
-                  <FontedText variant="body" className="font-medium mb-2.5">
-                    {weeklyContent.babySize}
-                  </FontedText>
-
-                  <FontedText
-                    textType="secondary"
-                    variant="caption"
-                    className="mb-0.5"
-                  >
-                    {t("home.lengthLabel")}
-                  </FontedText>
-                  <FontedText variant="body" className="font-medium mb-2.5">
-                    {weeklyContent.babyLength}
-                  </FontedText>
-
-                  <FontedText
-                    textType="secondary"
-                    variant="caption"
-                    className="mb-0.5"
-                  >
-                    {t("home.weightLabel")}
-                  </FontedText>
-                  <FontedText variant="body" className="font-medium mb-2.5">
-                    {weeklyContent.babyWeight}
-                  </FontedText>
-                </View>
-              </View>
+              {/* Fetal Size Comparison Component */}
+              <FetalSizeComparison
+                sizeData={fetalSizeData}
+                loading={loading}
+                error={null}
+                compact={false}
+              />
 
               <FontedText
                 variant="body"

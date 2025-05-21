@@ -17,10 +17,12 @@ import { AppDispatch, RootState } from "../redux/store";
 
 import { useNavigation } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
+import { FetalSizeComparison } from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
+import { fetchAllSizeComparisons } from "../redux/slices/fetalSizeSlice";
 import timelineService from "../services/timelineService";
 
 type Props = {};
@@ -36,11 +38,15 @@ const TimelineScreen: React.FC<Props> = () => {
   const { currentWeek, allWeeks, loading, error } = useSelector(
     (state: RootState) => state.timeline
   );
+  const { sizeComparisons, loading: fetalSizeLoading } = useSelector(
+    (state: RootState) => state.fetalSize
+  );
   const { user } = useSelector((state: RootState) => state.auth);
 
   // Fetch weeks data on component mount
   useEffect(() => {
     dispatch(fetchAllWeeks());
+    dispatch(fetchAllSizeComparisons());
     if (user?.dueDate) {
       dispatch(fetchCurrentWeekData(user.dueDate));
     }
@@ -53,6 +59,7 @@ const TimelineScreen: React.FC<Props> = () => {
       await timelineService.clearCache();
       // Refresh data after clearing cache
       await dispatch(fetchAllWeeks()).unwrap();
+      await dispatch(fetchAllSizeComparisons()).unwrap();
       if (user?.dueDate) {
         await dispatch(fetchCurrentWeekData(user.dueDate)).unwrap();
       }
@@ -94,9 +101,15 @@ const TimelineScreen: React.FC<Props> = () => {
     }
   };
 
+  // Find matching fetal size data for a week
+  const getFetalSizeForWeek = (week: number) => {
+    return sizeComparisons.find((size) => size.week === week) || null;
+  };
+
   // Render each week item
   const renderWeekItem = ({ item }: { item: any }) => {
     const isCurrentWeek = item.week === currentWeek;
+    const fetalSizeData = getFetalSizeForWeek(item.week);
 
     return (
       <Pressable
@@ -122,9 +135,20 @@ const TimelineScreen: React.FC<Props> = () => {
             </FontedText>
           )}
         </View>
-        <FontedText variant="body" className="mb-2 capitalize">
-          {getFoodNameFromImageUrl(item.image_url)}
-        </FontedText>
+
+        {/* Fetal Size Component */}
+        {fetalSizeData ? (
+          <FetalSizeComparison
+            sizeData={fetalSizeData}
+            loading={fetalSizeLoading}
+            compact
+          />
+        ) : (
+          <FontedText variant="body" className="mb-2 capitalize">
+            {getFoodNameFromImageUrl(item.image_url)}
+          </FontedText>
+        )}
+
         <FontedText
           variant="body-small"
           colorVariant="secondary"
@@ -240,7 +264,7 @@ const TimelineScreen: React.FC<Props> = () => {
           </Pressable>
         </View>
 
-        {loading || refreshing ? (
+        {loading || refreshing || fetalSizeLoading ? (
           <ActivityIndicator
             size="large"
             color={isDark ? "#60a5fa" : "#007bff"}

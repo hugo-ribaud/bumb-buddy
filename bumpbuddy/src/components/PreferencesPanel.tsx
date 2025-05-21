@@ -1,10 +1,6 @@
 import React, { useState } from "react";
 import { ActivityIndicator, Switch, View } from "react-native";
-import {
-  LanguageCode,
-  ThemeMode,
-  UnitSystem,
-} from "../redux/slices/preferencesSlice";
+import { LanguageCode, ThemeMode } from "../redux/slices/preferencesSlice";
 
 import { useTranslation } from "react-i18next";
 import { Dropdown } from "react-native-element-dropdown";
@@ -13,6 +9,7 @@ import { useTheme } from "../contexts/ThemeContext";
 import FontedText from "./FontedText";
 import PreferencesLanguageSwitcher from "./PreferencesLanguageSwitcher";
 import ThemedView from "./ThemedView";
+import UnitToggle from "./UnitToggle";
 
 const PreferencesPanel = () => {
   const { t, i18n } = useTranslation();
@@ -57,12 +54,6 @@ const PreferencesPanel = () => {
     { label: t("preferences.themes.system"), value: "system" },
   ];
 
-  // Units options
-  const unitsOptions = [
-    { label: t("preferences.unitTypes.metric"), value: "metric" },
-    { label: t("preferences.unitTypes.imperial"), value: "imperial" },
-  ];
-
   // Handle theme change from dropdown
   const handleThemeChange = async (theme: ThemeMode) => {
     await updateTheme(theme);
@@ -72,11 +63,6 @@ const PreferencesPanel = () => {
   const handleLanguageChange = async (lang: LanguageCode) => {
     await updateLanguage(lang);
     i18n.changeLanguage(lang);
-  };
-
-  // Handle units change
-  const handleUnitsChange = async (units: UnitSystem) => {
-    await updateUnits(units);
   };
 
   // Force sync with server
@@ -157,30 +143,7 @@ const PreferencesPanel = () => {
 
         <View className="mb-3">
           <FontedText className="mb-1">{t("preferences.units")}</FontedText>
-          <Dropdown
-            data={unitsOptions}
-            labelField="label"
-            valueField="value"
-            value={units}
-            onChange={(item) => handleUnitsChange(item.value as UnitSystem)}
-            placeholder={t("preferences.selectUnits")}
-            style={{
-              height: 50,
-              borderColor: isDark ? "#444" : "#e0e0e0",
-              borderWidth: 1,
-              borderRadius: 8,
-              paddingHorizontal: 12,
-              backgroundColor: isDark ? "#333" : "#f5f5f5",
-            }}
-            placeholderStyle={{ color: isDark ? "#aaa" : "#888" }}
-            selectedTextStyle={{ color: isDark ? "#fff" : "#000" }}
-            itemTextStyle={{ color: isDark ? "#fff" : "#000" }}
-            containerStyle={{
-              backgroundColor: isDark ? "#333" : "#fff",
-              borderRadius: 8,
-            }}
-            activeColor={isDark ? "#444" : "#f0f0f0"}
-          />
+          <UnitToggle />
         </View>
       </View>
 
