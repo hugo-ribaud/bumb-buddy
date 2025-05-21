@@ -13,7 +13,6 @@ import {
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createSlice } from "@reduxjs/toolkit";
 import authReducer from "./slices/authSlice";
-import fetalSizeReducer from "./slices/fetalSizeSlice";
 import healthReducer from "./slices/healthSlice";
 import preferencesReducer from "./slices/preferencesSlice";
 import timelineReducer from "./slices/timelineSlice";
@@ -48,7 +47,7 @@ const persistConfig = {
   key: "root",
   storage: AsyncStorage,
   // Don't persist auth state as it's managed by Supabase
-  blacklist: ["auth"],
+  blacklist: ["auth", "fetalSize"], // might need to remove fetalSize after implementation
   // Add state recovery options
   timeout: 10000, // 10 seconds
 };
@@ -61,12 +60,6 @@ const healthPersistConfig = {
   // stateReconciler: autoMergeLevel2,
 };
 
-// Configure specific persistence settings for fetal size data
-const fetalSizePersistConfig = {
-  key: "fetalSize",
-  storage: AsyncStorage,
-};
-
 // Combine all reducers
 const rootReducer = combineReducers({
   auth: authReducer,
@@ -74,7 +67,6 @@ const rootReducer = combineReducers({
   health: persistReducer(healthPersistConfig, healthReducer),
   preferences: preferencesReducer,
   network: networkSlice.reducer,
-  fetalSize: persistReducer(fetalSizePersistConfig, fetalSizeReducer),
 });
 
 // Create persisted reducer
