@@ -39,13 +39,13 @@ This document outlines the step-by-step implementation plan for the fetal size c
 - [x] Add translation keys for English
 - [x] Add translation keys for other supported languages (later)
 
-### 6. Image Generation and Storage (TODO)
+### 6. Image Generation and Storage (Done)
 
-- [ ] Use DALL-E to generate fruit comparison images
-- [ ] Process images for consistency and transparency
-- [ ] Create appropriate folder structure in Supabase Storage
-- [ ] Upload images and organize by week number
-- [ ] Update database with image URLs
+- [x]Use DALL-E to generate fruit comparison images
+- [x] Process images for consistency and transparency
+- [x] Create appropriate folder structure in Supabase Storage
+- [x] Upload images and organize by week number
+- [x] Update database with image URLs
 
 ### 7. Integration with Existing Screens (TODO)
 
