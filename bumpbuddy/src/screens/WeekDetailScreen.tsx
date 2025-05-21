@@ -1,3 +1,4 @@
+import { useNavigation, useRoute } from "@react-navigation/native";
 import React, { useEffect } from "react";
 import {
   ActivityIndicator,
@@ -6,41 +7,74 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchFetalSizeByWeek,
+  setCurrentLanguage,
+} from "../redux/slices/fetalSizeSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { RouteProp } from "@react-navigation/native";
 import { useTranslation } from "react-i18next";
 import FetalSizeComparison from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
-import { fetchFetalSizeByWeek } from "../redux/slices/fetalSizeSlice";
+import { RootStackParamList } from "../navigation/types";
 import { fetchWeekData } from "../redux/slices/timelineSlice";
+
+type WeekDetailScreenRouteProp = RouteProp<RootStackParamList, "WeekDetail">;
 
 type Props = {};
 
 const WeekDetailScreen: React.FC<Props> = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
+  const route = useRoute<WeekDetailScreenRouteProp>();
+  const selectedWeek = route.params?.week;
   const { isDark } = useTheme();
 
-  const { selectedWeek, weekData, loading, error } = useSelector(
-    (state: RootState) => state.timeline
+  const weekData = useSelector(
+    (state: RootState) => state.timeline.selectedWeek
   );
   const fetalSize = useSelector(
     (state: RootState) => state.fetalSize.currentComparison
   );
+  const translatedFetalSize = useSelector(
+    (state: RootState) => state.fetalSize.translatedCurrent
+  );
+  const currentLanguage = useSelector(
+    (state: RootState) => state.fetalSize.currentLanguage
+  );
+  const availableLanguages = useSelector(
+    (state: RootState) => state.fetalSize.availableLanguages
+  );
+  const loading = useSelector((state: RootState) => state.timeline.loading);
+  const error = useSelector((state: RootState) => state.timeline.error);
 
-  // Fetch week data on component mount
   useEffect(() => {
     if (selectedWeek) {
+      console.log(`WeekDetailScreen: Loading week ${selectedWeek}`);
       dispatch(fetchWeekData(selectedWeek));
       dispatch(fetchFetalSizeByWeek(selectedWeek));
+
+      // Fetch translated content with all available languages
+      const allLanguages = ["en", "fr", "es"]; // Add all supported languages here
+      dispatch(
+        fetchFetalSizeByWeekWithTranslations({
+          week: selectedWeek,
+          languages: allLanguages,
+        })
+      );
     }
   }, [dispatch, selectedWeek]);
+
+  // When language changes, update the current language in Redux
+  useEffect(() => {
+    dispatch(setCurrentLanguage(i18n.language));
+  }, [dispatch, i18n.language]);
 
   // Determine the trimester
   const getTrimester = () => {
@@ -155,9 +189,37 @@ const WeekDetailScreen: React.FC<Props> = () => {
               backgroundColor="surface"
               className="mx-4 mb-4 rounded-xl p-4 shadow-sm"
             >
-              <FontedText variant="heading-3" className="mb-3">
-                {t("fetalSize.comparisonTitle")}
-              </FontedText>
+              <View className="flex-row justify-between items-center mb-3">
+                <FontedText variant="heading-3">
+                  {t("fetalSize.comparisonTitle")}
+                </FontedText>
+                {/* Language selector */}
+                {availableLanguages && availableLanguages.length > 1 && (
+                  <View className="flex-row">
+                    {availableLanguages.map((lang) => (
+                      <TouchableOpacity
+                        key={lang}
+                        onPress={() => dispatch(setCurrentLanguage(lang))}
+                        className={`px-2 py-1 mx-1 rounded-md ${
+                          currentLanguage === lang
+                            ? "bg-blue-500"
+                            : "bg-gray-200"
+                        }`}
+                      >
+                        <FontedText
+                          variant="caption"
+                          colorVariant={
+                            currentLanguage === lang ? "white" : "secondary"
+                          }
+                        >
+                          {lang.toUpperCase()}
+                        </FontedText>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+                )}
+              </View>
+
               <FetalSizeComparison
                 weekNumber={selectedWeek || 0}
                 itemName={fetalSize.name}
@@ -166,12 +228,23 @@ const WeekDetailScreen: React.FC<Props> = () => {
                 sizeInInches={fetalSize.size_inches}
                 weightInG={fetalSize.weight_g}
                 weightInOz={fetalSize.weight_oz}
+                translatedContent={translatedFetalSize?.translatedContent}
+                currentLanguage={currentLanguage}
               />
-              {fetalSize.description && (
+
+              {translatedFetalSize?.translatedContent?.[currentLanguage]
+                ?.description ? (
+                <FontedText variant="body" className="mt-3 leading-6">
+                  {
+                    translatedFetalSize.translatedContent[currentLanguage]
+                      .description
+                  }
+                </FontedText>
+              ) : fetalSize.description ? (
                 <FontedText variant="body" className="mt-3 leading-6">
                   {fetalSize.description}
                 </FontedText>
-              )}
+              ) : null}
             </ThemedView>
           )}
 

@@ -4,6 +4,7 @@ import React from "react";
 import { useTranslation } from "react-i18next";
 import { usePreferences } from "../contexts/PreferencesContext";
 import { useTheme } from "../contexts/ThemeContext";
+import { FetalSizeTranslation } from "../types/fetalSize";
 import FontedText from "./FontedText";
 import ThemedView from "./ThemedView";
 
@@ -16,6 +17,8 @@ interface FetalSizeComparisonProps {
   weightInG?: number;
   weightInOz?: number;
   compact?: boolean;
+  translatedContent?: Record<string, FetalSizeTranslation["translations"]>;
+  currentLanguage?: string;
 }
 
 const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
@@ -27,6 +30,8 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   weightInG,
   weightInOz,
   compact = false,
+  translatedContent = {},
+  currentLanguage = "en",
 }) => {
   const { isDark } = useTheme();
   const { t } = useTranslation();
@@ -41,6 +46,8 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
     weightInG,
     weightInOz,
     compact,
+    availableTranslations: Object.keys(translatedContent),
+    currentLanguage,
   });
 
   const isMetric = units === "metric";
@@ -58,9 +65,30 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
     return url;
   };
 
+  // Get translated content based on current language
+  const getTranslatedName = () => {
+    // If we have translations for the current language, use them
+    if (translatedContent && translatedContent[currentLanguage]?.name) {
+      return translatedContent[currentLanguage].name;
+    }
+
+    // Fallback to the default name
+    return itemName;
+  };
+
+  const getTranslatedDescription = () => {
+    // If we have translations for the current language, use them
+    if (translatedContent && translatedContent[currentLanguage]?.description) {
+      return translatedContent[currentLanguage].description;
+    }
+
+    // No description or translation
+    return null;
+  };
+
   // Format the item name to be displayed (capitalize)
-  const formattedName = itemName
-    ? itemName
+  const formattedName = getTranslatedName()
+    ? getTranslatedName()
         .split(" ")
         .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
         .join(" ")
