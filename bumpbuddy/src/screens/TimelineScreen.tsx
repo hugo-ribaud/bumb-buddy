@@ -52,6 +52,18 @@ const TimelineScreen: React.FC<Props> = () => {
     }
   }, [dispatch, user?.dueDate]);
 
+  // Debug fetal size data
+  useEffect(() => {
+    if (fetalSizeData.length > 0) {
+      console.log(
+        "TimelineScreen: Fetal size data loaded:",
+        fetalSizeData.length,
+        "items"
+      );
+      console.log("Sample fetal size item:", fetalSizeData[0]);
+    }
+  }, [fetalSizeData]);
+
   // Handle cache clearing and data refresh
   const handleClearCache = async () => {
     try {

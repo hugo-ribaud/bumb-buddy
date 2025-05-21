@@ -328,26 +328,21 @@
   "preferences": {
     "title": "Preferences",
     "themeSettings": "Theme Settings",
+    "languageSettings": "Language Settings",
+    "language": "Language",
     "darkMode": "Dark Mode",
-    "themeSelection": "Theme Selection",
-    "selectTheme": "Select theme",
     "themes": {
       "light": "Light",
       "dark": "Dark",
       "system": "System Default"
     },
-    "languageSettings": "Language Settings",
-    "language": "Language",
-    "selectLanguage": "Select language",
-    "measurementSettings": "Measurement Settings",
+    "themeSelection": "Theme Selection",
+    "selectTheme": "Select a theme",
+    "syncNow": "Sync Preferences",
+    "syncing": "Syncing...",
     "units": "Units",
-    "selectUnits": "Select units",
-    "unitTypes": {
-      "metric": "Metric (kg, cm)",
-      "imperial": "Imperial (lb, in)"
-    },
-    "syncNow": "Sync Now",
-    "syncing": "Syncing..."
+    "unitSelection": "Measurement Units",
+    "measurementSettings": "Measurement Settings"
   },
   "network": {
     "online": "Online",
@@ -366,9 +361,15 @@
     "waitingToSync": "Waiting to sync"
   },
   "units": {
+    "metric": "Metric",
+    "imperial": "Imperial",
+    "mm": "mm",
+    "in": "in",
+    "g": "g",
+    "oz": "oz",
     "cm": "cm",
-    "inches": "in",
-    "grams": "g",
-    "oz": "oz"
+    "feet": "ft",
+    "kg": "kg",
+    "lb": "lb"
   }
 }

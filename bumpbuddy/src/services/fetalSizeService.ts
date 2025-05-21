@@ -5,6 +5,16 @@ import { FetalSizeComparison } from "../types/fetalSize";
 const CACHE_KEY = "fetal_size_data";
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 
+// Force clear cache on load during development
+(async () => {
+  try {
+    await AsyncStorage.removeItem(CACHE_KEY);
+    console.log("DEBUG: Fetal size cache cleared on load");
+  } catch (error) {
+    console.error("Error clearing cache:", error);
+  }
+})();
+
 export const fetalSizeService = {
   async getAll(): Promise<FetalSizeComparison[]> {
     // Check cache first
@@ -75,7 +85,10 @@ export const fetalSizeService = {
             (item: FetalSizeComparison) => item.week === week
           );
           if (weekData) {
-            console.log(`Found week ${week} data in cache:`, weekData);
+            console.log(
+              `Found week ${week} data in cache with name '${weekData.name}'`,
+              weekData
+            );
             return weekData;
           }
           console.log(`Week ${week} not found in cache`);
@@ -105,7 +118,10 @@ export const fetalSizeService = {
       }
 
       if (data) {
-        console.log(`Fetched data for week ${week}:`, data);
+        console.log(
+          `Fetched data for week ${week} from Supabase with name '${data.name}':`,
+          data
+        );
         return data as FetalSizeComparison;
       }
 

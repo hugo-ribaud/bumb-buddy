@@ -35,6 +35,16 @@ const HomeScreen = () => {
     }
   }, [dispatch, pregnancyWeek]);
 
+  // Debug fetal size data
+  useEffect(() => {
+    if (fetalSize) {
+      console.log("HomeScreen: Fetal size data loaded:", fetalSize);
+      console.log("HomeScreen: itemName =", fetalSize.name);
+    } else {
+      console.log("HomeScreen: No fetal size data available yet");
+    }
+  }, [fetalSize]);
+
   // Function to purge redux-persist store for debugging
   const handlePurgeStore = async () => {
     await persistor.purge();
@@ -157,7 +167,7 @@ const HomeScreen = () => {
                     itemName={fetalSize.name}
                     imageUrl={fetalSize.image_url}
                     sizeInMm={fetalSize.size_mm}
-                    sizeInInches={fetalSize.size_in}
+                    sizeInInches={fetalSize.size_inches}
                     weightInG={fetalSize.weight_g}
                     weightInOz={fetalSize.weight_oz}
                   />

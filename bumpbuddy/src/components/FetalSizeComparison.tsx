@@ -2,6 +2,7 @@ import { Image, View } from "react-native";
 
 import React from "react";
 import { useTranslation } from "react-i18next";
+import { usePreferences } from "../contexts/PreferencesContext";
 import { useTheme } from "../contexts/ThemeContext";
 import FontedText from "./FontedText";
 import ThemedView from "./ThemedView";
@@ -19,8 +20,8 @@ interface FetalSizeComparisonProps {
 
 const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   weekNumber,
-  itemName,
-  imageUrl,
+  itemName = "",
+  imageUrl = "",
   sizeInMm,
   sizeInInches,
   weightInG,
@@ -29,6 +30,20 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
 }) => {
   const { isDark } = useTheme();
   const { t } = useTranslation();
+  const { units } = usePreferences();
+
+  // Debug props
+  console.log(`FetalSizeComparison for week ${weekNumber}:`, {
+    itemName,
+    imageUrl,
+    sizeInMm,
+    sizeInInches,
+    weightInG,
+    weightInOz,
+    compact,
+  });
+
+  const isMetric = units === "metric";
 
   const getImageUrl = (url: string) => {
     // Handle missing URLs
@@ -82,18 +97,19 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
             <View className="mt-1">
               {(sizeInMm || sizeInInches) && (
                 <FontedText variant="caption" colorVariant="secondary">
-                  {t("fetalSize.sizeLabel")}: {sizeInMm ? `${sizeInMm} mm` : ""}
-                  {sizeInMm && sizeInInches ? " / " : ""}
-                  {sizeInInches ? `${sizeInInches} in` : ""}
+                  {t("fetalSize.sizeLabel")}:{" "}
+                  {isMetric && sizeInMm ? `${sizeInMm} mm` : ""}
+                  {isMetric && sizeInMm && sizeInInches ? " / " : ""}
+                  {!isMetric && sizeInInches ? `${sizeInInches} in` : ""}
                 </FontedText>
               )}
 
               {(weightInG || weightInOz) && (
                 <FontedText variant="caption" colorVariant="secondary">
                   {t("fetalSize.weightLabel")}:{" "}
-                  {weightInG ? `${weightInG} g` : ""}
-                  {weightInG && weightInOz ? " / " : ""}
-                  {weightInOz ? `${weightInOz} oz` : ""}
+                  {isMetric && weightInG ? `${weightInG} g` : ""}
+                  {isMetric && weightInG && weightInOz ? " / " : ""}
+                  {!isMetric && weightInOz ? `${weightInOz} oz` : ""}
                 </FontedText>
               )}
             </View>

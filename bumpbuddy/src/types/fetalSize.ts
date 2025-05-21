@@ -3,7 +3,7 @@ export interface FetalSizeComparison {
   week: number;
   name: string;
   size_mm?: number;
-  size_in?: number;
+  size_inches?: number;
   weight_g?: number;
   weight_oz?: number;
   description?: string;

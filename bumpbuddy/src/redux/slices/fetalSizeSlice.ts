@@ -20,14 +20,25 @@ const initialState: FetalSizeState = {
 export const fetchAllFetalSizes = createAsyncThunk(
   "fetalSize/fetchAll",
   async () => {
-    return await fetalSizeService.getAll();
+    const data = await fetalSizeService.getAll();
+    console.log(
+      "Redux: fetchAllFetalSizes received data:",
+      data.length,
+      "items"
+    );
+    if (data.length > 0) {
+      console.log("Redux: First item sample:", data[0]);
+    }
+    return data;
   }
 );
 
 export const fetchFetalSizeByWeek = createAsyncThunk(
   "fetalSize/fetchByWeek",
   async (week: number) => {
-    return await fetalSizeService.getByWeek(week);
+    const data = await fetalSizeService.getByWeek(week);
+    console.log(`Redux: fetchFetalSizeByWeek for week ${week} received:`, data);
+    return data;
   }
 );
 

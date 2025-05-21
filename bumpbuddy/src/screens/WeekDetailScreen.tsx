@@ -163,7 +163,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
                 itemName={fetalSize.name}
                 imageUrl={fetalSize.image_url}
                 sizeInMm={fetalSize.size_mm}
-                sizeInInches={fetalSize.size_in}
+                sizeInInches={fetalSize.size_inches}
                 weightInG={fetalSize.weight_g}
                 weightInOz={fetalSize.weight_oz}
               />

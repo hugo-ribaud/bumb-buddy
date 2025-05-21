@@ -391,26 +391,21 @@
   "preferences": {
     "title": "Préférences",
     "themeSettings": "Paramètres du thème",
+    "languageSettings": "Paramètres de langue",
+    "language": "Langue",
     "darkMode": "Mode sombre",
-    "themeSelection": "Sélection du thème",
-    "selectTheme": "Sélectionner le thème",
     "themes": {
       "light": "Clair",
       "dark": "Sombre",
-      "system": "Système par défaut"
+      "system": "Système"
     },
-    "languageSettings": "Paramètres de langue",
-    "language": "Langue",
-    "selectLanguage": "Sélectionner la langue",
-    "measurementSettings": "Paramètres de mesure",
+    "themeSelection": "Sélection du thème",
+    "selectTheme": "Sélectionner un thème",
+    "syncNow": "Synchroniser",
+    "syncing": "Synchronisation...",
     "units": "Unités",
-    "selectUnits": "Sélectionner les unités",
-    "unitTypes": {
-      "metric": "Métrique (kg, cm)",
-      "imperial": "Impérial (lb, in)"
-    },
-    "syncNow": "Synchroniser maintenant",
-    "syncing": "Synchronisation..."
+    "unitSelection": "Unités de mesure",
+    "measurementSettings": "Paramètres de mesure"
   },
   "network": {
     "online": "En ligne",
@@ -436,9 +431,15 @@
     "notAvailable": "Comparaison de taille non disponible"
   },
   "units": {
+    "metric": "Métrique",
+    "imperial": "Impérial",
+    "mm": "mm",
+    "in": "po",
+    "g": "g",
+    "oz": "oz",
     "cm": "cm",
-    "inches": "po",
-    "grams": "g",
-    "oz": "oz"
+    "feet": "pi",
+    "kg": "kg",
+    "lb": "lb"
   }
 }
