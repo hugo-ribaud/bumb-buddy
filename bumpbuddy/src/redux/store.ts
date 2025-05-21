@@ -48,7 +48,7 @@ const persistConfig = {
   key: "root",
   storage: AsyncStorage,
   // Don't persist auth state as it's managed by Supabase
-  blacklist: ["auth"], // Removed fetalSize from blacklist
+  blacklist: ["auth"],
   // Add state recovery options
   timeout: 10000, // 10 seconds
 };

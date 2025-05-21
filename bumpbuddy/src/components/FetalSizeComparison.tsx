@@ -61,7 +61,7 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
           <View
             className={`${
               compact ? "w-12 h-12" : "w-20 h-20"
-            } bg-gray-200 dark:bg-gray-700 rounded-lg overflow-hidden mr-3 items-center justify-center`}
+            } rounded-lg overflow-hidden mr-3 items-center justify-center`}
           >
             <Image
               source={{ uri: getImageUrl(imageUrl) }}
