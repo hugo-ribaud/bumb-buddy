@@ -5,12 +5,6 @@
       "id": "github_token",
       "description": "GitHub Personal Access Token",
       "password": true
-    },
-    {
-      "type": "promptString",
-      "id": "supabase_token",
-      "description": "Supabase Access Token",
-      "password": true
     }
   ],
   "mcpServers": {
