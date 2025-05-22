@@ -5,6 +5,12 @@
       "id": "github_token",
       "description": "GitHub Personal Access Token",
       "password": true
+    },
+    {
+      "type": "promptString",
+      "id": "supabase_token",
+      "description": "Supabase Access Token",
+      "password": true
     }
   ],
   "mcpServers": {
@@ -14,7 +20,7 @@
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--access-token",
-        "sbp_1e8be0808d7533220e955934338bbf27681ebbb0"
+        "${inputs:supabase_token}"
       ]
     },
     "github": {
@@ -28,7 +34,7 @@
         "ghcr.io/github/github-mcp-server"
       ],
       "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "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"
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${inputs:github_token}"
       }
     }
   }
