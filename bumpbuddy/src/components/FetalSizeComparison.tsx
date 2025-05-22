@@ -96,19 +96,19 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
           {!compact && (
             <View className="mt-1">
               {(sizeInCm || sizeInInches) && (
-                <FontedText variant="caption" colorVariant="secondary">
+                <FontedText variant="caption" colorVariant="primary">
                   {t("fetalSize.sizeLabel")}:{" "}
                   {isMetric && sizeInCm ? `${sizeInCm} cm` : ""}
-                  {isMetric && sizeInCm && sizeInInches ? " / " : ""}
+                  {isMetric && sizeInCm && sizeInInches ? "" : ""}
                   {!isMetric && sizeInInches ? `${sizeInInches} in` : ""}
                 </FontedText>
               )}
 
               {(weightInG || weightInOz) && (
-                <FontedText variant="caption" colorVariant="secondary">
+                <FontedText variant="caption" colorVariant="primary">
                   {t("fetalSize.weightLabel")}:{" "}
                   {isMetric && weightInG ? `${weightInG} g` : ""}
-                  {isMetric && weightInG && weightInOz ? " / " : ""}
+                  {isMetric && weightInG && weightInOz ? " " : ""}
                   {!isMetric && weightInOz ? `${weightInOz} oz` : ""}
                 </FontedText>
               )}
