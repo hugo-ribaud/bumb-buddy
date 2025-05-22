@@ -51,4 +51,4 @@ coverage/
 
 # Logs
 logs
-*.log 
+*.log cursor-with-github.sh
