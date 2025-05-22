@@ -8,11 +8,9 @@
     }
   ],
   "mcpServers": {
-    "supabase": {
-      "command": "cmd",
+    "supabase-bumpbuddy": {
+      "command": "npx",
       "args": [
-        "/c",
-        "npx",
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--access-token",
