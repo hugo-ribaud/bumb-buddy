@@ -151,7 +151,12 @@
     "description": "Descripción",
     "all": "Todos",
     "safe": "Seguro",
-    "caution": "Precaución"
+    "caution": "Precaución",
+    "filterAll": "Todos los Alimentos",
+    "filterSafe": "Alimentos Seguros",
+    "filterCaution": "Alimentos de Precaución",
+    "filterAvoid": "Alimentos a Evitar",
+    "noResults": "No se encontraron alimentos que coincidan con tus criterios de búsqueda"
   },
   "health": {
     "title": "Seguimiento de Salud",
@@ -165,8 +170,8 @@
     "startCounting": "Empezar a Contar",
     "endSession": "Finalizar Sesión",
     "severityLabel": "Gravedad (1-5)",
+    "notes": "Notas",
     "notesLabel": "Notas",
-    "notesPlaceholder": "Añade cualquier nota aquí...",
     "removeSymptom": "Eliminar Síntoma",
     "confirmRemoveSymptom": "¿Estás segura de que quieres eliminar este síntoma?",
     "endKickSession": "Finalizar Sesión de Conteo de Patadas",

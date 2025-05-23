@@ -151,7 +151,12 @@
     "description": "Description",
     "all": "All",
     "safe": "Safe",
-    "caution": "Caution"
+    "caution": "Caution",
+    "filterAll": "All Foods",
+    "filterSafe": "Safe Foods",
+    "filterCaution": "Caution Foods",
+    "filterAvoid": "Foods to Avoid",
+    "noResults": "No foods found matching your search criteria"
   },
   "fetalSize": {
     "title": "Baby Size Comparison",
@@ -178,6 +183,7 @@
     "startCounting": "Start Counting",
     "endSession": "End Session",
     "severityLabel": "Severity (1-5)",
+    "notes": "Notes",
     "notesLabel": "Notes",
     "notesPlaceholder": "Add any notes here...",
     "removeSymptom": "Remove Symptom",

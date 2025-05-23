@@ -151,7 +151,12 @@
     "description": "Description",
     "all": "Tous",
     "safe": "Sûr",
-    "caution": "Précaution"
+    "caution": "Précaution",
+    "filterAll": "Tous les Aliments",
+    "filterSafe": "Aliments Sûrs",
+    "filterCaution": "Aliments de Précaution",
+    "filterAvoid": "Aliments à Éviter",
+    "noResults": "Aucun aliment trouvé correspondant à vos critères de recherche"
   },
   "health": {
     "title": "Suivi de Santé",
@@ -165,6 +170,7 @@
     "startCounting": "Commencer à Compter",
     "endSession": "Terminer la Session",
     "severityLabel": "Intensité (1-5)",
+    "notes": "Notes",
     "notesLabel": "Notes",
     "notesPlaceholder": "Ajoutez des notes ici...",
     "removeSymptom": "Supprimer le Symptôme",
