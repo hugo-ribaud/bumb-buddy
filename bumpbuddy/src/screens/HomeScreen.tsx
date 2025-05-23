@@ -9,11 +9,13 @@ import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemeToggle from "../components/ThemeToggle";
 import ThemedView from "../components/ThemedView";
+import { useLanguage } from "../contexts/LanguageContext";
 import { fetchFetalSizeByWeek } from "../redux/slices/fetalSizeSlice";
 import { AppDispatch } from "../redux/store";
 
 const HomeScreen = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useSelector((state: RootState) => state.auth);
   const preferences = useSelector((state: RootState) => state.preferences);
@@ -28,12 +30,12 @@ const HomeScreen = () => {
   const userName =
     user?.name || user?.email?.split("@")[0] || t("common.labels.mom");
 
-  // Fetch fetal size data on component mount
+  // Fetch fetal size data on component mount and when language changes
   useEffect(() => {
     if (pregnancyWeek) {
-      dispatch(fetchFetalSizeByWeek(pregnancyWeek));
+      dispatch(fetchFetalSizeByWeek({ week: pregnancyWeek, language }));
     }
-  }, [dispatch, pregnancyWeek]);
+  }, [dispatch, pregnancyWeek, language]);
 
   // Debug fetal size data
   useEffect(() => {

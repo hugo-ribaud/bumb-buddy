@@ -21,6 +21,7 @@ import FetalSizeComparison from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
+import { useLanguage } from "../contexts/LanguageContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { fetchAllFetalSizes } from "../redux/slices/fetalSizeSlice";
 import timelineService from "../services/timelineService";
@@ -29,6 +30,7 @@ type Props = {};
 
 const TimelineScreen: React.FC<Props> = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState<1 | 2 | 3>(1);
@@ -43,14 +45,14 @@ const TimelineScreen: React.FC<Props> = () => {
   );
   const { user } = useSelector((state: RootState) => state.auth);
 
-  // Fetch weeks data on component mount
+  // Fetch weeks data on component mount and when language changes
   useEffect(() => {
-    dispatch(fetchAllWeeks());
-    dispatch(fetchAllFetalSizes());
+    dispatch(fetchAllWeeks(language));
+    dispatch(fetchAllFetalSizes(language));
     if (user?.dueDate) {
-      dispatch(fetchCurrentWeekData(user.dueDate));
+      dispatch(fetchCurrentWeekData({ dueDate: user.dueDate, language }));
     }
-  }, [dispatch, user?.dueDate]);
+  }, [dispatch, user?.dueDate, language]);
 
   // Debug fetal size data
   useEffect(() => {
@@ -70,9 +72,11 @@ const TimelineScreen: React.FC<Props> = () => {
       setRefreshing(true);
       await timelineService.clearCache();
       // Refresh data after clearing cache
-      await dispatch(fetchAllWeeks()).unwrap();
+      await dispatch(fetchAllWeeks(language)).unwrap();
       if (user?.dueDate) {
-        await dispatch(fetchCurrentWeekData(user.dueDate)).unwrap();
+        await dispatch(
+          fetchCurrentWeekData({ dueDate: user.dueDate, language })
+        ).unwrap();
       }
       Alert.alert("Success", "Timeline data refreshed successfully");
     } catch (error) {

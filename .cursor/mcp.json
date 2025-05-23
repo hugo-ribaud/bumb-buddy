@@ -14,7 +14,7 @@
         "-y",
         "@supabase/mcp-server-supabase@latest",
         "--access-token",
-        "${inputs:supabase_token}"
+        "sbp_1e8be0808d7533220e955934338bbf27681ebbb0"
       ]
     },
     "github": {

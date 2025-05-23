@@ -36,13 +36,13 @@ declare module "food-types" {
   }
 
   export interface FoodService {
-    getCategories(): Promise<FoodCategory[]>;
-    getAllFoods(): Promise<Food[]>;
-    getFoodsByCategory(categoryId: string): Promise<Food[]>;
-    searchFoods(query: string): Promise<Food[]>;
-    getFoodsBySafety(safety: SafetyRating): Promise<Food[]>;
-    getFoodsWithCategory(): Promise<FoodWithCategory[]>;
-    filterFoods(filter: FoodFilter): Promise<Food[]>;
+    getCategories(language?: string): Promise<FoodCategory[]>;
+    getAllFoods(language?: string): Promise<Food[]>;
+    getFoodsByCategory(categoryId: string, language?: string): Promise<Food[]>;
+    searchFoods(query: string, language?: string): Promise<Food[]>;
+    getFoodsBySafety(safety: SafetyRating, language?: string): Promise<Food[]>;
+    getFoodsWithCategory(language?: string): Promise<FoodWithCategory[]>;
+    filterFoods(filter: FoodFilter, language?: string): Promise<Food[]>;
     subscribeToFoods(callback: (payload: any) => void): any;
     unsubscribe(subscription: any): void;
   }

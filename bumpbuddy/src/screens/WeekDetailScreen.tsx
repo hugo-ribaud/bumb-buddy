@@ -15,6 +15,7 @@ import FetalSizeComparison from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
+import { useLanguage } from "../contexts/LanguageContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { fetchFetalSizeByWeek } from "../redux/slices/fetalSizeSlice";
 import { fetchWeekData } from "../redux/slices/timelineSlice";
@@ -23,6 +24,7 @@ type Props = {};
 
 const WeekDetailScreen: React.FC<Props> = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const { isDark } = useTheme();
@@ -34,13 +36,13 @@ const WeekDetailScreen: React.FC<Props> = () => {
     (state: RootState) => state.fetalSize.currentComparison
   );
 
-  // Fetch week data on component mount
+  // Fetch week data on component mount and when language changes
   useEffect(() => {
     if (selectedWeek) {
-      dispatch(fetchWeekData(selectedWeek));
-      dispatch(fetchFetalSizeByWeek(selectedWeek));
+      dispatch(fetchWeekData({ weekNumber: selectedWeek, language }));
+      dispatch(fetchFetalSizeByWeek({ week: selectedWeek, language }));
     }
-  }, [dispatch, selectedWeek]);
+  }, [dispatch, selectedWeek, language]);
 
   // Determine the trimester
   const getTrimester = () => {

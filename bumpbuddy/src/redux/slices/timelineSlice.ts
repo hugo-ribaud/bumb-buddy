@@ -25,9 +25,9 @@ const initialState: TimelineState = {
 // Async thunks
 export const fetchAllWeeks = createAsyncThunk(
   "timeline/fetchAllWeeks",
-  async (_, { rejectWithValue }) => {
+  async (language: string = "en", { rejectWithValue }) => {
     try {
-      const data = await timelineService.getAllWeeks();
+      const data = await timelineService.getAllWeeks(language);
       return data;
     } catch (error) {
       return rejectWithValue("Failed to fetch pregnancy weeks data");
@@ -37,9 +37,12 @@ export const fetchAllWeeks = createAsyncThunk(
 
 export const fetchWeekData = createAsyncThunk(
   "timeline/fetchWeekData",
-  async (weekNumber: number, { rejectWithValue }) => {
+  async (
+    { weekNumber, language = "en" }: { weekNumber: number; language?: string },
+    { rejectWithValue }
+  ) => {
     try {
-      const data = await timelineService.getWeekInfo(weekNumber);
+      const data = await timelineService.getWeekInfo(weekNumber, language);
       if (!data) {
         return rejectWithValue(`Week ${weekNumber} data not found`);
       }
@@ -52,7 +55,10 @@ export const fetchWeekData = createAsyncThunk(
 
 export const fetchCurrentWeekData = createAsyncThunk(
   "timeline/fetchCurrentWeekData",
-  async (dueDate: string | null, { dispatch, rejectWithValue }) => {
+  async (
+    { dueDate, language = "en" }: { dueDate: string | null; language?: string },
+    { dispatch, rejectWithValue }
+  ) => {
     try {
       if (!dueDate) {
         return rejectWithValue("Due date not set");
@@ -62,7 +68,7 @@ export const fetchCurrentWeekData = createAsyncThunk(
       dispatch(setCurrentWeek(currentWeek));
 
       if (currentWeek > 0) {
-        const data = await timelineService.getWeekInfo(currentWeek);
+        const data = await timelineService.getWeekInfo(currentWeek, language);
         if (!data) {
           return rejectWithValue(`Week ${currentWeek} data not found`);
         }

@@ -13,6 +13,7 @@ import { useTranslation } from "react-i18next";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
+import { useLanguage } from "../contexts/LanguageContext";
 import { useTheme } from "../contexts/ThemeContext";
 import foodService from "../services/foodService";
 
@@ -207,6 +208,7 @@ const SafetyFilterButton = ({
 
 const FoodGuideScreen = () => {
   const { t } = useTranslation();
+  const { language } = useLanguage();
   const { isDark } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
@@ -223,7 +225,7 @@ const FoodGuideScreen = () => {
   useEffect(() => {
     const loadCategories = async () => {
       try {
-        const data = await foodService.getCategories();
+        const data = await foodService.getCategories(language);
         setCategories(data);
       } catch (err) {
         console.error("Error loading categories:", err);
@@ -231,7 +233,7 @@ const FoodGuideScreen = () => {
     };
 
     loadCategories();
-  }, []);
+  }, [language]);
 
   // Load foods with filtering
   useEffect(() => {
@@ -245,7 +247,7 @@ const FoodGuideScreen = () => {
           safety_rating: safetyFilter !== "all" ? safetyFilter : undefined,
         };
 
-        const data = await foodService.filterFoods(filter);
+        const data = await foodService.filterFoods(filter, language);
         setFoods(data);
       } catch (err) {
         console.error("Error loading foods:", err);
@@ -256,7 +258,7 @@ const FoodGuideScreen = () => {
     };
 
     loadFoods();
-  }, [searchQuery, safetyFilter, selectedCategoryId, t]);
+  }, [searchQuery, safetyFilter, selectedCategoryId, language, t]);
 
   // Set up realtime subscription
   useEffect(() => {
