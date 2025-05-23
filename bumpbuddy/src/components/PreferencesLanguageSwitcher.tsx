@@ -41,7 +41,12 @@ const PreferencesLanguageSwitcher: React.FC = () => {
 
   // Custom rendering of dropdown items
   const renderItem = (item: LanguageOption) => {
-    const isSelected = item.value === language;
+    // Ensure we have a valid language value for comparison
+    const currentLanguage =
+      language && Object.keys(supportedLanguages).includes(language)
+        ? language
+        : "en";
+    const isSelected = item.value === currentLanguage;
 
     return (
       <View
@@ -82,20 +87,26 @@ const PreferencesLanguageSwitcher: React.FC = () => {
   };
 
   // Render the flag icon on the left side of the dropdown
-  const renderLeftIcon = () => {
+  const renderLeftIcon = (languageCode: string) => {
     return (
       <View
         className={`mr-2.5 p-px rounded-full ${
           isDark ? "bg-[#333]" : "bg-transparent"
         }`}
       >
-        <LanguageFlag languageCode={language} size="small" />
+        <LanguageFlag languageCode={languageCode} size="small" />
       </View>
     );
   };
 
   const selectedLang = languageOptions.find((item) => item.value === language);
-  const selectedLabel = selectedLang ? selectedLang.nativeLabel : "";
+  const selectedLabel = selectedLang ? selectedLang.nativeLabel : "English";
+
+  // Ensure we have a valid language value, fallback to 'en' if needed
+  const safeLanguage =
+    language && Object.keys(supportedLanguages).includes(language)
+      ? language
+      : "en";
 
   return (
     <Dropdown
@@ -125,11 +136,11 @@ const PreferencesLanguageSwitcher: React.FC = () => {
       maxHeight={300}
       labelField="nativeLabel"
       valueField="value"
-      value={language}
+      value={safeLanguage}
       onChange={handleLanguageSelect}
       renderItem={renderItem}
-      renderLeftIcon={renderLeftIcon}
-      placeholder={selectedLabel}
+      renderLeftIcon={() => renderLeftIcon(safeLanguage)}
+      placeholder={selectedLabel || "Select Language"}
       search={false}
     />
   );

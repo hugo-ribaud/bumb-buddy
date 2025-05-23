@@ -2,7 +2,7 @@
 
 _Version: 1.6_
 _Created: 2025-05-06_
-_Last Updated: 2025-01-27_
+_Last Updated: 2025-05-23_
 
 ## Project Status: DEVELOPMENT
 
@@ -157,6 +157,11 @@ _Last Updated: 2025-01-27_
 - **All foods now have complete name, description, and alternatives in all three languages (EN, ES, FR)**
 - **Food translation database is now 100% complete with professional-quality translations**
 - **Verified translation consistency and accuracy across all food safety categories**
+- **Language Context Initialization Bug Fix**
+- **Fixed "Text strings must be rendered within a <Text> component" error in TimelineScreen**
+- **Updated PreferencesLanguageSwitcher and LanguageSwitcher components to handle undefined language values**
+- **Improved LanguageContext initialization to ensure valid language value from start**
+- **Added proper fallback mechanisms for language selection components**
 
 ## In Progress
 
@@ -258,6 +263,7 @@ _Last Updated: 2025-01-27_
 - Implement post natal follow up (follow the baby develompent - height, weight, head tour size etc ...)
 - Implement a way to connect future moms between each other (with the approximative same due date.)
 - Support for multiple pregnancies tracking in the same account
+- Make a "Future daddy" version to help the becoming father to support and accompany their partner during the pregnancy
 
 ## Milestones
 

@@ -48,7 +48,15 @@ interface LanguageProviderProps {
 export const LanguageProvider: React.FC<LanguageProviderProps> = ({
   children,
 }) => {
-  const [language, setLanguageState] = useState(i18next.language || "en");
+  // Ensure we always start with a valid language
+  const getInitialLanguage = () => {
+    const currentLang = i18next.language || "en";
+    return Object.keys(supportedLanguages).includes(currentLang)
+      ? currentLang
+      : "en";
+  };
+
+  const [language, setLanguageState] = useState(getInitialLanguage());
   const [rtl, setRTL] = useState(isRTL(language));
   const { user } = useSelector((state: RootState) => state.auth);
 
