@@ -13,6 +13,7 @@ interface FontedTextProps extends Omit<ThemedTextProps, "variant"> {
     | "body-small"
     | "caption";
   colorVariant?: "primary" | "secondary" | "accent";
+  textType?: "primary" | "secondary" | "muted";
 }
 
 // Component that renders text with theme colors and typography
@@ -20,6 +21,7 @@ const FontedText: React.FC<FontedTextProps> = ({
   fontFamily = "poppins",
   variant,
   colorVariant,
+  textType,
   className = "",
   children,
   ...rest
@@ -40,6 +42,7 @@ const FontedText: React.FC<FontedTextProps> = ({
   return (
     <ThemedText
       variant={colorVariant}
+      textType={textType}
       className={`${getFontFamilyClass()} ${getTypographyClass()} ${className}`}
       {...rest}
     >

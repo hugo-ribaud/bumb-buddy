@@ -128,27 +128,24 @@ const TimelineScreen: React.FC<Props> = () => {
               : "#2563eb"
             : isDark
             ? "#374151"
-            : "#e5e7eb",
+            : "#E5E7EB",
         }}
         onPress={() => handleWeekSelect(item.week)}
       >
         {/* Current week indicator */}
         {isCurrentWeek && (
-          <View
-            className="px-4 py-2"
-            style={{
-              backgroundColor: isDark ? "#1e3a8a" : "#dbeafe",
-            }}
-          >
+          <ThemedView backgroundColor="surface-subtle" className="px-4 py-2">
             <FontedText
               variant="body-small"
-              className={`text-center font-semibold ${
-                isDark ? "text-blue-200" : "text-blue-800"
-              }`}
+              textType="primary"
+              className="text-center font-semibold"
+              style={{
+                color: isDark ? "#60a5fa" : "#1d4ed8",
+              }}
             >
               {t("timeline.currentWeek")}
             </FontedText>
-          </View>
+          </ThemedView>
         )}
 
         <View className="p-5">
@@ -185,7 +182,7 @@ const TimelineScreen: React.FC<Props> = () => {
                 </FontedText>
               </View>
               <View>
-                <FontedText variant="heading-4" colorVariant="primary">
+                <FontedText variant="heading-4" textType="primary">
                   {t("timeline.weekLabel", { week: item.week })}
                 </FontedText>
                 {isPastWeek && (
@@ -201,13 +198,13 @@ const TimelineScreen: React.FC<Props> = () => {
 
             {/* Progress indicator */}
             <View className="items-end">
-              <FontedText variant="caption" colorVariant="secondary">
+              <FontedText variant="caption" textType="muted">
                 {item.week}/40
               </FontedText>
               <View
                 className="w-16 h-1 rounded-full mt-1"
                 style={{
-                  backgroundColor: isDark ? "#374151" : "#e5e7eb",
+                  backgroundColor: isDark ? "#374151" : "#f3f4f6",
                 }}
               >
                 <View
@@ -244,28 +241,26 @@ const TimelineScreen: React.FC<Props> = () => {
           ) : null}
 
           {/* Development preview */}
-          <View
+          <ThemedView
+            backgroundColor="surface-subtle"
             className="p-3 rounded-xl"
-            style={{
-              backgroundColor: isDark ? "#111827" : "#f8fafc",
-            }}
           >
             <FontedText
               variant="body-small"
-              colorVariant="secondary"
+              textType="secondary"
               numberOfLines={3}
               className="leading-5"
             >
               {item.fetal_development}
             </FontedText>
-          </View>
+          </ThemedView>
 
           {/* View details button */}
           <View
             className="mt-4 pt-4"
             style={{
               borderTopWidth: 1,
-              borderTopColor: isDark ? "#374151" : "#e5e7eb",
+              borderTopColor: isDark ? "#374151" : "#E5E7EB",
             }}
           >
             <FontedText
@@ -293,7 +288,9 @@ const TimelineScreen: React.FC<Props> = () => {
         {/* Header */}
         <View className="px-6 pt-4 pb-6">
           <View className="flex-row items-center justify-between mb-2">
-            <FontedText variant="heading-1">{t("timeline.title")}</FontedText>
+            <FontedText variant="heading-1" textType="primary">
+              {t("timeline.title")}
+            </FontedText>
             <TouchableOpacity
               className="px-4 py-2 rounded-xl"
               style={{
@@ -304,9 +301,8 @@ const TimelineScreen: React.FC<Props> = () => {
             >
               <FontedText
                 variant="body-small"
-                className={`font-medium ${
-                  isDark ? "text-gray-200" : "text-gray-700"
-                }`}
+                textType="primary"
+                className="font-medium"
               >
                 {refreshing ? t("timeline.refreshing") : t("timeline.refresh")}
               </FontedText>
@@ -315,7 +311,7 @@ const TimelineScreen: React.FC<Props> = () => {
 
           {/* Statistics */}
           <View className="flex-row items-center space-x-2">
-            <FontedText variant="body-small" colorVariant="secondary">
+            <FontedText variant="body-small" textType="muted">
               {t("timeline.weeksLoaded", {
                 total: allWeeks.length,
                 filtered: filteredWeeks.length,
@@ -323,10 +319,10 @@ const TimelineScreen: React.FC<Props> = () => {
             </FontedText>
             {currentWeek && (
               <>
-                <FontedText variant="body-small" colorVariant="secondary">
+                <FontedText variant="body-small" textType="muted">
                   •
                 </FontedText>
-                <FontedText variant="body-small" colorVariant="secondary">
+                <FontedText variant="body-small" textType="muted">
                   {t("timeline.currentWeekStatus", { week: currentWeek })}
                 </FontedText>
               </>

@@ -5,7 +5,7 @@ import { useTheme } from "../contexts/ThemeContext";
 
 export interface ThemedTextProps extends TextProps {
   variant?: "primary" | "secondary" | "accent";
-  textType?: "primary" | "secondary";
+  textType?: "primary" | "secondary" | "muted";
   className?: string;
 }
 
@@ -25,22 +25,27 @@ const ThemedText: React.FC<ThemedTextProps> = ({
     if (variant) {
       switch (variant) {
         case "primary":
-          return isDark ? "text-primary-dark" : "text-primary";
+          return isDark ? "text-primary-dark" : "text-primary-readable";
         case "secondary":
-          return isDark ? "text-secondary-dark" : "text-secondary";
+          return isDark ? "text-secondary-dark" : "text-secondary-readable";
         case "accent":
-          return isDark ? "text-accent-dark" : "text-accent";
+          return isDark ? "text-accent-dark" : "text-accent-readable";
       }
     }
 
-    // Regular text color (dark on light theme, light on dark theme)
-    return textType === "primary"
-      ? isDark
-        ? "text-gray-50"
-        : "text-gray-800"
-      : isDark
-      ? "text-gray-300"
-      : "text-gray-600";
+    // Regular text color with improved contrast
+    switch (textType) {
+      case "primary":
+        return isDark ? "text-text-primary-dark" : "text-text-primary-light";
+      case "secondary":
+        return isDark
+          ? "text-text-secondary-dark"
+          : "text-text-secondary-light";
+      case "muted":
+        return isDark ? "text-text-muted-dark" : "text-text-muted-light";
+      default:
+        return isDark ? "text-text-primary-dark" : "text-text-primary-light";
+    }
   };
 
   return (

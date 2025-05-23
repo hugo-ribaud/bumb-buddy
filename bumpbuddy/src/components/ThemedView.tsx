@@ -9,7 +9,9 @@ interface ThemedViewProps extends ViewProps {
     | "secondary"
     | "accent"
     | "background"
-    | "surface";
+    | "surface"
+    | "surface-elevated"
+    | "surface-subtle";
   className?: string;
   pressable?: boolean;
   onPress?: () => void;
@@ -37,6 +39,10 @@ const ThemedView: React.FC<ThemedViewProps> = ({
         return isDark ? "bg-accent-dark" : "bg-accent";
       case "surface":
         return isDark ? "bg-surface-dark" : "bg-surface-light";
+      case "surface-elevated":
+        return isDark ? "bg-surface-dark" : "bg-surface-elevated";
+      case "surface-subtle":
+        return isDark ? "bg-surface-dark" : "bg-surface-subtle";
       case "background":
       default:
         return isDark ? "bg-background-dark" : "bg-background-light";

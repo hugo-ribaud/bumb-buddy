@@ -136,6 +136,17 @@ _Last Updated: 2025-01-27_
 - **Improved loading and error states with better user feedback**
 - **Added missing translation keys for UI improvements in all languages**
 - **Fixed translation references to use correct keys (common.buttons.back)**
+- **Light Mode Readability and Accessibility Improvements completed**
+- **Enhanced color palette with improved contrast ratios for better readability**
+- **Added readable variants of brand colors for text usage (4.5:1+ contrast ratio)**
+- **Improved surface color hierarchy with elevated and subtle variants**
+- **Enhanced text color system with primary, secondary, and muted options**
+- **Updated border colors for better visual definition and separation**
+- **Modified ThemedText and FontedText components to support new text hierarchy**
+- **Updated TimelineScreen and WeekDetailScreen to use improved color system**
+- **Enhanced design system documentation with accessibility guidelines**
+- **All text combinations now meet or exceed WCAG AA standards (4.5:1 minimum contrast)**
+- **Improved visual hierarchy with better distinction between content types**
 
 ## In Progress
 

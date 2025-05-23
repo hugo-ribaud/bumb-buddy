@@ -8,22 +8,49 @@ module.exports = {
         primary: {
           DEFAULT: "#87D9C4",
           dark: "#5DBDA8",
+          light: "#B8E6D8",
+          readable: "#2D8A6E",
         },
         secondary: {
           DEFAULT: "#C2AADF",
           dark: "#9B85C4",
+          light: "#E0D1F0",
+          readable: "#7B5BA8",
         },
         accent: {
           DEFAULT: "#FF8FAB",
           dark: "#FF7093",
+          light: "#FFB8CB",
+          readable: "#E6457A",
         },
         background: {
           light: "#FFFFFF",
           dark: "#121212",
         },
         surface: {
-          light: "#F5F8FA",
+          light: "#F8FAFC",
           dark: "#222222",
+          elevated: "#FFFFFF",
+          subtle: "#F1F5F9",
+        },
+        text: {
+          primary: {
+            light: "#1F2937",
+            dark: "#F9FAFB",
+          },
+          secondary: {
+            light: "#374151",
+            dark: "#D1D5DB",
+          },
+          muted: {
+            light: "#6B7280",
+            dark: "#9CA3AF",
+          },
+        },
+        border: {
+          light: "#E5E7EB",
+          dark: "#374151",
+          subtle: "#F3F4F6",
         },
       },
       fontFamily: {
