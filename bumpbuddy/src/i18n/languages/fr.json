@@ -147,7 +147,7 @@
     "cautionNeeded": "Consommer avec précaution",
     "avoid": "Éviter pendant la grossesse",
     "alternativesLabel": "Alternatives",
-    "nutritionalInfoLabel": "Information Nutritionnelle",
+    "nutritionalInfoLabel": "Informations Nutritionnelles",
     "description": "Description",
     "all": "Tous",
     "safe": "Sûr",
@@ -156,7 +156,13 @@
     "filterSafe": "Aliments Sûrs",
     "filterCaution": "Aliments de Précaution",
     "filterAvoid": "Aliments à Éviter",
-    "noResults": "Aucun aliment trouvé correspondant à vos critères de recherche"
+    "noResults": "Aucun aliment trouvé",
+    "noResultsDescription": "Essayez d'ajuster votre recherche ou vos filtres pour trouver plus d'aliments",
+    "viewDetails": "Voir les Détails",
+    "loading": "Chargement des aliments...",
+    "errorLoading": "Erreur lors du chargement des données alimentaires",
+    "tryAgain": "Réessayer",
+    "totalFoods": "{{count}} aliments"
   },
   "health": {
     "title": "Suivi de Santé",

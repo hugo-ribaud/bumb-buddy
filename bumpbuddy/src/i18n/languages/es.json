@@ -156,7 +156,13 @@
     "filterSafe": "Alimentos Seguros",
     "filterCaution": "Alimentos de Precaución",
     "filterAvoid": "Alimentos a Evitar",
-    "noResults": "No se encontraron alimentos que coincidan con tus criterios de búsqueda"
+    "noResults": "No se encontraron alimentos",
+    "noResultsDescription": "Intenta ajustar tu búsqueda o filtros para encontrar más alimentos",
+    "viewDetails": "Ver Detalles",
+    "loading": "Cargando alimentos...",
+    "errorLoading": "Error al cargar datos de alimentos",
+    "tryAgain": "Intentar de Nuevo",
+    "totalFoods": "{{count}} alimentos"
   },
   "health": {
     "title": "Seguimiento de Salud",

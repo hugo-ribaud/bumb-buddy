@@ -3,6 +3,8 @@ import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,
   FlatList,
+  Modal,
+  Pressable,
   ScrollView,
   TextInput,
   TouchableOpacity,
@@ -17,7 +19,7 @@ import { useLanguage } from "../contexts/LanguageContext";
 import { useTheme } from "../contexts/ThemeContext";
 import foodService from "../services/foodService";
 
-// Component to render each food item
+// Enhanced Food Item Component with modern card design
 const FoodItem = ({
   item,
   onPress,
@@ -28,110 +30,275 @@ const FoodItem = ({
   const { t } = useTranslation();
   const { isDark } = useTheme();
 
-  // Determine color based on safety rating
-  const safetyColor =
-    item.safety_rating === "safe"
-      ? "#28a745"
-      : item.safety_rating === "caution"
-      ? "#ffc107"
-      : "#dc3545";
+  // Enhanced safety colors with better contrast
+  const getSafetyConfig = () => {
+    switch (item.safety_rating) {
+      case "safe":
+        return {
+          color: isDark ? "#10b981" : "#059669",
+          bgColor: isDark ? "#064e3b" : "#d1fae5",
+          iconColor: isDark ? "#34d399" : "#10b981",
+          text: t("foodGuide.safeToEat"),
+        };
+      case "caution":
+        return {
+          color: isDark ? "#f59e0b" : "#d97706",
+          bgColor: isDark ? "#451a03" : "#fef3c7",
+          iconColor: isDark ? "#fbbf24" : "#f59e0b",
+          text: t("foodGuide.cautionNeeded"),
+        };
+      case "avoid":
+        return {
+          color: isDark ? "#ef4444" : "#dc2626",
+          bgColor: isDark ? "#450a0a" : "#fee2e2",
+          iconColor: isDark ? "#f87171" : "#ef4444",
+          text: t("foodGuide.avoid"),
+        };
+      default:
+        return {
+          color: isDark ? "#6b7280" : "#4b5563",
+          bgColor: isDark ? "#374151" : "#f3f4f6",
+          iconColor: isDark ? "#9ca3af" : "#6b7280",
+          text: "",
+        };
+    }
+  };
+
+  const safetyConfig = getSafetyConfig();
 
   return (
-    <TouchableOpacity
-      className="flex-row p-3 mb-2 rounded-xl"
+    <Pressable
+      className="mx-4 mb-4 rounded-2xl shadow-sm overflow-hidden"
       style={{
-        backgroundColor: isDark ? "#171717" : "#FFFFFF",
-        elevation: 1,
+        backgroundColor: isDark ? "#1f2937" : "#FFFFFF",
+        elevation: 2,
+        borderWidth: 1,
+        borderColor: isDark ? "#374151" : "#E5E7EB",
       }}
       onPress={() => onPress(item)}
     >
-      <View
-        className="w-3 h-full mr-3 rounded-full"
-        style={{ backgroundColor: safetyColor }}
-      />
-      <View className="flex-1">
-        <FontedText variant="body" className="font-medium">
-          {item.name}
-        </FontedText>
-        <FontedText variant="caption" style={{ color: safetyColor }}>
-          {item.safety_rating === "safe"
-            ? t("foodGuide.safeToEat")
-            : item.safety_rating === "caution"
-            ? t("foodGuide.cautionNeeded")
-            : t("foodGuide.avoid")}
-        </FontedText>
+      <View className="p-5">
+        {/* Food name and safety indicator */}
+        <View className="flex-row items-center justify-between mb-3">
+          <View className="flex-1 mr-3">
+            <FontedText variant="heading-4" textType="primary" className="mb-1">
+              {item.name}
+            </FontedText>
+            <FontedText
+              variant="body-small"
+              style={{ color: safetyConfig.color }}
+            >
+              {safetyConfig.text}
+            </FontedText>
+          </View>
+
+          {/* Safety indicator circle */}
+          <View
+            className="w-12 h-12 rounded-full items-center justify-center"
+            style={{ backgroundColor: safetyConfig.bgColor }}
+          >
+            <View
+              className="w-6 h-6 rounded-full"
+              style={{ backgroundColor: safetyConfig.iconColor }}
+            />
+          </View>
+        </View>
+
+        {/* Description preview */}
+        {item.description && (
+          <ThemedView
+            backgroundColor="surface-subtle"
+            className="p-3 rounded-xl"
+          >
+            <FontedText
+              variant="body-small"
+              textType="secondary"
+              numberOfLines={2}
+              className="leading-5"
+            >
+              {item.description}
+            </FontedText>
+          </ThemedView>
+        )}
+
+        {/* View details indicator */}
+        <View
+          className="mt-4 pt-3"
+          style={{
+            borderTopWidth: 1,
+            borderTopColor: isDark ? "#374151" : "#E5E7EB",
+          }}
+        >
+          <FontedText
+            variant="body-small"
+            className={`text-center font-medium ${
+              isDark ? "text-blue-400" : "text-blue-600"
+            }`}
+          >
+            {t("foodGuide.viewDetails")} →
+          </FontedText>
+        </View>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
-// Food details component
-const FoodDetails = ({
+// Enhanced Food Details Modal with improved design
+const FoodDetailsModal = ({
   item,
+  visible,
   onClose,
 }: {
-  item: Food;
+  item: Food | null;
+  visible: boolean;
   onClose: () => void;
 }) => {
   const { t } = useTranslation();
   const { isDark } = useTheme();
 
-  // Determine color based on safety rating
-  const safetyColor =
-    item.safety_rating === "safe"
-      ? "#28a745"
-      : item.safety_rating === "caution"
-      ? "#ffc107"
-      : "#dc3545";
+  if (!item) return null;
+
+  const getSafetyConfig = () => {
+    switch (item.safety_rating) {
+      case "safe":
+        return {
+          color: isDark ? "#10b981" : "#059669",
+          bgColor: isDark ? "#064e3b" : "#d1fae5",
+          text: t("foodGuide.safeToEat"),
+        };
+      case "caution":
+        return {
+          color: isDark ? "#f59e0b" : "#d97706",
+          bgColor: isDark ? "#451a03" : "#fef3c7",
+          text: t("foodGuide.cautionNeeded"),
+        };
+      case "avoid":
+        return {
+          color: isDark ? "#ef4444" : "#dc2626",
+          bgColor: isDark ? "#450a0a" : "#fee2e2",
+          text: t("foodGuide.avoid"),
+        };
+      default:
+        return {
+          color: isDark ? "#6b7280" : "#4b5563",
+          bgColor: isDark ? "#374151" : "#f3f4f6",
+          text: "",
+        };
+    }
+  };
+
+  const safetyConfig = getSafetyConfig();
 
   return (
-    <ThemedView backgroundColor="surface" className="p-4 shadow-sm rounded-xl">
-      <View className="flex-row items-center justify-between mb-3">
-        <FontedText variant="heading-3" fontFamily="comfortaa">
-          {item.name}
-        </FontedText>
-        <TouchableOpacity onPress={onClose} className="p-1">
-          <FontedText className="text-xl">✕</FontedText>
-        </TouchableOpacity>
+    <Modal
+      animationType="slide"
+      transparent={true}
+      visible={visible}
+      onRequestClose={onClose}
+    >
+      <View className="flex-1 justify-end bg-black/50">
+        <ThemedView
+          backgroundColor="surface-elevated"
+          className="rounded-t-3xl shadow-lg max-h-[85%]"
+          style={{
+            borderWidth: 1,
+            borderColor: isDark ? "#374151" : "#E5E7EB",
+          }}
+        >
+          {/* Modal header */}
+          <View className="flex-row items-center justify-between p-6 pb-4">
+            <FontedText
+              variant="heading-2"
+              fontFamily="comfortaa"
+              textType="primary"
+            >
+              {item.name}
+            </FontedText>
+            <TouchableOpacity
+              onPress={onClose}
+              className="w-10 h-10 rounded-full items-center justify-center"
+              style={{
+                backgroundColor: isDark ? "#374151" : "#f3f4f6",
+              }}
+            >
+              <FontedText className="text-xl" textType="primary">
+                ✕
+              </FontedText>
+            </TouchableOpacity>
+          </View>
+
+          <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+            <View className="px-6 pb-6">
+              {/* Safety status banner */}
+              <View
+                className="p-4 mb-6 rounded-2xl"
+                style={{ backgroundColor: safetyConfig.bgColor }}
+              >
+                <FontedText
+                  variant="heading-4"
+                  style={{ color: safetyConfig.color }}
+                  className="text-center font-semibold"
+                >
+                  {safetyConfig.text}
+                </FontedText>
+              </View>
+
+              {/* Description section */}
+              {item.description && (
+                <View className="mb-6">
+                  <View className="flex-row items-center mb-3">
+                    <View
+                      className="w-1 h-6 rounded-full mr-3"
+                      style={{
+                        backgroundColor: isDark ? "#60a5fa" : "#3b82f6",
+                      }}
+                    />
+                    <FontedText variant="heading-4" textType="primary">
+                      {t("foodGuide.description")}
+                    </FontedText>
+                  </View>
+                  <FontedText
+                    variant="body"
+                    textType="secondary"
+                    className="leading-6"
+                  >
+                    {item.description}
+                  </FontedText>
+                </View>
+              )}
+
+              {/* Alternatives section */}
+              {item.alternatives && (
+                <View className="mb-6">
+                  <View className="flex-row items-center mb-3">
+                    <View
+                      className="w-1 h-6 rounded-full mr-3"
+                      style={{
+                        backgroundColor: isDark ? "#10b981" : "#10b981",
+                      }}
+                    />
+                    <FontedText variant="heading-4" textType="primary">
+                      {t("foodGuide.alternativesLabel")}
+                    </FontedText>
+                  </View>
+                  <FontedText
+                    variant="body"
+                    textType="secondary"
+                    className="leading-6"
+                  >
+                    {item.alternatives}
+                  </FontedText>
+                </View>
+              )}
+            </View>
+          </ScrollView>
+        </ThemedView>
       </View>
-
-      <View
-        className="p-3 mb-4 rounded-lg"
-        style={{ backgroundColor: safetyColor + "20" }}
-      >
-        <FontedText variant="body" style={{ color: safetyColor }}>
-          {item.safety_rating === "safe"
-            ? t("foodGuide.safeToEat")
-            : item.safety_rating === "caution"
-            ? t("foodGuide.cautionNeeded")
-            : t("foodGuide.avoid")}
-        </FontedText>
-      </View>
-
-      <FontedText
-        variant="body-small"
-        colorVariant="secondary"
-        className="mb-1"
-      >
-        {t("foodGuide.description")}
-      </FontedText>
-      <FontedText variant="body" className="mb-4">
-        {item.description || ""}
-      </FontedText>
-
-      <FontedText
-        variant="body-small"
-        colorVariant="secondary"
-        className="mb-1"
-      >
-        {t("foodGuide.alternativesLabel")}
-      </FontedText>
-      <FontedText variant="body">{item.alternatives || ""}</FontedText>
-    </ThemedView>
+    </Modal>
   );
 };
 
-// Category pill component
+// Enhanced Category Pill Component
 const CategoryPill = ({
   category,
   isSelected,
@@ -145,21 +312,32 @@ const CategoryPill = ({
 
   return (
     <TouchableOpacity
-      className="px-3 py-1.5 mr-2 rounded-full"
+      className="px-4 py-2 mr-3 rounded-full shadow-sm"
       style={{
         backgroundColor: isSelected
           ? isDark
-            ? "#5DBDA8"
-            : "#87D9C4"
+            ? "#1e40af"
+            : "#2563eb"
           : isDark
-          ? "#4B5563"
-          : "#E5E7EB",
+          ? "#374151"
+          : "#f8fafc",
+        elevation: isSelected ? 2 : 1,
+        borderWidth: 1,
+        borderColor: isSelected
+          ? isDark
+            ? "#3b82f6"
+            : "#2563eb"
+          : isDark
+          ? "#4b5563"
+          : "#e2e8f0",
       }}
       onPress={onPress}
     >
       <FontedText
-        variant="caption"
-        className={isSelected ? "text-white" : "text-black dark:text-white"}
+        variant="body-small"
+        className={`font-medium ${
+          isSelected ? "text-white" : isDark ? "text-gray-200" : "text-gray-700"
+        }`}
       >
         {category.name}
       </FontedText>
@@ -167,38 +345,48 @@ const CategoryPill = ({
   );
 };
 
-// Safety filter button component
+// Enhanced Safety Filter Button Component
 const SafetyFilterButton = ({
   label,
   value,
   currentValue,
   onPress,
+  safetyColor,
 }: {
   label: string;
   value: "all" | SafetyRating;
   currentValue: "all" | SafetyRating;
   onPress: (value: "all" | SafetyRating) => void;
+  safetyColor?: string;
 }) => {
   const isSelected = value === currentValue;
   const { isDark } = useTheme();
 
+  const getButtonStyle = () => {
+    if (isSelected) {
+      if (safetyColor) {
+        return { backgroundColor: safetyColor };
+      }
+      return { backgroundColor: isDark ? "#1e40af" : "#2563eb" };
+    }
+    return {
+      backgroundColor: isDark ? "#374151" : "#f8fafc",
+      borderWidth: 1,
+      borderColor: isDark ? "#4b5563" : "#e2e8f0",
+    };
+  };
+
   return (
     <TouchableOpacity
-      className="px-3 py-1.5 mr-2 rounded-lg"
-      style={{
-        backgroundColor: isSelected
-          ? isDark
-            ? "#5DBDA8"
-            : "#87D9C4"
-          : isDark
-          ? "#4B5563"
-          : "#E5E7EB",
-      }}
+      className="px-4 py-2 mr-3 rounded-xl shadow-sm"
+      style={getButtonStyle()}
       onPress={() => onPress(value)}
     >
       <FontedText
-        variant="caption"
-        className={isSelected ? "text-white" : "text-black dark:text-white"}
+        variant="body-small"
+        className={`font-medium text-center ${
+          isSelected ? "text-white" : isDark ? "text-gray-200" : "text-gray-700"
+        }`}
       >
         {label}
       </FontedText>
@@ -212,6 +400,7 @@ const FoodGuideScreen = () => {
   const { isDark } = useTheme();
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedFood, setSelectedFood] = useState<Food | null>(null);
+  const [modalVisible, setModalVisible] = useState(false);
   const [safetyFilter, setSafetyFilter] = useState<"all" | SafetyRating>("all");
   const [selectedCategoryId, setSelectedCategoryId] = useState<string | null>(
     null
@@ -270,7 +459,7 @@ const FoodGuideScreen = () => {
         safety_rating: safetyFilter !== "all" ? safetyFilter : undefined,
       };
 
-      foodService.filterFoods(filter).then((data) => {
+      foodService.filterFoods(filter, language).then((data) => {
         setFoods(data);
       });
     });
@@ -278,14 +467,7 @@ const FoodGuideScreen = () => {
     return () => {
       foodService.unsubscribe(subscription);
     };
-  }, [safetyFilter, selectedCategoryId, searchQuery]);
-
-  // Reset category when safety filter changes
-  useEffect(() => {
-    if (safetyFilter !== "all") {
-      setSelectedCategoryId(null);
-    }
-  }, [safetyFilter]);
+  }, [safetyFilter, selectedCategoryId, searchQuery, language]);
 
   // Handle category selection
   const handleCategoryPress = (categoryId: string) => {
@@ -293,142 +475,263 @@ const FoodGuideScreen = () => {
       setSelectedCategoryId(null);
     } else {
       setSelectedCategoryId(categoryId);
-      // Reset safety filter when selecting a category
       setSafetyFilter("all");
     }
   };
 
+  // Handle food selection
+  const handleFoodPress = (food: Food) => {
+    setSelectedFood(food);
+    setModalVisible(true);
+  };
+
+  // Handle modal close
+  const handleModalClose = () => {
+    setModalVisible(false);
+    setSelectedFood(null);
+  };
+
+  // Get filter statistics
+  const getFilterStats = () => {
+    const total = foods.length;
+    const safe = foods.filter((f) => f.safety_rating === "safe").length;
+    const caution = foods.filter((f) => f.safety_rating === "caution").length;
+    const avoid = foods.filter((f) => f.safety_rating === "avoid").length;
+
+    return { total, safe, caution, avoid };
+  };
+
+  const stats = getFilterStats();
+
   return (
     <SafeAreaWrapper>
-      <ThemedView backgroundColor="background" className="flex-1 p-4">
-        <FontedText variant="heading-2" fontFamily="comfortaa" className="mb-4">
-          {t("foodGuide.title")}
-        </FontedText>
+      <ThemedView backgroundColor="background" className="flex-1">
+        {/* Header */}
+        <View className="px-6 pt-4 pb-6">
+          <FontedText
+            variant="heading-1"
+            fontFamily="comfortaa"
+            textType="primary"
+            className="mb-2"
+          >
+            {t("foodGuide.title")}
+          </FontedText>
 
-        <TextInput
-          className="p-3 mb-4 rounded-xl"
-          style={{ backgroundColor: isDark ? "#171717" : "#F3F4F6" }}
-          placeholder={t("foodGuide.searchPlaceholder")}
-          placeholderTextColor={isDark ? "#9ca3af" : "#6b7280"}
-          value={searchQuery}
-          onChangeText={setSearchQuery}
-        />
-
-        {/* Safety Filters */}
-        <View className="flex-row mb-4">
-          <SafetyFilterButton
-            label={t("foodGuide.filterAll")}
-            value="all"
-            currentValue={safetyFilter}
-            onPress={setSafetyFilter}
-          />
-          <SafetyFilterButton
-            label={t("foodGuide.filterSafe")}
-            value="safe"
-            currentValue={safetyFilter}
-            onPress={setSafetyFilter}
-          />
-          <SafetyFilterButton
-            label={t("foodGuide.filterCaution")}
-            value="caution"
-            currentValue={safetyFilter}
-            onPress={setSafetyFilter}
-          />
-          <SafetyFilterButton
-            label={t("foodGuide.filterAvoid")}
-            value="avoid"
-            currentValue={safetyFilter}
-            onPress={setSafetyFilter}
-          />
+          {/* Statistics */}
+          <View className="flex-row items-center space-x-2">
+            <FontedText variant="body-small" textType="muted">
+              {t("foodGuide.totalFoods", { count: stats.total })}
+            </FontedText>
+            <FontedText variant="body-small" textType="muted">
+              •
+            </FontedText>
+            <FontedText variant="body-small" textType="muted">
+              {stats.safe} {t("foodGuide.safe")} • {stats.caution}{" "}
+              {t("foodGuide.caution")} • {stats.avoid} {t("foodGuide.avoid")}
+            </FontedText>
+          </View>
         </View>
 
-        {/* Categories horizontal scroll */}
-        {categories.length > 0 && (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            className="mb-4"
+        {/* Search Bar */}
+        <View className="px-6 mb-4">
+          <View
+            className="flex-row items-center px-4 py-3 rounded-2xl shadow-sm"
+            style={{
+              backgroundColor: isDark ? "#1f2937" : "#FFFFFF",
+              borderWidth: 1,
+              borderColor: isDark ? "#374151" : "#E5E7EB",
+            }}
           >
-            {categories.map((category) => (
-              <CategoryPill
-                key={category.id}
-                category={category}
-                isSelected={selectedCategoryId === category.id}
-                onPress={() => handleCategoryPress(category.id)}
-              />
-            ))}
-          </ScrollView>
-        )}
-
-        {/* Food list */}
-        {loading ? (
-          <View className="items-center justify-center flex-1">
-            <ActivityIndicator
-              size="large"
-              color={isDark ? "#60a5fa" : "#87D9C4"}
+            <FontedText textType="muted" className="mr-3">
+              🔍
+            </FontedText>
+            <TextInput
+              className="flex-1"
+              style={{
+                color: isDark ? "#f9fafb" : "#1f2937",
+                fontSize: 16,
+              }}
+              placeholder={t("foodGuide.searchPlaceholder")}
+              placeholderTextColor={isDark ? "#9ca3af" : "#6b7280"}
+              value={searchQuery}
+              onChangeText={setSearchQuery}
             />
           </View>
+        </View>
+
+        {/* Safety Filters */}
+        <View className="px-6 mb-4">
+          <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+            <SafetyFilterButton
+              label={t("foodGuide.filterAll")}
+              value="all"
+              currentValue={safetyFilter}
+              onPress={setSafetyFilter}
+            />
+            <SafetyFilterButton
+              label={t("foodGuide.filterSafe")}
+              value="safe"
+              currentValue={safetyFilter}
+              onPress={setSafetyFilter}
+              safetyColor={isDark ? "#10b981" : "#059669"}
+            />
+            <SafetyFilterButton
+              label={t("foodGuide.filterCaution")}
+              value="caution"
+              currentValue={safetyFilter}
+              onPress={setSafetyFilter}
+              safetyColor={isDark ? "#f59e0b" : "#d97706"}
+            />
+            <SafetyFilterButton
+              label={t("foodGuide.filterAvoid")}
+              value="avoid"
+              currentValue={safetyFilter}
+              onPress={setSafetyFilter}
+              safetyColor={isDark ? "#ef4444" : "#dc2626"}
+            />
+          </ScrollView>
+        </View>
+
+        {/* Categories */}
+        {categories.length > 0 && (
+          <View className="mb-4">
+            <View className="px-6 mb-3">
+              <FontedText variant="heading-4" textType="primary">
+                {t("foodGuide.categories")}
+              </FontedText>
+            </View>
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={{ paddingHorizontal: 24 }}
+            >
+              {categories.map((category) => (
+                <CategoryPill
+                  key={category.id}
+                  category={category}
+                  isSelected={selectedCategoryId === category.id}
+                  onPress={() => handleCategoryPress(category.id)}
+                />
+              ))}
+            </ScrollView>
+          </View>
+        )}
+
+        {/* Food List */}
+        {loading ? (
+          <View className="flex-1 justify-center items-center">
+            <ActivityIndicator
+              size="large"
+              color={isDark ? "#60a5fa" : "#2563eb"}
+            />
+            <FontedText variant="body" textType="secondary" className="mt-4">
+              {t("foodGuide.loading")}
+            </FontedText>
+          </View>
         ) : error ? (
-          <View className="items-center justify-center flex-1">
-            <FontedText colorVariant="accent">{error}</FontedText>
-            <TouchableOpacity
-              className="px-4 py-2 mt-4 rounded-lg"
-              style={{ backgroundColor: isDark ? "#5DBDA8" : "#87D9C4" }}
-              onPress={() => {
-                setLoading(true);
-                setError(null);
-                // Reload foods
-                const filter = {
-                  searchTerm: searchQuery,
-                  category_id: selectedCategoryId || undefined,
-                  safety_rating:
-                    safetyFilter !== "all" ? safetyFilter : undefined,
-                };
-                foodService
-                  .filterFoods(filter)
-                  .then((data) => {
-                    setFoods(data);
-                    setLoading(false);
-                  })
-                  .catch((err) => {
-                    console.error("Error reloading foods:", err);
-                    setError(t("foodGuide.errorLoading"));
-                    setLoading(false);
-                  });
+          <View className="flex-1 justify-center items-center px-6">
+            <ThemedView
+              backgroundColor="surface-elevated"
+              className="w-full max-w-sm p-6 rounded-2xl shadow-sm"
+              style={{
+                borderWidth: 1,
+                borderColor: isDark ? "#374151" : "#E5E7EB",
               }}
             >
-              <FontedText className="text-white">
-                {t("foodGuide.tryAgain")}
+              <FontedText
+                variant="heading-3"
+                colorVariant="accent"
+                className="text-center mb-4"
+              >
+                {t("common.errors.generic")}
               </FontedText>
-            </TouchableOpacity>
+              <FontedText
+                variant="body"
+                textType="secondary"
+                className="text-center mb-6"
+              >
+                {error}
+              </FontedText>
+              <TouchableOpacity
+                className="px-6 py-3 rounded-xl items-center"
+                style={{
+                  backgroundColor: isDark ? "#1e40af" : "#2563eb",
+                }}
+                onPress={() => {
+                  setError(null);
+                  setLoading(true);
+                  // Reload data
+                  const filter = {
+                    searchTerm: searchQuery,
+                    category_id: selectedCategoryId || undefined,
+                    safety_rating:
+                      safetyFilter !== "all" ? safetyFilter : undefined,
+                  };
+                  foodService
+                    .filterFoods(filter, language)
+                    .then((data) => {
+                      setFoods(data);
+                      setLoading(false);
+                    })
+                    .catch((err) => {
+                      console.error("Error reloading foods:", err);
+                      setError(t("foodGuide.errorLoading"));
+                      setLoading(false);
+                    });
+                }}
+              >
+                <FontedText className="text-white font-semibold">
+                  {t("foodGuide.tryAgain")}
+                </FontedText>
+              </TouchableOpacity>
+            </ThemedView>
           </View>
         ) : (
           <FlatList
             data={foods}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
-              <FoodItem item={item} onPress={setSelectedFood} />
+              <FoodItem item={item} onPress={handleFoodPress} />
             )}
             contentContainerStyle={{ paddingBottom: 20 }}
+            showsVerticalScrollIndicator={false}
             ListEmptyComponent={
-              <View className="items-center justify-center flex-1 py-10">
-                <FontedText colorVariant="secondary">
-                  {t("foodGuide.noResults")}
-                </FontedText>
+              <View className="flex-1 justify-center items-center py-16 px-6">
+                <ThemedView
+                  backgroundColor="surface-elevated"
+                  className="w-full max-w-sm p-8 rounded-2xl shadow-sm items-center"
+                  style={{
+                    borderWidth: 1,
+                    borderColor: isDark ? "#374151" : "#E5E7EB",
+                  }}
+                >
+                  <FontedText className="text-6xl mb-4">🔍</FontedText>
+                  <FontedText
+                    variant="heading-4"
+                    textType="primary"
+                    className="text-center mb-2"
+                  >
+                    {t("foodGuide.noResults")}
+                  </FontedText>
+                  <FontedText
+                    variant="body"
+                    textType="secondary"
+                    className="text-center"
+                  >
+                    {t("foodGuide.noResultsDescription")}
+                  </FontedText>
+                </ThemedView>
               </View>
             }
           />
         )}
 
-        {/* Food details modal */}
-        {selectedFood && (
-          <View className="absolute inset-0 justify-center p-4 bg-black bg-opacity-50">
-            <FoodDetails
-              item={selectedFood}
-              onClose={() => setSelectedFood(null)}
-            />
-          </View>
-        )}
+        {/* Food Details Modal */}
+        <FoodDetailsModal
+          item={selectedFood}
+          visible={modalVisible}
+          onClose={handleModalClose}
+        />
       </ThemedView>
     </SafeAreaWrapper>
   );

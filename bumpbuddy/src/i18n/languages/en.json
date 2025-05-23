@@ -156,7 +156,13 @@
     "filterSafe": "Safe Foods",
     "filterCaution": "Caution Foods",
     "filterAvoid": "Foods to Avoid",
-    "noResults": "No foods found matching your search criteria"
+    "noResults": "No foods found",
+    "noResultsDescription": "Try adjusting your search or filters to find more foods",
+    "viewDetails": "View Details",
+    "loading": "Loading foods...",
+    "errorLoading": "Error loading food data",
+    "tryAgain": "Try Again",
+    "totalFoods": "{{count}} foods"
   },
   "fetalSize": {
     "title": "Baby Size Comparison",
