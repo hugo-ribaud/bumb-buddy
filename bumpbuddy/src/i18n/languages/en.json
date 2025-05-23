@@ -130,7 +130,14 @@
     "viewWeekDetails": "View Week Details",
     "nextWeek": "Next Week",
     "previousWeek": "Previous Week",
-    "loading": "Loading week information..."
+    "loading": "Loading week information...",
+    "completed": "Completed",
+    "refresh": "Refresh",
+    "refreshing": "Refreshing...",
+    "refreshSuccess": "Timeline data refreshed successfully",
+    "refreshError": "Failed to refresh timeline data",
+    "weeksLoaded": "{{total}} weeks loaded, {{filtered}} shown",
+    "currentWeekStatus": "Current: Week {{week}}"
   },
   "foodGuide": {
     "title": "Food Safety Guide",

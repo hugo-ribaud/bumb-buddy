@@ -130,7 +130,14 @@
     "viewWeekDetails": "Ver Detalles de la Semana",
     "nextWeek": "Semana Siguiente",
     "previousWeek": "Semana Anterior",
-    "loading": "Cargando información de la semana..."
+    "loading": "Cargando información de la semana...",
+    "completed": "Completado",
+    "refresh": "Actualizar",
+    "refreshing": "Actualizando...",
+    "refreshSuccess": "Datos de línea de tiempo actualizados exitosamente",
+    "refreshError": "Error al actualizar los datos de línea de tiempo",
+    "weeksLoaded": "{{total}} semanas cargadas, {{filtered}} mostradas",
+    "currentWeekStatus": "Actual: Semana {{week}}"
   },
   "foodGuide": {
     "title": "Guía de Seguridad Alimentaria",

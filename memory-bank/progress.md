@@ -1,6 +1,6 @@
 # Progress Tracking: BumpBuddy
 
-_Version: 1.4_
+_Version: 1.5_
 _Created: 2025-05-06_
 _Last Updated: 2025-01-27_
 
@@ -124,6 +124,18 @@ _Last Updated: 2025-01-27_
 - Complete pregnancy week translations added for Spanish and French (40 weeks each)
 - Fixed translation service to handle missing translations gracefully with proper fallback
 - All 40 pregnancy weeks now have complete translations in English, Spanish, and French
+- **Timeline and Week Detail UI/UX Improvements completed**
+- **Fixed duplicate back button issue in WeekDetailScreen**
+- **Removed custom back button implementation in favor of navigation header**
+- **Enhanced WeekDetailScreen with modern card-based design and color-coded sections**
+- **Improved TimelineScreen with better visual hierarchy and progress indicators**
+- **Added trimester progress tracking with completion percentages**
+- **Implemented week status indicators (current, completed, future)**
+- **Added visual progress bars for individual weeks and trimesters**
+- **Enhanced card design with better spacing, typography, and visual elements**
+- **Improved loading and error states with better user feedback**
+- **Added missing translation keys for UI improvements in all languages**
+- **Fixed translation references to use correct keys (common.buttons.back)**
 
 ## In Progress
 
