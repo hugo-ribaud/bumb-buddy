@@ -1,10 +1,12 @@
 # Active Context: BumpBuddy
 
-_Version: 1.3_
+_Version: 1.4_
 _Created: 2025-05-06_
 _Last Updated: 2025-01-27_
 
 ## Current Focus
+
+**Timeline UI Enhancement - COMPLETED**: Successfully improved the TimelineScreen user interface by replacing the week number circles with fetal size images. This creates a more visually appealing timeline while saving space by removing the separate FetalSizeComparison component from timeline cards. Users can now see the fetal size images directly in the week circles, with the detailed information available when they open the week details page.
 
 **Translation System Enhancement for Supabase Data - FULLY COMPLETED**: Successfully implemented comprehensive translation support for all data fetched from Supabase. The app now has a complete i18n infrastructure with support for English, Spanish, and French, including both UI elements and database content. All components are language-aware and automatically refetch data when the user switches languages. **ALL 40 pregnancy weeks now have complete translations in Spanish and French**, and the service has been fixed to handle missing translations gracefully with proper fallback to English.
 
@@ -41,11 +43,21 @@ _Last Updated: 2025-01-27_
     - ✅ Modified all components to use language from LanguageContext
     - ✅ Implemented automatic data refetch when language changes
     - ✅ Ensured proper fallback to English when translations are missing
-15. ⬜ **Comprehensive testing of translation system** (CURRENT PRIORITY)
-    - ⬜ Test language switching across all screens
-    - ⬜ Verify fallback behavior when translations are missing
-    - ⬜ Test with different user language preferences
-    - ⬜ Ensure proper cache invalidation when language changes
+15. ✅ **Comprehensive testing of translation system** (COMPLETED)
+    - ✅ Test language switching across all screens
+    - ✅ Verify fallback behavior when translations are missing
+    - ✅ Test with different user language preferences
+    - ✅ Ensure proper cache invalidation when language changes
+16. ✅ **Timeline UI Enhancement** (COMPLETED)
+    - ✅ Integrated fetal size images for weeks 1-4 into database
+    - ✅ Replaced week number circles with fetal size images in TimelineScreen
+    - ✅ Removed separate FetalSizeComparison component from timeline cards to save space
+    - ✅ Maintained detailed fetal size information in WeekDetailScreen
+17. ⬜ **Secondary features development** (CURRENT PRIORITY)
+
+- ⬜ Appointment scheduling and reminders
+- ⬜ Push notifications
+- ⬜ Enhanced content management
 
 ## Current Development Priorities
 
@@ -58,9 +70,6 @@ _Last Updated: 2025-01-27_
 7. ✅ **Complete Supabase data translation system**
 8. ⬜ **Comprehensive testing of translation system** (CURRENT)
 9. ⬜ **Secondary features development** (NEXT)
-   - ⬜ Appointment scheduling and reminders
-   - ⬜ Push notifications
-   - ⬜ Enhanced content management
 
 ## Recent Decisions
 

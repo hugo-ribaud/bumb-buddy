@@ -1,29 +1,28 @@
+import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
+import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
   FlatList,
+  Image,
   Pressable,
   TouchableOpacity,
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  fetchAllWeeks,
-  fetchCurrentWeekData,
-  selectWeek,
-} from "../redux/slices/timelineSlice";
-import { AppDispatch, RootState } from "../redux/store";
-
-import { useNavigation } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
-import FetalSizeComparison from "../components/FetalSizeComparison";
 import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { useLanguage } from "../contexts/LanguageContext";
 import { useTheme } from "../contexts/ThemeContext";
 import { fetchAllFetalSizes } from "../redux/slices/fetalSizeSlice";
+import {
+  fetchAllWeeks,
+  fetchCurrentWeekData,
+  selectWeek,
+} from "../redux/slices/timelineSlice";
+import { AppDispatch, RootState } from "../redux/store";
 import timelineService from "../services/timelineService";
 
 type Props = {};
@@ -153,9 +152,11 @@ const TimelineScreen: React.FC<Props> = () => {
           <View className="flex-row items-center justify-between mb-4">
             <View className="flex-row items-center">
               <View
-                className="w-12 h-12 rounded-full items-center justify-center mr-3"
+                className="w-12 h-12 rounded-full items-center justify-center mr-3 overflow-hidden"
                 style={{
-                  backgroundColor: isCurrentWeek
+                  backgroundColor: isDark ? "#374151" : "#f3f4f6",
+                  borderWidth: isCurrentWeek ? 2 : isPastWeek ? 1 : 0,
+                  borderColor: isCurrentWeek
                     ? isDark
                       ? "#3b82f6"
                       : "#2563eb"
@@ -163,23 +164,31 @@ const TimelineScreen: React.FC<Props> = () => {
                     ? isDark
                       ? "#059669"
                       : "#10b981"
-                    : isDark
-                    ? "#374151"
-                    : "#f3f4f6",
+                    : "transparent",
                 }}
               >
-                <FontedText
-                  variant="heading-4"
-                  className={
-                    isCurrentWeek || isPastWeek
-                      ? "text-white"
-                      : isDark
-                      ? "text-gray-300"
-                      : "text-gray-600"
-                  }
-                >
-                  {item.week}
-                </FontedText>
+                {weekFetalSize?.image_url ? (
+                  <Image
+                    source={{ uri: weekFetalSize.image_url }}
+                    className="w-full h-full"
+                    resizeMode="cover"
+                  />
+                ) : (
+                  <FontedText
+                    variant="body-small"
+                    className={
+                      isCurrentWeek || isPastWeek
+                        ? isDark
+                          ? "text-blue-400"
+                          : "text-blue-600"
+                        : isDark
+                        ? "text-gray-300"
+                        : "text-gray-600"
+                    }
+                  >
+                    {item.week}
+                  </FontedText>
+                )}
               </View>
               <View>
                 <FontedText variant="heading-4" textType="primary">
@@ -227,18 +236,6 @@ const TimelineScreen: React.FC<Props> = () => {
               </View>
             </View>
           </View>
-
-          {/* Fetal size comparison */}
-          {weekFetalSize ? (
-            <View className="mb-4">
-              <FetalSizeComparison
-                weekNumber={item.week}
-                itemName={weekFetalSize.name}
-                imageUrl={weekFetalSize.image_url}
-                compact={true}
-              />
-            </View>
-          ) : null}
 
           {/* Development preview */}
           <ThemedView
