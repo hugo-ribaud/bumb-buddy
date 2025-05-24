@@ -104,7 +104,7 @@ const MainTabNavigator = () => {
 
           return <Ionicons name={iconName as any} size={size} color={color} />;
         },
-        tabBarActiveTintColor: isDark ? "#60a5fa" : "#007bff",
+        tabBarActiveTintColor: isDark ? "#C2AADF" : "#9B85C4",
         tabBarInactiveTintColor: isDark ? "#9ca3af" : "#6c757d",
         headerShown: false,
         tabBarStyle: {

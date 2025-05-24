@@ -1,6 +1,8 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PregnancyWeek, TimelineService } from "timeline-types";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import supabase from "../config/supabaseConfig";
+import { calculatePregnancyWeek } from "../utils/pregnancyCalculations";
 
 // Keys for AsyncStorage (now include language)
 const TIMELINE_DATA_KEY = "timeline_data";
@@ -280,37 +282,7 @@ const timelineService: TimelineService = {
 
   // Calculate current week based on due date (no translation needed)
   calculateCurrentWeek: (dueDate: string | null): number => {
-    if (!dueDate) {
-      return 0;
-    }
-
-    try {
-      const due = new Date(dueDate);
-      const today = new Date();
-
-      // Invalid due date (in the past)
-      if (due < today) {
-        return 0;
-      }
-
-      // Calculate weeks difference
-      const diffTime = due.getTime() - today.getTime();
-      const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-      // A full-term pregnancy is about 40 weeks
-      const weeksLeft = Math.round(diffDays / 7);
-      const currentWeek = 40 - weeksLeft;
-
-      console.log(
-        `Calculated current week: ${currentWeek} (due date: ${dueDate})`
-      );
-
-      // Return valid week range (1-40)
-      return Math.max(1, Math.min(currentWeek, 40));
-    } catch (error) {
-      console.error("Error calculating current week:", error);
-      return 0;
-    }
+    return calculatePregnancyWeek(dueDate);
   },
 
   // Get current week information based on user's due date with translations

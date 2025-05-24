@@ -25,6 +25,7 @@ import { useTheme } from "../contexts/ThemeContext";
 import { RootState } from "../redux/store";
 import authService from "../services/authService";
 import realtimeService from "../services/realtimeService";
+import { calculatePregnancyWeek } from "../utils/pregnancyCalculations";
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
@@ -127,19 +128,11 @@ const ProfileScreen = () => {
 
     setLoading(true);
     try {
-      // Calculate pregnancy week based on due date
-      const currentDate = new Date();
-      const dueDateObj = new Date(dueDate);
-
-      // Approximate pregnancy weeks (40 weeks total)
-      const timeDiff = dueDateObj.getTime() - currentDate.getTime();
-      const weeksDiff = Math.floor(timeDiff / (1000 * 3600 * 24 * 7));
-      const pregnancyWeek = 40 - weeksDiff;
+      // Calculate pregnancy week based on due date (using standardized utility function)
+      const formattedDueDate = dueDate.toISOString().split("T")[0];
+      const calculatedPregnancyWeek = calculatePregnancyWeek(formattedDueDate);
 
       // Update user in Supabase
-      const formattedDueDate = dueDate.toISOString().split("T")[0];
-      const calculatedPregnancyWeek = pregnancyWeek > 0 ? pregnancyWeek : 0;
-
       const { error } = await authService.updateProfile({
         id: user.id,
         name,
@@ -216,16 +209,16 @@ const ProfileScreen = () => {
           {/* Realtime Status Indicator */}
           <ThemedView
             backgroundColor="surface"
-            className="p-4 mb-5 border-l-4 border-blue-400 rounded-lg dark:border-blue-600"
+            className="p-4 mb-5 border-l-4 border-purple-400 rounded-lg dark:border-purple-500"
           >
             <View className="flex-row items-center">
-              <View className="w-2.5 h-2.5 rounded-full bg-blue-400 dark:bg-blue-600 mr-2.5" />
-              <FontedText className="font-bold text-blue-800 dark:text-blue-300">
+              <View className="w-2.5 h-2.5 rounded-full bg-purple-400 dark:bg-purple-500 mr-2.5" />
+              <FontedText className="font-bold text-purple-800 dark:text-purple-300">
                 {t("profile.realtime")}: {realtimeStatus}
               </FontedText>
             </View>
             {lastUpdate && (
-              <FontedText className="mt-1.5 pl-5 italic text-blue-700 dark:text-blue-400">
+              <FontedText className="mt-1.5 pl-5 italic text-purple-700 dark:text-purple-400">
                 {lastUpdate}
               </FontedText>
             )}

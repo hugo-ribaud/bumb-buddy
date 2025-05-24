@@ -1,6 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
 import React, { useEffect, useState } from "react";
-import { useTranslation } from "react-i18next";
 import {
   ActivityIndicator,
   Alert,
@@ -11,18 +9,21 @@ import {
   View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import FontedText from "../components/FontedText";
-import SafeAreaWrapper from "../components/SafeAreaWrapper";
-import ThemedView from "../components/ThemedView";
-import { useLanguage } from "../contexts/LanguageContext";
-import { useTheme } from "../contexts/ThemeContext";
-import { fetchAllFetalSizes } from "../redux/slices/fetalSizeSlice";
 import {
   fetchAllWeeks,
   fetchCurrentWeekData,
   selectWeek,
 } from "../redux/slices/timelineSlice";
 import { AppDispatch, RootState } from "../redux/store";
+
+import { useNavigation } from "@react-navigation/native";
+import { useTranslation } from "react-i18next";
+import FontedText from "../components/FontedText";
+import SafeAreaWrapper from "../components/SafeAreaWrapper";
+import ThemedView from "../components/ThemedView";
+import { useLanguage } from "../contexts/LanguageContext";
+import { useTheme } from "../contexts/ThemeContext";
+import { fetchAllFetalSizes } from "../redux/slices/fetalSizeSlice";
 import timelineService from "../services/timelineService";
 
 type Props = {};
@@ -123,8 +124,8 @@ const TimelineScreen: React.FC<Props> = () => {
           borderWidth: isCurrentWeek ? 2 : 1,
           borderColor: isCurrentWeek
             ? isDark
-              ? "#3b82f6"
-              : "#2563eb"
+              ? "#C2AADF"
+              : "#9B85C4"
             : isDark
             ? "#374151"
             : "#E5E7EB",
@@ -137,9 +138,9 @@ const TimelineScreen: React.FC<Props> = () => {
             <FontedText
               variant="body-small"
               textType="primary"
-              className="text-center font-semibold"
+              className="font-semibold text-center"
               style={{
-                color: isDark ? "#60a5fa" : "#1d4ed8",
+                color: isDark ? "#C2AADF" : "#9B85C4",
               }}
             >
               {t("timeline.currentWeek")}
@@ -152,14 +153,14 @@ const TimelineScreen: React.FC<Props> = () => {
           <View className="flex-row items-center justify-between mb-4">
             <View className="flex-row items-center">
               <View
-                className="w-12 h-12 rounded-full items-center justify-center mr-3 overflow-hidden"
+                className="items-center justify-center w-12 h-12 mr-3 overflow-hidden rounded-full"
                 style={{
                   backgroundColor: isDark ? "#374151" : "#f3f4f6",
                   borderWidth: isCurrentWeek ? 2 : isPastWeek ? 1 : 0,
                   borderColor: isCurrentWeek
                     ? isDark
-                      ? "#3b82f6"
-                      : "#2563eb"
+                      ? "#C2AADF"
+                      : "#9B85C4"
                     : isPastWeek
                     ? isDark
                       ? "#059669"
@@ -179,8 +180,8 @@ const TimelineScreen: React.FC<Props> = () => {
                     className={
                       isCurrentWeek || isPastWeek
                         ? isDark
-                          ? "text-blue-400"
-                          : "text-blue-600"
+                          ? "text-purple-300"
+                          : "text-purple-600"
                         : isDark
                         ? "text-gray-300"
                         : "text-gray-600"
@@ -211,7 +212,7 @@ const TimelineScreen: React.FC<Props> = () => {
                 {item.week}/40
               </FontedText>
               <View
-                className="w-16 h-1 rounded-full mt-1"
+                className="w-16 h-1 mt-1 rounded-full"
                 style={{
                   backgroundColor: isDark ? "#374151" : "#f3f4f6",
                 }}
@@ -222,8 +223,8 @@ const TimelineScreen: React.FC<Props> = () => {
                     width: `${(item.week / 40) * 100}%`,
                     backgroundColor: isCurrentWeek
                       ? isDark
-                        ? "#3b82f6"
-                        : "#2563eb"
+                        ? "#C2AADF"
+                        : "#9B85C4"
                       : isPastWeek
                       ? isDark
                         ? "#059669"
@@ -254,7 +255,7 @@ const TimelineScreen: React.FC<Props> = () => {
 
           {/* View details button */}
           <View
-            className="mt-4 pt-4"
+            className="pt-4 mt-4"
             style={{
               borderTopWidth: 1,
               borderTopColor: isDark ? "#374151" : "#E5E7EB",
@@ -263,7 +264,7 @@ const TimelineScreen: React.FC<Props> = () => {
             <FontedText
               variant="body-small"
               className={`text-center font-medium ${
-                isDark ? "text-blue-400" : "text-blue-600"
+                isDark ? "text-purple-300" : "text-purple-600"
               }`}
             >
               {t("timeline.viewWeekDetails")} →
@@ -342,12 +343,12 @@ const TimelineScreen: React.FC<Props> = () => {
               return (
                 <Pressable
                   key={tab}
-                  className="flex-1 py-4 px-3"
+                  className="flex-1 px-3 py-4"
                   style={{
                     backgroundColor: isActive
                       ? isDark
-                        ? "#1e40af"
-                        : "#2563eb"
+                        ? "#9B85C4"
+                        : "#C2AADF"
                       : "transparent",
                   }}
                   onPress={() => handleTabChange(tab as 1 | 2 | 3)}
@@ -369,7 +370,7 @@ const TimelineScreen: React.FC<Props> = () => {
 
                   {/* Progress bar */}
                   <View
-                    className="h-1 rounded-full mx-2"
+                    className="h-1 mx-2 rounded-full"
                     style={{
                       backgroundColor: isActive
                         ? "rgba(255,255,255,0.3)"
@@ -410,10 +411,10 @@ const TimelineScreen: React.FC<Props> = () => {
         </View>
 
         {loading || refreshing ? (
-          <View className="flex-1 justify-center items-center">
+          <View className="items-center justify-center flex-1">
             <ActivityIndicator
               size="large"
-              color={isDark ? "#60a5fa" : "#2563eb"}
+              color={isDark ? "#C2AADF" : "#9B85C4"}
             />
             <FontedText
               variant="body"
@@ -424,11 +425,11 @@ const TimelineScreen: React.FC<Props> = () => {
             </FontedText>
           </View>
         ) : error ? (
-          <View className="flex-1 justify-center items-center px-6">
+          <View className="items-center justify-center flex-1 px-6">
             <FontedText
               variant="heading-3"
               colorVariant="accent"
-              className="text-center mb-4"
+              className="mb-4 text-center"
             >
               {t("common.errors.generic")}
             </FontedText>

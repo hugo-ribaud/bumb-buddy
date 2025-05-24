@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import { ScrollView, TouchableOpacity, View } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState, persistor } from "../redux/store";
+import { RootState } from "../redux/store";
 
 import { useTranslation } from "react-i18next";
 import FetalSizeComparison from "../components/FetalSizeComparison";
@@ -11,6 +11,10 @@ import ThemeToggle from "../components/ThemeToggle";
 import ThemedView from "../components/ThemedView";
 import { useLanguage } from "../contexts/LanguageContext";
 import { fetchFetalSizeByWeek } from "../redux/slices/fetalSizeSlice";
+import {
+  fetchCurrentWeekData,
+  fetchWeekData,
+} from "../redux/slices/timelineSlice";
 import { AppDispatch } from "../redux/store";
 
 const HomeScreen = () => {
@@ -22,67 +26,61 @@ const HomeScreen = () => {
   const fetalSize = useSelector(
     (state: RootState) => state.fetalSize.currentComparison
   );
+  const {
+    weekData,
+    loading: timelineLoading,
+    error: timelineError,
+    currentWeek,
+  } = useSelector((state: RootState) => state.timeline);
 
-  // Get current pregnancy week from user data or default to week 1
-  const pregnancyWeek = user?.pregnancyWeek || 1;
+  // Get current pregnancy week from timeline slice (consistent with TimelineScreen)
+  // Fallback to user.pregnancyWeek or 1 if currentWeek is not available
+  const pregnancyWeek = currentWeek || user?.pregnancyWeek || 1;
 
   // Get user's name or fallback to friendly default
   const userName =
     user?.name || user?.email?.split("@")[0] || t("common.labels.mom");
 
-  // Fetch fetal size data on component mount and when language changes
+  // Fetch fetal size data and pregnancy week data on component mount and when language changes
   useEffect(() => {
     if (pregnancyWeek) {
       dispatch(fetchFetalSizeByWeek({ week: pregnancyWeek, language }));
+      dispatch(fetchWeekData({ weekNumber: pregnancyWeek, language }));
     }
-  }, [dispatch, pregnancyWeek, language]);
 
-  // Debug fetal size data
-  useEffect(() => {
-    if (fetalSize) {
-      console.log("HomeScreen: Fetal size data loaded:", fetalSize);
-      console.log("HomeScreen: itemName =", fetalSize.name);
-    } else {
-      console.log("HomeScreen: No fetal size data available yet");
+    // Also fetch current week data to ensure currentWeek is set in timeline slice
+    if (user?.dueDate) {
+      dispatch(fetchCurrentWeekData({ dueDate: user.dueDate, language }));
     }
-  }, [fetalSize]);
-
-  // Function to purge redux-persist store for debugging
-  const handlePurgeStore = async () => {
-    await persistor.purge();
-    alert("Redux store purged. Restart the app.");
-  };
-
-  // Mock data for weekly content - in a real app, this would come from a database
-  const weeklyContent = {
-    title: t("home.weekTitle", { week: pregnancyWeek }),
-    developmentHighlights: [
-      "Baby's heart is beating",
-      "Brain development is progressing",
-      "Facial features are forming",
-    ],
-    maternalChanges: [
-      "You may experience morning sickness",
-      "Fatigue is common in this trimester",
-      "Your body is producing more blood",
-    ],
-    nutritionTips: [
-      "Focus on protein-rich foods",
-      "Stay hydrated throughout the day",
-      "Consider prenatal vitamins with folic acid",
-    ],
-  };
+  }, [dispatch, pregnancyWeek, language, user?.dueDate]);
 
   // Calculate trimester
-  let trimester = t("home.trimesterLabel", { trimester: t("First") });
+  let trimester = t("home.trimesterLabel", {
+    trimester: t("timeline.firstTrimester"),
+  });
   if (pregnancyWeek > 13 && pregnancyWeek <= 26) {
-    trimester = t("home.trimesterLabel", { trimester: t("Second") });
+    trimester = t("home.trimesterLabel", {
+      trimester: t("timeline.secondTrimester"),
+    });
   } else if (pregnancyWeek > 26) {
-    trimester = t("home.trimesterLabel", { trimester: t("Third") });
+    trimester = t("home.trimesterLabel", {
+      trimester: t("timeline.thirdTrimester"),
+    });
   }
 
   // Calculate progress percentage (out of 40 weeks)
   const progressPercentage = Math.min((pregnancyWeek / 40) * 100, 100);
+
+  // Helper function to split text into bullet points
+  const splitIntoBulletPoints = (text: string): string[] => {
+    if (!text) return [];
+    // Split by common delimiters and filter out empty strings
+    return text
+      .split(/[.!?]\s+/)
+      .filter((point) => point.trim().length > 0)
+      .map((point) => point.trim())
+      .slice(0, 3); // Limit to 3 points for better UI
+  };
 
   return (
     <SafeAreaWrapper>
@@ -176,70 +174,100 @@ const HomeScreen = () => {
                 </View>
               )}
 
-              <FontedText
-                variant="body"
-                className="font-semibold mt-1.5 mb-2.5"
-              >
-                {t("Development Highlights")}
-              </FontedText>
-              {weeklyContent.developmentHighlights.map((highlight, index) => (
-                <FontedText
-                  key={index}
-                  variant="body-small"
-                  className="mb-2 leading-5"
-                >
-                  • {highlight}
+              {timelineLoading && (
+                <FontedText variant="body-small" textType="secondary">
+                  {t("timeline.loading")}
                 </FontedText>
-              ))}
+              )}
+
+              {timelineError && (
+                <FontedText
+                  variant="body-small"
+                  textType="secondary"
+                  className="text-red-500"
+                >
+                  {timelineError}
+                </FontedText>
+              )}
+
+              {weekData && weekData.fetal_development && (
+                <View>
+                  <FontedText
+                    variant="body"
+                    className="font-semibold mt-1.5 mb-2.5"
+                  >
+                    {t("timeline.development")}
+                  </FontedText>
+                  {splitIntoBulletPoints(weekData.fetal_development).map(
+                    (highlight, index) => (
+                      <FontedText
+                        key={index}
+                        variant="body-small"
+                        className="mb-2 leading-5"
+                      >
+                        • {highlight}
+                      </FontedText>
+                    )
+                  )}
+                </View>
+              )}
             </ThemedView>
 
-            <ThemedView
-              backgroundColor="surface"
-              className="p-5 mb-4 shadow-sm rounded-xl"
-            >
-              <FontedText
-                variant="heading-4"
-                fontFamily="comfortaa"
-                colorVariant="secondary"
-                className="mb-4"
+            {weekData && weekData.maternal_changes && (
+              <ThemedView
+                backgroundColor="surface"
+                className="p-5 mb-4 shadow-sm rounded-xl"
               >
-                {t("home.bodyChangesTitle")}
-              </FontedText>
-
-              {weeklyContent.maternalChanges.map((change, index) => (
                 <FontedText
-                  key={index}
-                  variant="body-small"
-                  className="mb-2 leading-5"
+                  variant="heading-4"
+                  fontFamily="comfortaa"
+                  colorVariant="secondary"
+                  className="mb-4"
                 >
-                  • {change}
+                  {t("home.bodyChangesTitle")}
                 </FontedText>
-              ))}
-            </ThemedView>
 
-            <ThemedView
-              backgroundColor="surface"
-              className="p-5 mb-4 shadow-sm rounded-xl"
-            >
-              <FontedText
-                variant="heading-4"
-                fontFamily="comfortaa"
-                colorVariant="secondary"
-                className="mb-4"
+                {splitIntoBulletPoints(weekData.maternal_changes).map(
+                  (change, index) => (
+                    <FontedText
+                      key={index}
+                      variant="body-small"
+                      className="mb-2 leading-5"
+                    >
+                      • {change}
+                    </FontedText>
+                  )
+                )}
+              </ThemedView>
+            )}
+
+            {weekData && weekData.nutrition_advice && (
+              <ThemedView
+                backgroundColor="surface"
+                className="p-5 mb-4 shadow-sm rounded-xl"
               >
-                {t("home.nutritionTipsTitle")}
-              </FontedText>
-
-              {weeklyContent.nutritionTips.map((tip, index) => (
                 <FontedText
-                  key={index}
-                  variant="body-small"
-                  className="mb-2 leading-5"
+                  variant="heading-4"
+                  fontFamily="comfortaa"
+                  colorVariant="secondary"
+                  className="mb-4"
                 >
-                  • {tip}
+                  {t("home.nutritionTipsTitle")}
                 </FontedText>
-              ))}
-            </ThemedView>
+
+                {splitIntoBulletPoints(weekData.nutrition_advice).map(
+                  (tip, index) => (
+                    <FontedText
+                      key={index}
+                      variant="body-small"
+                      className="mb-2 leading-5"
+                    >
+                      • {tip}
+                    </FontedText>
+                  )
+                )}
+              </ThemedView>
+            )}
 
             <TouchableOpacity className="items-center p-4 mb-4 bg-accent dark:bg-accent-dark rounded-xl">
               <FontedText className="text-base font-bold text-white">
@@ -250,16 +278,6 @@ const HomeScreen = () => {
             <TouchableOpacity className="items-center p-4 mb-4 bg-accent dark:bg-accent-dark rounded-xl">
               <FontedText className="text-base font-bold text-white">
                 {t("home.foodGuideButton")}
-              </FontedText>
-            </TouchableOpacity>
-
-            {/* Debug button to purge redux-persist store */}
-            <TouchableOpacity
-              className="items-center p-2 mb-4 bg-red-500 rounded-xl"
-              onPress={handlePurgeStore}
-            >
-              <FontedText className="text-sm font-bold text-white">
-                Debug: Purge Redux Store
               </FontedText>
             </TouchableOpacity>
           </ThemedView>

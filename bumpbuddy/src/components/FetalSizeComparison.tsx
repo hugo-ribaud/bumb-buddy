@@ -32,17 +32,6 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   const { t } = useTranslation();
   const { units } = usePreferences();
 
-  // Debug props
-  console.log(`FetalSizeComparison for week ${weekNumber}:`, {
-    itemName,
-    imageUrl,
-    sizeInCm,
-    sizeInInches,
-    weightInG,
-    weightInOz,
-    compact,
-  });
-
   const isMetric = units === "metric";
 
   const getImageUrl = (url: string) => {

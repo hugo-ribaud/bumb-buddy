@@ -53,10 +53,10 @@ const WeekDetailScreen: React.FC<Props> = () => {
   if (loading) {
     return (
       <SafeAreaWrapper>
-        <ThemedView className="flex-1 justify-center items-center">
+        <ThemedView className="items-center justify-center flex-1">
           <ActivityIndicator
             size="large"
-            color={isDark ? "#60a5fa" : "#007bff"}
+            color={isDark ? "#C2AADF" : "#9B85C4"}
           />
           <FontedText variant="body" className="mt-4" textType="secondary">
             {t("timeline.loading")}
@@ -70,11 +70,11 @@ const WeekDetailScreen: React.FC<Props> = () => {
   if (error || !weekData) {
     return (
       <SafeAreaWrapper>
-        <ThemedView className="flex-1 justify-center items-center p-6">
+        <ThemedView className="items-center justify-center flex-1 p-6">
           <FontedText
             variant="heading-3"
             colorVariant="accent"
-            className="text-center mb-4"
+            className="mb-4 text-center"
           >
             {error || t("timeline.weekNotFound")}
           </FontedText>
@@ -106,7 +106,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             <View className="flex-row items-center">
               <ThemedView
                 backgroundColor="surface-subtle"
-                className="px-3 py-1 rounded-full mr-3"
+                className="px-3 py-1 mr-3 rounded-full"
               >
                 <FontedText variant="body-small" textType="muted">
                   {getTrimester()}
@@ -133,7 +133,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             <View className="px-6 mb-6">
               <ThemedView
                 backgroundColor="surface-elevated"
-                className="rounded-2xl p-6 shadow-lg"
+                className="p-6 shadow-lg rounded-2xl"
                 style={{
                   borderWidth: 1,
                   borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -157,7 +157,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
                 />
                 {fetalSize.description && (
                   <View
-                    className="mt-4 pt-4"
+                    className="pt-4 mt-4"
                     style={{
                       borderTopWidth: 1,
                       borderTopColor: isDark ? "#374151" : "#E5E7EB",
@@ -181,7 +181,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             {/* Development information */}
             <ThemedView
               backgroundColor="surface-elevated"
-              className="rounded-xl p-5 shadow-sm"
+              className="p-5 shadow-sm rounded-xl"
               style={{
                 borderWidth: 1,
                 borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -189,9 +189,9 @@ const WeekDetailScreen: React.FC<Props> = () => {
             >
               <View className="flex-row items-center mb-3">
                 <View
-                  className="w-1 h-6 rounded-full mr-3"
+                  className="w-1 h-6 mr-3 rounded-full"
                   style={{
-                    backgroundColor: isDark ? "#60a5fa" : "#3b82f6",
+                    backgroundColor: isDark ? "#C2AADF" : "#9B85C4",
                   }}
                 />
                 <FontedText variant="heading-4" textType="primary">
@@ -210,7 +210,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             {/* Maternal changes */}
             <ThemedView
               backgroundColor="surface-elevated"
-              className="rounded-xl p-5 shadow-sm"
+              className="p-5 shadow-sm rounded-xl"
               style={{
                 borderWidth: 1,
                 borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -218,7 +218,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             >
               <View className="flex-row items-center mb-3">
                 <View
-                  className="w-1 h-6 rounded-full mr-3"
+                  className="w-1 h-6 mr-3 rounded-full"
                   style={{
                     backgroundColor: isDark ? "#f59e0b" : "#f59e0b",
                   }}
@@ -239,7 +239,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             {/* Common symptoms */}
             <ThemedView
               backgroundColor="surface-elevated"
-              className="rounded-xl p-5 shadow-sm"
+              className="p-5 shadow-sm rounded-xl"
               style={{
                 borderWidth: 1,
                 borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -247,7 +247,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             >
               <View className="flex-row items-center mb-3">
                 <View
-                  className="w-1 h-6 rounded-full mr-3"
+                  className="w-1 h-6 mr-3 rounded-full"
                   style={{
                     backgroundColor: isDark ? "#ec4899" : "#ec4899",
                   }}
@@ -268,7 +268,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             {/* Tips */}
             <ThemedView
               backgroundColor="surface-elevated"
-              className="rounded-xl p-5 shadow-sm"
+              className="p-5 shadow-sm rounded-xl"
               style={{
                 borderWidth: 1,
                 borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -276,7 +276,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             >
               <View className="flex-row items-center mb-3">
                 <View
-                  className="w-1 h-6 rounded-full mr-3"
+                  className="w-1 h-6 mr-3 rounded-full"
                   style={{
                     backgroundColor: isDark ? "#10b981" : "#10b981",
                   }}
@@ -297,7 +297,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             {/* Nutrition advice */}
             <ThemedView
               backgroundColor="surface-elevated"
-              className="rounded-xl p-5 shadow-sm"
+              className="p-5 shadow-sm rounded-xl"
               style={{
                 borderWidth: 1,
                 borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -305,7 +305,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             >
               <View className="flex-row items-center mb-3">
                 <View
-                  className="w-1 h-6 rounded-full mr-3"
+                  className="w-1 h-6 mr-3 rounded-full"
                   style={{
                     backgroundColor: isDark ? "#8b5cf6" : "#8b5cf6",
                   }}
@@ -326,7 +326,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             {/* Medical checkups */}
             <ThemedView
               backgroundColor="surface-elevated"
-              className="rounded-xl p-5 shadow-sm"
+              className="p-5 shadow-sm rounded-xl"
               style={{
                 borderWidth: 1,
                 borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -334,7 +334,7 @@ const WeekDetailScreen: React.FC<Props> = () => {
             >
               <View className="flex-row items-center mb-3">
                 <View
-                  className="w-1 h-6 rounded-full mr-3"
+                  className="w-1 h-6 mr-3 rounded-full"
                   style={{
                     backgroundColor: isDark ? "#ef4444" : "#ef4444",
                   }}

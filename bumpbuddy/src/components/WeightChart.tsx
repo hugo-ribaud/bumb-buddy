@@ -35,13 +35,13 @@ const WeightChart: React.FC<WeightChartProps> = ({ data }) => {
   return (
     <View className="flex-row mt-5 pr-2.5 h-50">
       <View className="w-[50px] h-[150px] justify-between py-1.5">
-        <Text className="text-xs text-gray-500 text-right">
+        <Text className="text-xs text-right text-gray-500">
           {scaledMax.toFixed(1)} kg
         </Text>
-        <Text className="text-xs text-gray-500 text-right">
+        <Text className="text-xs text-right text-gray-500">
           {((scaledMax + scaledMin) / 2).toFixed(1)} kg
         </Text>
-        <Text className="text-xs text-gray-500 text-right">
+        <Text className="text-xs text-right text-gray-500">
           {scaledMin.toFixed(1)} kg
         </Text>
       </View>
@@ -57,7 +57,7 @@ const WeightChart: React.FC<WeightChartProps> = ({ data }) => {
           {chartData.map((item) => (
             <View key={item.id} className="items-center justify-end">
               <View
-                className="w-5 bg-blue-500 rounded-t-sm"
+                className="w-5 bg-purple-500 rounded-t-sm"
                 style={{ height: getBarHeight(item.weight) }}
               />
               <Text className="text-xs text-gray-800 mt-1.5">

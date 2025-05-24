@@ -68,7 +68,7 @@ const FoodItem = ({
 
   return (
     <Pressable
-      className="mx-4 mb-4 rounded-2xl shadow-sm overflow-hidden"
+      className="mx-4 mb-4 overflow-hidden shadow-sm rounded-2xl"
       style={{
         backgroundColor: isDark ? "#1f2937" : "#FFFFFF",
         elevation: 2,
@@ -94,7 +94,7 @@ const FoodItem = ({
 
           {/* Safety indicator circle */}
           <View
-            className="w-12 h-12 rounded-full items-center justify-center"
+            className="items-center justify-center w-12 h-12 rounded-full"
             style={{ backgroundColor: safetyConfig.bgColor }}
           >
             <View
@@ -123,7 +123,7 @@ const FoodItem = ({
 
         {/* View details indicator */}
         <View
-          className="mt-4 pt-3"
+          className="pt-3 mt-4"
           style={{
             borderTopWidth: 1,
             borderTopColor: isDark ? "#374151" : "#E5E7EB",
@@ -132,7 +132,7 @@ const FoodItem = ({
           <FontedText
             variant="body-small"
             className={`text-center font-medium ${
-              isDark ? "text-blue-400" : "text-blue-600"
+              isDark ? "text-purple-300" : "text-purple-600"
             }`}
           >
             {t("foodGuide.viewDetails")} →
@@ -196,7 +196,7 @@ const FoodDetailsModal = ({
       visible={visible}
       onRequestClose={onClose}
     >
-      <View className="flex-1 justify-end bg-black/50">
+      <View className="justify-end flex-1 bg-black/50">
         <ThemedView
           backgroundColor="surface-elevated"
           className="rounded-t-3xl shadow-lg max-h-[85%]"
@@ -216,7 +216,7 @@ const FoodDetailsModal = ({
             </FontedText>
             <TouchableOpacity
               onPress={onClose}
-              className="w-10 h-10 rounded-full items-center justify-center"
+              className="items-center justify-center w-10 h-10 rounded-full"
               style={{
                 backgroundColor: isDark ? "#374151" : "#f3f4f6",
               }}
@@ -237,7 +237,7 @@ const FoodDetailsModal = ({
                 <FontedText
                   variant="heading-4"
                   style={{ color: safetyConfig.color }}
-                  className="text-center font-semibold"
+                  className="font-semibold text-center"
                 >
                   {safetyConfig.text}
                 </FontedText>
@@ -248,9 +248,9 @@ const FoodDetailsModal = ({
                 <View className="mb-6">
                   <View className="flex-row items-center mb-3">
                     <View
-                      className="w-1 h-6 rounded-full mr-3"
+                      className="w-1 h-6 mr-3 rounded-full"
                       style={{
-                        backgroundColor: isDark ? "#60a5fa" : "#3b82f6",
+                        backgroundColor: isDark ? "#C2AADF" : "#9B85C4",
                       }}
                     />
                     <FontedText variant="heading-4" textType="primary">
@@ -272,7 +272,7 @@ const FoodDetailsModal = ({
                 <View className="mb-6">
                   <View className="flex-row items-center mb-3">
                     <View
-                      className="w-1 h-6 rounded-full mr-3"
+                      className="w-1 h-6 mr-3 rounded-full"
                       style={{
                         backgroundColor: isDark ? "#10b981" : "#10b981",
                       }}
@@ -316,8 +316,8 @@ const CategoryPill = ({
       style={{
         backgroundColor: isSelected
           ? isDark
-            ? "#1e40af"
-            : "#2563eb"
+            ? "#9B85C4"
+            : "#C2AADF"
           : isDark
           ? "#374151"
           : "#f8fafc",
@@ -325,8 +325,8 @@ const CategoryPill = ({
         borderWidth: 1,
         borderColor: isSelected
           ? isDark
-            ? "#3b82f6"
-            : "#2563eb"
+            ? "#C2AADF"
+            : "#9B85C4"
           : isDark
           ? "#4b5563"
           : "#e2e8f0",
@@ -367,7 +367,7 @@ const SafetyFilterButton = ({
       if (safetyColor) {
         return { backgroundColor: safetyColor };
       }
-      return { backgroundColor: isDark ? "#1e40af" : "#2563eb" };
+      return { backgroundColor: isDark ? "#9B85C4" : "#C2AADF" };
     }
     return {
       backgroundColor: isDark ? "#374151" : "#f8fafc",
@@ -378,7 +378,7 @@ const SafetyFilterButton = ({
 
   return (
     <TouchableOpacity
-      className="px-4 py-2 mr-3 rounded-xl shadow-sm"
+      className="px-4 py-2 mr-3 shadow-sm rounded-xl"
       style={getButtonStyle()}
       onPress={() => onPress(value)}
     >
@@ -535,7 +535,7 @@ const FoodGuideScreen = () => {
         {/* Search Bar */}
         <View className="px-6 mb-4">
           <View
-            className="flex-row items-center px-4 py-3 rounded-2xl shadow-sm"
+            className="flex-row items-center px-4 py-3 shadow-sm rounded-2xl"
             style={{
               backgroundColor: isDark ? "#1f2937" : "#FFFFFF",
               borderWidth: 1,
@@ -619,20 +619,20 @@ const FoodGuideScreen = () => {
 
         {/* Food List */}
         {loading ? (
-          <View className="flex-1 justify-center items-center">
+          <View className="items-center justify-center flex-1">
             <ActivityIndicator
               size="large"
-              color={isDark ? "#60a5fa" : "#2563eb"}
+              color={isDark ? "#C2AADF" : "#9B85C4"}
             />
             <FontedText variant="body" textType="secondary" className="mt-4">
               {t("foodGuide.loading")}
             </FontedText>
           </View>
         ) : error ? (
-          <View className="flex-1 justify-center items-center px-6">
+          <View className="items-center justify-center flex-1 px-6">
             <ThemedView
               backgroundColor="surface-elevated"
-              className="w-full max-w-sm p-6 rounded-2xl shadow-sm"
+              className="w-full max-w-sm p-6 shadow-sm rounded-2xl"
               style={{
                 borderWidth: 1,
                 borderColor: isDark ? "#374151" : "#E5E7EB",
@@ -641,21 +641,21 @@ const FoodGuideScreen = () => {
               <FontedText
                 variant="heading-3"
                 colorVariant="accent"
-                className="text-center mb-4"
+                className="mb-4 text-center"
               >
                 {t("common.errors.generic")}
               </FontedText>
               <FontedText
                 variant="body"
                 textType="secondary"
-                className="text-center mb-6"
+                className="mb-6 text-center"
               >
                 {error}
               </FontedText>
               <TouchableOpacity
-                className="px-6 py-3 rounded-xl items-center"
+                className="items-center px-6 py-3 rounded-xl"
                 style={{
-                  backgroundColor: isDark ? "#1e40af" : "#2563eb",
+                  backgroundColor: isDark ? "#9B85C4" : "#C2AADF",
                 }}
                 onPress={() => {
                   setError(null);
@@ -680,7 +680,7 @@ const FoodGuideScreen = () => {
                     });
                 }}
               >
-                <FontedText className="text-white font-semibold">
+                <FontedText className="font-semibold text-white">
                   {t("foodGuide.tryAgain")}
                 </FontedText>
               </TouchableOpacity>
@@ -696,20 +696,20 @@ const FoodGuideScreen = () => {
             contentContainerStyle={{ paddingBottom: 20 }}
             showsVerticalScrollIndicator={false}
             ListEmptyComponent={
-              <View className="flex-1 justify-center items-center py-16 px-6">
+              <View className="items-center justify-center flex-1 px-6 py-16">
                 <ThemedView
                   backgroundColor="surface-elevated"
-                  className="w-full max-w-sm p-8 rounded-2xl shadow-sm items-center"
+                  className="items-center w-full max-w-sm p-8 shadow-sm rounded-2xl"
                   style={{
                     borderWidth: 1,
                     borderColor: isDark ? "#374151" : "#E5E7EB",
                   }}
                 >
-                  <FontedText className="text-6xl mb-4">🔍</FontedText>
+                  <FontedText className="mb-4 text-6xl">🔍</FontedText>
                   <FontedText
                     variant="heading-4"
                     textType="primary"
-                    className="text-center mb-2"
+                    className="mb-2 text-center"
                   >
                     {t("foodGuide.noResults")}
                   </FontedText>
