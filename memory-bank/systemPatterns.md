@@ -1,8 +1,8 @@
 # System Patterns: BumpBuddy
 
-_Version: 1.1_
+_Version: 1.2_
 _Created: 2025-05-06_
-_Last Updated: 2025-05-19_
+_Last Updated: 2025-05-24_
 
 ## Architecture Overview
 
@@ -353,6 +353,22 @@ CREATE TRIGGER on_auth_user_updated
   FOR EACH ROW
   EXECUTE FUNCTION public.handle_user_update();
 ```
+
+## UI/UX Design Patterns
+
+### Timeline Enhancement Pattern
+
+- **Image-First Design**: Replaced text-based week indicators with visual fetal size images for better user engagement
+- **Space Optimization**: Consolidated information by removing redundant components while maintaining access to detailed data
+- **Progressive Disclosure**: Summary view in timeline, detailed view in dedicated screens
+- **Fallback Strategy**: Graceful degradation to text when images are unavailable
+- **Status Visualization**: Visual indicators (borders, colors) to show week progress status
+
+### Component Reusability Pattern
+
+- **Conditional Rendering**: Components adapt based on available data (image vs. text fallback)
+- **Prop-Based Customization**: Components accept configuration for different display modes
+- **Context-Aware Styling**: Components respond to theme and language context changes
 
 ---
 

@@ -1,8 +1,8 @@
 # Technical Context: BumpBuddy
 
-_Version: 1.1_
+_Version: 1.2_
 _Created: 2025-05-06_
-_Last Updated: 2025-05-19_
+_Last Updated: 2025-05-24_
 
 ## Tech Stack
 
@@ -475,6 +475,46 @@ interface TimelineState {
   error: string | null;
 }
 ```
+
+## Recent Technical Implementations
+
+### Fetal Size Image Integration (2025-05-24)
+
+**Database Schema Updates**:
+
+- Extended `fetal_size_comparisons` table with entries for weeks 1-4
+- Added comprehensive translation support via `fetal_size_translations` table
+- Ensured consistent image URL structure using `fetal_size_images` bucket
+
+**Component Architecture**:
+
+- Enhanced TimelineScreen with image-first design approach
+- Implemented conditional rendering pattern for image/text fallback
+- Removed redundant FetalSizeComparison component from timeline cards
+- Maintained detailed view in WeekDetailScreen for comprehensive information
+
+**Image Handling Pattern**:
+
+```typescript
+// Conditional rendering pattern used in TimelineScreen
+{
+  weekFetalSize?.image_url ? (
+    <Image
+      source={{ uri: weekFetalSize.image_url }}
+      className="w-full h-full"
+      resizeMode="cover"
+    />
+  ) : (
+    <FontedText variant="body-small">{item.week}</FontedText>
+  );
+}
+```
+
+**Visual Status Indicators**:
+
+- Dynamic border styling based on week progress status
+- Color-coded indicators for current, past, and future weeks
+- Theme-aware styling for dark/light mode compatibility
 
 ---
 
