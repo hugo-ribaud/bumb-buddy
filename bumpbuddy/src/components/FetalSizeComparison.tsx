@@ -67,9 +67,20 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
 
   // Get translated content based on current language
   const getTranslatedName = () => {
-    // If we have translations for the current language, use them
-    if (translatedContent && translatedContent[currentLanguage]?.name) {
-      return translatedContent[currentLanguage].name;
+    try {
+      // If we have translations for the current language, use them
+      if (
+        translatedContent &&
+        typeof translatedContent === "object" &&
+        Object.keys(translatedContent).length > 0 &&
+        currentLanguage &&
+        translatedContent[currentLanguage] &&
+        translatedContent[currentLanguage].name
+      ) {
+        return translatedContent[currentLanguage].name;
+      }
+    } catch (error) {
+      console.error("Error getting translated name:", error);
     }
 
     // Fallback to the default name
@@ -77,9 +88,20 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   };
 
   const getTranslatedDescription = () => {
-    // If we have translations for the current language, use them
-    if (translatedContent && translatedContent[currentLanguage]?.description) {
-      return translatedContent[currentLanguage].description;
+    try {
+      // If we have translations for the current language, use them
+      if (
+        translatedContent &&
+        typeof translatedContent === "object" &&
+        Object.keys(translatedContent).length > 0 &&
+        currentLanguage &&
+        translatedContent[currentLanguage] &&
+        translatedContent[currentLanguage].description
+      ) {
+        return translatedContent[currentLanguage].description;
+      }
+    } catch (error) {
+      console.error("Error getting translated description:", error);
     }
 
     // No description or translation

@@ -9,9 +9,14 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  fetchAllFetalSizes,
+  fetchAllFetalSizesWithTranslations,
+  setCurrentLanguage,
+} from "../redux/slices/fetalSizeSlice";
+import {
   fetchAllWeeks,
-  fetchCurrentWeekData,
-  selectWeek,
+  fetchCurrentWeek,
+  fetchWeekData,
 } from "../redux/slices/timelineSlice";
 import { AppDispatch, RootState } from "../redux/store";
 
@@ -22,13 +27,12 @@ import FontedText from "../components/FontedText";
 import SafeAreaWrapper from "../components/SafeAreaWrapper";
 import ThemedView from "../components/ThemedView";
 import { useTheme } from "../contexts/ThemeContext";
-import { fetchAllFetalSizes } from "../redux/slices/fetalSizeSlice";
 import timelineService from "../services/timelineService";
 
 type Props = {};
 
 const TimelineScreen: React.FC<Props> = () => {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const dispatch = useDispatch<AppDispatch>();
   const navigation = useNavigation();
   const [activeTab, setActiveTab] = useState<1 | 2 | 3>(1);
@@ -41,16 +45,29 @@ const TimelineScreen: React.FC<Props> = () => {
   const fetalSizeData = useSelector(
     (state: RootState) => state.fetalSize.allComparisons
   );
+  const translatedFetalSizes = useSelector(
+    (state: RootState) => state.fetalSize.translatedComparisons
+  );
+  const currentLanguage = useSelector(
+    (state: RootState) => state.fetalSize.currentLanguage
+  );
   const { user } = useSelector((state: RootState) => state.auth);
 
   // Fetch weeks data on component mount
   useEffect(() => {
     dispatch(fetchAllWeeks());
     dispatch(fetchAllFetalSizes());
+    // Fetch translations for all supported languages
+    dispatch(fetchAllFetalSizesWithTranslations(["en", "fr", "es"]));
     if (user?.dueDate) {
-      dispatch(fetchCurrentWeekData(user.dueDate));
+      dispatch(fetchCurrentWeek(user.dueDate));
     }
   }, [dispatch, user?.dueDate]);
+
+  // Set current language based on i18n settings
+  useEffect(() => {
+    dispatch(setCurrentLanguage(i18n.language));
+  }, [dispatch, i18n.language]);
 
   // Debug fetal size data
   useEffect(() => {
@@ -71,8 +88,12 @@ const TimelineScreen: React.FC<Props> = () => {
       await timelineService.clearCache();
       // Refresh data after clearing cache
       await dispatch(fetchAllWeeks()).unwrap();
+      await dispatch(fetchAllFetalSizes()).unwrap();
+      await dispatch(
+        fetchAllFetalSizesWithTranslations(["en", "fr", "es"])
+      ).unwrap();
       if (user?.dueDate) {
-        await dispatch(fetchCurrentWeekData(user.dueDate)).unwrap();
+        await dispatch(fetchCurrentWeek(user.dueDate)).unwrap();
       }
       Alert.alert("Success", "Timeline data refreshed successfully");
     } catch (error) {
@@ -92,7 +113,7 @@ const TimelineScreen: React.FC<Props> = () => {
 
   // Handle week selection
   const handleWeekSelect = (weekNumber: number) => {
-    dispatch(selectWeek(weekNumber));
+    dispatch(fetchWeekData(weekNumber));
     navigation.navigate("WeekDetail" as never);
   };
 
@@ -112,10 +133,40 @@ const TimelineScreen: React.FC<Props> = () => {
     }
   };
 
+  // Get translated data for a specific week
+  const getTranslatedFetalSize = (weekNumber: number) => {
+    if (!translatedFetalSizes || translatedFetalSizes.length === 0) {
+      return undefined;
+    }
+    return translatedFetalSizes.find((item) => item.week === weekNumber);
+  };
+
   // Render each week item
   const renderWeekItem = ({ item }: { item: any }) => {
+    if (!item) return null;
+
     const isCurrentWeek = item.week === currentWeek;
-    const weekFetalSize = fetalSizeData.find((size) => size.week === item.week);
+    const weekFetalSize = fetalSizeData?.find(
+      (size) => size?.week === item.week
+    );
+    const translatedFetalSize = getTranslatedFetalSize(item.week);
+
+    // Get the translated name if available
+    const getItemName = () => {
+      try {
+        if (
+          translatedFetalSize &&
+          translatedFetalSize.translatedContent &&
+          translatedFetalSize.translatedContent[currentLanguage] &&
+          translatedFetalSize.translatedContent[currentLanguage].name
+        ) {
+          return translatedFetalSize.translatedContent[currentLanguage].name;
+        }
+      } catch (error) {
+        console.error("Error getting item name:", error);
+      }
+      return weekFetalSize?.name || "";
+    };
 
     return (
       <Pressable
@@ -145,8 +196,10 @@ const TimelineScreen: React.FC<Props> = () => {
         {weekFetalSize ? (
           <FetalSizeComparison
             weekNumber={item.week}
-            itemName={weekFetalSize.name}
-            imageUrl={weekFetalSize.image_url}
+            itemName={getItemName()}
+            imageUrl={weekFetalSize.image_url || ""}
+            translatedContent={translatedFetalSize?.translatedContent || {}}
+            currentLanguage={currentLanguage || "en"}
             compact={true}
           />
         ) : (
@@ -177,6 +230,29 @@ const TimelineScreen: React.FC<Props> = () => {
       <ThemedView className="flex-1 p-4">
         <View className="flex-row items-center justify-between mb-2">
           <FontedText variant="heading-2">{t("timeline.title")}</FontedText>
+
+          {/* Language selector */}
+          <View className="flex-row items-center mr-2">
+            {["en", "fr", "es"].map((lang) => (
+              <TouchableOpacity
+                key={lang}
+                onPress={() => dispatch(setCurrentLanguage(lang))}
+                className={`px-2 py-1 mx-1 rounded-md ${
+                  currentLanguage === lang ? "bg-blue-500" : "bg-gray-200"
+                }`}
+              >
+                <FontedText
+                  variant="caption"
+                  colorVariant={
+                    currentLanguage === lang ? "primary" : "secondary"
+                  }
+                >
+                  {lang.toUpperCase()}
+                </FontedText>
+              </TouchableOpacity>
+            ))}
+          </View>
+
           <TouchableOpacity
             className="px-3 py-1.5 rounded bg-primary dark:bg-primary-dark"
             style={{
@@ -193,7 +269,8 @@ const TimelineScreen: React.FC<Props> = () => {
 
         {/* Debug info */}
         <FontedText variant="caption" colorVariant="secondary" className="mb-2">
-          Weeks loaded: {allWeeks.length} | Filtered: {filteredWeeks.length}
+          Weeks loaded: {allWeeks.length} | Filtered: {filteredWeeks.length} |
+          Language: {currentLanguage}
         </FontedText>
 
         {/* Trimester tabs */}
