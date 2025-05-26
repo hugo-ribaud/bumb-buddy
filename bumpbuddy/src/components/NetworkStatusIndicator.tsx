@@ -18,7 +18,7 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
   const { t } = useTranslation();
   const { isConnected, isOffline, pendingSyncCount, lastOnlineTime } =
     useNetwork();
-  const { isDarkMode } = useTheme();
+  const { isDark } = useTheme();
   const [expanded, setExpanded] = useState(false);
   const [visible, setVisible] = useState(false);
   const fadeAnim = React.useRef(new Animated.Value(0)).current;
@@ -52,7 +52,7 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
   }
 
   // Define colors based on theme
-  const backgroundColor = isDarkMode
+  const backgroundColor = isDark
     ? isOffline
       ? "#33272b"
       : "#263333"
@@ -60,7 +60,7 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
     ? "#ffe5e5"
     : "#e5f0f0";
 
-  const textColor = isDarkMode
+  const textColor = isDark
     ? isOffline
       ? "#ff8080"
       : "#80ffdd"

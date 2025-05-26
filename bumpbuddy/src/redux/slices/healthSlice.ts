@@ -2,6 +2,7 @@ import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import healthService, {
   BloodPressureLog,
   Contraction,
+  ExerciseLog,
   KickCount,
   MoodLog,
   SleepLog,

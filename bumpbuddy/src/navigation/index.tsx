@@ -19,12 +19,13 @@ import { RootState } from "../redux/store";
 import AppointmentsScreen from "../screens/AppointmentsScreen";
 import AuthScreen from "../screens/auth/AuthScreen";
 import FoodGuideScreen from "../screens/FoodGuideScreen";
-import HealthTrackerScreen from "../screens/HealthTrackerScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import TimelineScreen from "../screens/TimelineScreen";
 import WeekDetailScreen from "../screens/WeekDetailScreen";
 import authService from "../services/authService";
+
+// import HealthTrackerScreen from "../screens/HealthTrackerScreen"; // Temporarily disabled for v1.0 release
 
 // Define types for our navigation
 export type RootStackParamList = {
@@ -36,7 +37,7 @@ export type MainTabParamList = {
   Home: undefined;
   Timeline: undefined;
   FoodGuide: undefined;
-  HealthTracker: undefined;
+  // HealthTracker: undefined; // Temporarily disabled for v1.0 release
   Appointments: undefined;
   Profile: undefined;
 };
@@ -94,8 +95,8 @@ const MainTabNavigator = () => {
             iconName = focused ? "calendar" : "calendar-outline";
           } else if (route.name === "FoodGuide") {
             iconName = focused ? "restaurant" : "restaurant-outline";
-          } else if (route.name === "HealthTracker") {
-            iconName = focused ? "heart" : "heart-outline";
+            // } else if (route.name === "HealthTracker") {
+            //   iconName = focused ? "heart" : "heart-outline"; // Temporarily disabled for v1.0 release
           } else if (route.name === "Appointments") {
             iconName = focused ? "calendar" : "calendar-outline";
           } else if (route.name === "Profile") {
@@ -128,11 +129,12 @@ const MainTabNavigator = () => {
         component={FoodGuideScreen}
         options={{ title: "Food Guide" }}
       />
-      <Tab.Screen
+      {/* <Tab.Screen
         name="HealthTracker"
         component={HealthTrackerScreen}
         options={{ title: "Health" }}
-      />
+      /> */}
+      {/* HealthTracker temporarily disabled for v1.0 release */}
       <Tab.Screen name="Appointments" component={AppointmentsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />
     </Tab.Navigator>

@@ -14,6 +14,8 @@ _Last Updated: 2025-01-27_
 
 **Next Priority: App Store Preparation and Deployment**: With the app now production-ready, focus is shifting to app store preparation, final testing, and deployment processes.
 
+**Health Tracker Feature Temporarily Disabled**: The health tracker feature has been temporarily removed from the navigation for the v1.0 release to simplify the initial launch. The code files are preserved for future implementation as a potential premium feature.
+
 ## Immediate Next Steps
 
 1. ✅ Fix Supabase/Expo build error (Node.js dependency workaround)
