@@ -18,8 +18,6 @@ const realtimeService = {
     onError,
   }: RealtimeSubscriptionParams) => {
     try {
-      console.log("Setting up Users table subscription...");
-
       // Enable realtime for this channel
       const subscription = supabase
         .channel("public:users")
@@ -27,7 +25,6 @@ const realtimeService = {
           "postgres_changes",
           { event: "INSERT", schema: "public", table: "users" },
           (payload) => {
-            console.log("User INSERT event:", payload);
             if (onInsert) onInsert(payload);
           }
         )
@@ -35,7 +32,6 @@ const realtimeService = {
           "postgres_changes",
           { event: "UPDATE", schema: "public", table: "users" },
           (payload) => {
-            console.log("User UPDATE event:", payload);
             if (onUpdate) onUpdate(payload);
           }
         )
@@ -43,13 +39,10 @@ const realtimeService = {
           "postgres_changes",
           { event: "DELETE", schema: "public", table: "users" },
           (payload) => {
-            console.log("User DELETE event:", payload);
             if (onDelete) onDelete(payload);
           }
         )
-        .subscribe((status) => {
-          console.log("Users subscription status:", status);
-        });
+        .subscribe();
 
       // Return the subscription object so it can be unsubscribed later
       return subscription;
@@ -65,7 +58,6 @@ const realtimeService = {
     if (subscription) {
       try {
         supabase.removeChannel(subscription);
-        console.log("Unsubscribed from channel");
       } catch (error) {
         console.error("Error unsubscribing from channel:", error);
       }

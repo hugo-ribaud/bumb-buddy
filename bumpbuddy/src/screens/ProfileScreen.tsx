@@ -52,14 +52,12 @@ const ProfileScreen = () => {
   useEffect(() => {
     if (!user) return;
 
-    console.log("Setting up Realtime subscription for Users table...");
     setRealtimeStatus(t("common.labels.loading"));
 
     const subscription = realtimeService.subscribeToUsers({
       onUpdate: (payload) => {
         // Only update if it's the current user's record
         if (payload.new && payload.new.id === user.id) {
-          console.log("Current user updated:", payload.new);
           setLastUpdate(
             `${t("profile.profileUpdated")} ${new Date().toLocaleTimeString()}`
           );
@@ -82,7 +80,6 @@ const ProfileScreen = () => {
                 savedTheme === "system"
               ) {
                 updateTheme(savedTheme);
-                console.log("Theme updated from remote:", savedTheme);
               }
             }
           }
@@ -106,7 +103,6 @@ const ProfileScreen = () => {
     return () => {
       if (subscription) {
         realtimeService.unsubscribe(subscription);
-        console.log("Cleaned up Realtime subscription");
       }
     };
   }, [user, dispatch, t]);

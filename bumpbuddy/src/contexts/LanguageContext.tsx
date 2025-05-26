@@ -3,17 +3,18 @@
  * Manages language state and provides language switching functionality
  */
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import i18next from "i18next";
 import React, {
-  createContext,
   ReactNode,
+  createContext,
   useContext,
   useEffect,
   useState,
 } from "react";
-import { useSelector } from "react-redux";
 import { isRTL, supportedLanguages } from "../i18n/languages";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import i18next from "i18next";
+import { useSelector } from "react-redux";
 import { RootState } from "../redux/store";
 import authService from "../services/authService";
 
@@ -106,7 +107,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
               language: lang,
             },
           });
-          console.log(`Language preference (${lang}) saved to user profile`);
         } catch (error) {
           console.error(
             "Failed to save language preference to profile:",
@@ -114,8 +114,6 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
           );
         }
       }
-
-      console.log(`Language changed to ${lang}`);
     } catch (error) {
       console.error("Failed to change language:", error);
     }

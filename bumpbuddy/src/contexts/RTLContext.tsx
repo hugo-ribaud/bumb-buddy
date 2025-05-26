@@ -61,7 +61,6 @@ export const RTLProvider: React.FC<RTLProviderProps> = ({ children }) => {
         // In a real app, we would need to restart the app here
         // to fully apply RTL changes, as some components may not
         // respond to runtime RTL changes.
-        console.log("RTL direction changed. App restart recommended.");
       }
     }
   };

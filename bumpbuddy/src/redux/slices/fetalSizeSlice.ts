@@ -21,14 +21,6 @@ export const fetchAllFetalSizes = createAsyncThunk(
   "fetalSize/fetchAll",
   async (language: string = "en") => {
     const data = await fetalSizeService.getAll(language);
-    console.log(
-      `Redux: fetchAllFetalSizes received data for ${language}:`,
-      data.length,
-      "items"
-    );
-    if (data.length > 0) {
-      console.log("Redux: First item sample:", data[0]);
-    }
     return data;
   }
 );
@@ -37,10 +29,6 @@ export const fetchFetalSizeByWeek = createAsyncThunk(
   "fetalSize/fetchByWeek",
   async ({ week, language = "en" }: { week: number; language?: string }) => {
     const data = await fetalSizeService.getByWeek(week, language);
-    console.log(
-      `Redux: fetchFetalSizeByWeek for week ${week} in ${language} received:`,
-      data
-    );
     return data;
   }
 );

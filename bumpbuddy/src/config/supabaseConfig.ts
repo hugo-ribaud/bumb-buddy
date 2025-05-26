@@ -1,11 +1,12 @@
 import { EXPO_PUBLIC_SUPABASE_ANON_KEY, EXPO_PUBLIC_SUPABASE_URL } from "@env";
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { createClient } from "@supabase/supabase-js";
 
 // Configure with AsyncStorage for persistent sessions
 const supabase = createClient(
-  EXPO_PUBLIC_SUPABASE_URL || "http://localhost:54321",
-  EXPO_PUBLIC_SUPABASE_ANON_KEY || "placeholder-anon-key",
+  EXPO_PUBLIC_SUPABASE_URL,
+  EXPO_PUBLIC_SUPABASE_ANON_KEY,
   {
     auth: {
       storage: AsyncStorage,
@@ -18,20 +19,15 @@ const supabase = createClient(
   }
 );
 
-// Initialize Realtime for testing
+// Initialize Realtime
 const initRealtime = async () => {
   try {
-    console.log("Initializing Supabase Realtime...");
     // Test connection
     const { error } = await supabase
       .from("users")
       .select("count", { count: "exact", head: true });
     if (error) {
       console.error("Supabase connection test failed:", error.message);
-    } else {
-      console.log(
-        "Supabase connection successful, Realtime should be available"
-      );
     }
   } catch (error) {
     console.error("Error initializing Realtime:", error);

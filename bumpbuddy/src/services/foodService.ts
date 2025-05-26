@@ -470,21 +470,16 @@ const foodService: FoodService = {
   // Set up realtime subscription for foods table
   subscribeToFoods: (callback: (payload: any) => void) => {
     try {
-      console.log("Setting up Foods table subscription...");
-
       const subscription = supabase
         .channel("public:foods")
         .on(
           "postgres_changes",
           { event: "*", schema: "public", table: "foods" },
           (payload) => {
-            console.log("Food change event:", payload);
             callback(payload);
           }
         )
-        .subscribe((status) => {
-          console.log("Foods subscription status:", status);
-        });
+        .subscribe();
 
       return subscription;
     } catch (error) {
@@ -498,7 +493,6 @@ const foodService: FoodService = {
     if (subscription) {
       try {
         supabase.removeChannel(subscription);
-        console.log("Unsubscribed from foods channel");
       } catch (error) {
         console.error("Error unsubscribing from foods channel:", error);
       }

@@ -15,7 +15,6 @@ import {
 import React, { createContext, useContext, useEffect, useState } from "react";
 
 import { useFonts } from "expo-font";
-import { checkAndPopulateFetalSizeData } from "../utils/fetalSizeTestData";
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -48,10 +47,7 @@ export const FontProvider: React.FC<{ children: React.ReactNode }> = ({
       try {
         // Wait for fonts to load
         if (fontsLoaded) {
-          // Check and populate fetal size data if needed
-          await checkAndPopulateFetalSizeData();
-
-          // Artificially delay for two seconds to simulate preparation
+          // Artificially delay for half a second to simulate preparation
           await new Promise((resolve) => setTimeout(resolve, 500));
         }
       } catch (e) {

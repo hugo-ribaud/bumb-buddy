@@ -95,14 +95,11 @@ const resources = {
   },
 };
 
-// Get dev mode from environment
-const isDev = process.env.NODE_ENV === "development";
-
 // Initialize i18next with properly typed options
 const i18nOptions = {
   resources,
   fallbackLng: defaultLanguage,
-  debug: isDev,
+  debug: false,
   interpolation: {
     escapeValue: false, // React already escapes values
   },
