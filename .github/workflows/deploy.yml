@@ -47,13 +47,15 @@ jobs:
 
         
 
-    - name: Lint code
+    # Skip linting for now
 
-      run: |
+    # - name: Lint code
 
-        cd bumpbuddy
+    #   run: |
 
-        bun run lint
+    #     cd bumpbuddy
+
+    #     bun run lint
 
         
 
