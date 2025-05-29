@@ -1,0 +1,83 @@
+
+name: Deploy Bumb Buddy
+
+
+
+on:
+
+  push:
+
+    branches: [ main, master ]
+
+
+
+jobs:
+
+  deploy:
+
+    runs-on: ubuntu-latest
+
+    
+
+    steps:
+
+    - name: Checkout code
+
+      uses: actions/checkout@v4
+
+      
+
+    - name: Setup Bun
+
+      uses: oven-sh/setup-bun@v1
+
+      with:
+
+        bun-version: latest
+
+        
+
+    - name: Install dependencies
+
+      run: |
+
+        cd bumpbuddy
+
+        bun install
+
+        
+
+    - name: Lint code
+
+      run: |
+
+        cd bumpbuddy
+
+        bun run lint
+
+        
+
+    - name: Deploy to VPS
+
+      uses: appleboy/ssh-action@v1.0.3
+
+      with:
+
+        host: ${{ secrets.HOST }}
+
+        username: ${{ secrets.USERNAME }}
+
+        key: ${{ secrets.SSH_KEY }}
+
+        script: |
+
+          cd /var/www/expo-app
+
+          git pull origin main
+
+          cd bumpbuddy
+
+          bun install
+
+          pm2 restart bumb-buddy
+
