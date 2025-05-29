@@ -1,85 +1,64 @@
-
 name: Deploy Bumb Buddy
 
-
-
 on:
-
   push:
-
-    branches: [ main, master ]
-
-
+    branches: [main, master]
 
 jobs:
-
   deploy:
-
     runs-on: ubuntu-latest
 
-    
-
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-    - name: Checkout code
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
 
-      uses: actions/checkout@v4
-
-      
-
-    - name: Setup Bun
-
-      uses: oven-sh/setup-bun@v1
-
-      with:
-
-        bun-version: latest
-
-        
-
-    - name: Install dependencies
-
-      run: |
-
-        cd bumpbuddy
-
-        bun install
-
-        
-
-    # Skip linting for now
-
-    # - name: Lint code
-
-    #   run: |
-
-    #     cd bumpbuddy
-
-    #     bun run lint
-
-        
-
-    - name: Deploy to VPS
-
-      uses: appleboy/ssh-action@v1.0.3
-
-      with:
-
-        host: ${{ secrets.HOST }}
-
-        username: ${{ secrets.USERNAME }}
-
-        key: ${{ secrets.SSH_KEY }}
-
-        script: |
-
-          cd /var/www/expo-app
-
-          git pull origin main
-
+      - name: Install dependencies
+        run: |
           cd bumpbuddy
-
           bun install
 
-          pm2 restart bumb-buddy
+      # Skip linting for now
+      # - name: Lint code
+      #   run: |
+      #     cd bumpbuddy
+      #     bun run lint
 
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1.2.2
+        with:
+          host: ${{ secrets.HOST }}
+          username: ${{ secrets.USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          script: |
+            set -e  # Exit on any error
+            echo "Starting deployment..."
+
+            cd /var/www/expo-app
+            echo "Pulling latest changes..."
+            git pull origin main
+
+            cd bumpbuddy
+            echo "Installing dependencies..."
+            bun install
+
+            echo "Restarting PM2 service..."
+            # Try different possible service names
+            if pm2 list | grep -q "bumb-buddy"; then
+              pm2 restart bumb-buddy
+            elif pm2 list | grep -q "bumpbuddy"; then
+              pm2 restart bumpbuddy
+            elif pm2 list | grep -q "expo-app"; then
+              pm2 restart expo-app
+            else
+              echo "Warning: No matching PM2 process found. Available processes:"
+              pm2 list
+              echo "Attempting to start new process..."
+              pm2 start bun --name bumb-buddy -- start
+            fi
+
+            echo "Deployment completed successfully!"
