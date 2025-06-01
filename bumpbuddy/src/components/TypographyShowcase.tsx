@@ -1,7 +1,7 @@
-import FontedText from './FontedText';
+import FontedText from '@/components/FontedText';
+import ThemedView from '@/components/ThemedView';
 import React from 'react';
 import { ScrollView } from 'react-native';
-import ThemedView from './ThemedView';
 
 interface TypographyShowcaseProps {
   className?: string;
@@ -13,7 +13,7 @@ const TypographyShowcase: React.FC<TypographyShowcaseProps> = ({
 }) => {
   return (
     <ScrollView className={`p-4 ${className}`}>
-      <ThemedView backgroundColor='surface' className='p-4 rounded-xl mb-6'>
+      <ThemedView backgroundColor='surface' className='p-4 mb-6 rounded-xl'>
         <FontedText variant='heading-3' className='mb-4'>
           Poppins Font Family
         </FontedText>
@@ -50,7 +50,7 @@ const TypographyShowcase: React.FC<TypographyShowcaseProps> = ({
         </FontedText>
       </ThemedView>
 
-      <ThemedView backgroundColor='surface' className='p-4 rounded-xl mb-6'>
+      <ThemedView backgroundColor='surface' className='p-4 mb-6 rounded-xl'>
         <FontedText variant='heading-3' className='mb-4'>
           Comfortaa Font Family
         </FontedText>

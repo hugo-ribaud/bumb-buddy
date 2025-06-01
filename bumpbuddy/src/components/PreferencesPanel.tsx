@@ -2,14 +2,14 @@ import React, { useState } from 'react';
 import { ActivityIndicator, Switch, View } from 'react-native';
 import { LanguageCode, ThemeMode } from '../redux/slices/preferencesSlice';
 
+import FontedText from '@/components/FontedText';
+import PreferencesLanguageSwitcher from '@/components/PreferencesLanguageSwitcher';
+import ThemedView from '@/components/ThemedView';
+import UnitToggle from '@/components/UnitToggle';
+import { usePreferences } from '@/contexts/PreferencesContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
 import { Dropdown } from 'react-native-element-dropdown';
-import { usePreferences } from '../contexts/PreferencesContext';
-import { useTheme } from '../contexts/ThemeContext';
-import FontedText from './FontedText';
-import PreferencesLanguageSwitcher from './PreferencesLanguageSwitcher';
-import ThemedView from './ThemedView';
-import UnitToggle from './UnitToggle';
 
 const PreferencesPanel = () => {
   const { t, i18n } = useTranslation();

@@ -58,6 +58,7 @@ export default [
           argsIgnorePattern: '^_',
           varsIgnorePattern: '^_',
           caughtErrorsIgnorePattern: '^_',
+          destructuredArrayIgnorePattern: '^_',
         },
       ],
       '@typescript-eslint/no-explicit-any': 'warn',
@@ -81,7 +82,7 @@ export default [
       // React Native rules
       'react-native/no-unused-styles': 'warn',
       'react-native/split-platform-components': 'off',
-      'react-native/no-inline-styles': 'warn',
+      'react-native/no-inline-styles': 'off', // Allow inline styles for dynamic styling
       'react-native/no-color-literals': 'off', // We use Tailwind
       'react-native/no-raw-text': 'off',
 

@@ -43,11 +43,11 @@ import {
 } from '../redux/slices/healthSlice';
 import { AppDispatch, RootState } from '../redux/store';
 
+import FontedText from '@/components/FontedText';
+import ThemedView from '@/components/ThemedView';
+import { useTheme } from '@/contexts/ThemeContext';
 import { format } from 'date-fns';
 import { useTranslation } from 'react-i18next';
-import FontedText from '../components/FontedText';
-import ThemedView from '../components/ThemedView';
-import { useTheme } from '../contexts/ThemeContext';
 import {
   BloodPressureLog,
   ExerciseLog,
@@ -934,7 +934,7 @@ const HealthTrackerScreen = () => {
           {/* Symptoms Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1010,7 +1010,7 @@ const HealthTrackerScreen = () => {
           {/* Kick Counter Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1064,7 +1064,7 @@ const HealthTrackerScreen = () => {
                     }`}
                     onPress={handleKickCounter}
                   >
-                    <FontedText className='text-white font-bold'>
+                    <FontedText className='font-bold text-white'>
                       {kickCounts.currentSession
                         ? t('health.recordKick')
                         : t('health.startCounting')}
@@ -1076,7 +1076,7 @@ const HealthTrackerScreen = () => {
                       className='px-6 py-3 rounded-full bg-accent dark:bg-accent-dark'
                       onPress={handleEndKickCounter}
                     >
-                      <FontedText className='text-white font-bold'>
+                      <FontedText className='font-bold text-white'>
                         {t('health.endSession')}
                       </FontedText>
                     </TouchableOpacity>
@@ -1089,7 +1089,7 @@ const HealthTrackerScreen = () => {
           {/* Weight Tracker Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1134,7 +1134,7 @@ const HealthTrackerScreen = () => {
                     className='px-6 py-3 rounded-full bg-primary dark:bg-primary-dark'
                     onPress={handleAddWeight}
                   >
-                    <FontedText className='text-white font-bold'>
+                    <FontedText className='font-bold text-white'>
                       {t('health.addWeight')}
                     </FontedText>
                   </TouchableOpacity>
@@ -1146,7 +1146,7 @@ const HealthTrackerScreen = () => {
           {/* Blood Pressure Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1173,7 +1173,7 @@ const HealthTrackerScreen = () => {
               ) : (
                 <>
                   {bloodPressureLogs.items.length > 0 ? (
-                    <View className='flex-row items-center justify-between mb-4 w-full'>
+                    <View className='flex-row items-center justify-between w-full mb-4'>
                       <FontedText variant='body' className='font-medium'>
                         {t('health.currentBloodPressure')}
                       </FontedText>
@@ -1191,16 +1191,16 @@ const HealthTrackerScreen = () => {
                       </View>
                     </View>
                   ) : (
-                    <FontedText className='text-center text-gray-500 mb-4'>
+                    <FontedText className='mb-4 text-center text-gray-500'>
                       {t('health.noBloodPressureData')}
                     </FontedText>
                   )}
 
                   <TouchableOpacity
-                    className='px-6 py-3 rounded-full bg-primary dark:bg-primary-dark mb-4'
+                    className='px-6 py-3 mb-4 rounded-full bg-primary dark:bg-primary-dark'
                     onPress={handleAddBloodPressure}
                   >
-                    <FontedText className='text-white font-bold'>
+                    <FontedText className='font-bold text-white'>
                       {t('health.addBloodPressure')}
                     </FontedText>
                   </TouchableOpacity>
@@ -1223,7 +1223,7 @@ const HealthTrackerScreen = () => {
                   <ThemedView
                     key={bpLog.id}
                     backgroundColor='background'
-                    className='rounded-lg p-3 mb-2 flex-row justify-between items-center'
+                    className='flex-row items-center justify-between p-3 mb-2 rounded-lg'
                   >
                     <View className='flex-1'>
                       <FontedText variant='body' className='font-bold'>
@@ -1244,7 +1244,7 @@ const HealthTrackerScreen = () => {
                         )}
                       </View>
                       {bpLog.notes && (
-                        <FontedText variant='caption' className='italic mt-1'>
+                        <FontedText variant='caption' className='mt-1 italic'>
                           {bpLog.notes.length > 50
                             ? `${bpLog.notes.substring(0, 50)}...`
                             : bpLog.notes}
@@ -1279,7 +1279,7 @@ const HealthTrackerScreen = () => {
           {/* Mood Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1306,10 +1306,10 @@ const HealthTrackerScreen = () => {
               ) : (
                 <>
                   <TouchableOpacity
-                    className='bg-primary-light py-3 px-6 rounded-full mb-4'
+                    className='px-6 py-3 mb-4 rounded-full bg-primary-light'
                     onPress={handleAddMood}
                   >
-                    <FontedText className='text-white font-semibold text-center'>
+                    <FontedText className='font-semibold text-center text-white'>
                       {t('health.addMood')}
                     </FontedText>
                   </TouchableOpacity>
@@ -1318,7 +1318,7 @@ const HealthTrackerScreen = () => {
                     <View className='w-full mt-2'>
                       <FontedText
                         variant='body'
-                        className='mb-2 mt-4 font-bold'
+                        className='mt-4 mb-2 font-bold'
                       >
                         {t('health.moodHistory')}
                       </FontedText>
@@ -1326,7 +1326,7 @@ const HealthTrackerScreen = () => {
                       {moodLogs.items.slice(0, 5).map(log => (
                         <TouchableOpacity
                           key={log.id}
-                          className='flex-row justify-between items-center mb-3 p-3 border border-neutral-200 dark:border-neutral-700 rounded-xl'
+                          className='flex-row items-center justify-between p-3 mb-3 border border-neutral-200 dark:border-neutral-700 rounded-xl'
                           onPress={() => handleEditMood(log)}
                         >
                           <View className='flex-1'>
@@ -1389,7 +1389,7 @@ const HealthTrackerScreen = () => {
                           </View>
 
                           <TouchableOpacity
-                            className='ml-2 p-2'
+                            className='p-2 ml-2'
                             onPress={() => handleDeleteMood(log.id)}
                           >
                             <FontedText
@@ -1409,7 +1409,7 @@ const HealthTrackerScreen = () => {
                     <FontedText
                       variant='body'
                       textType='secondary'
-                      className='text-center mt-2'
+                      className='mt-2 text-center'
                     >
                       {t('health.noMoodData')}
                     </FontedText>
@@ -1422,7 +1422,7 @@ const HealthTrackerScreen = () => {
           {/* Sleep Tracking Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1449,10 +1449,10 @@ const HealthTrackerScreen = () => {
               ) : (
                 <>
                   <TouchableOpacity
-                    className='bg-primary-light py-3 px-6 rounded-full mb-4'
+                    className='px-6 py-3 mb-4 rounded-full bg-primary-light'
                     onPress={handleAddSleep}
                   >
-                    <FontedText className='text-white font-semibold text-center'>
+                    <FontedText className='font-semibold text-center text-white'>
                       {t('health.addSleep')}
                     </FontedText>
                   </TouchableOpacity>
@@ -1461,7 +1461,7 @@ const HealthTrackerScreen = () => {
                     <View className='w-full mt-2'>
                       <FontedText
                         variant='body'
-                        className='mb-2 mt-4 font-bold'
+                        className='mt-4 mb-2 font-bold'
                       >
                         {t('health.sleepHistory')}
                       </FontedText>
@@ -1469,7 +1469,7 @@ const HealthTrackerScreen = () => {
                       {sleepLogs.items.slice(0, 5).map(log => (
                         <TouchableOpacity
                           key={log.id}
-                          className='flex-row justify-between items-center mb-3 p-3 border border-neutral-200 dark:border-neutral-700 rounded-xl'
+                          className='flex-row items-center justify-between p-3 mb-3 border border-neutral-200 dark:border-neutral-700 rounded-xl'
                           onPress={() => handleEditSleep(log)}
                         >
                           <View className='flex-1'>
@@ -1546,7 +1546,7 @@ const HealthTrackerScreen = () => {
                           </View>
 
                           <TouchableOpacity
-                            className='ml-2 p-2'
+                            className='p-2 ml-2'
                             onPress={() => handleDeleteSleep(log.id)}
                           >
                             <FontedText
@@ -1566,7 +1566,7 @@ const HealthTrackerScreen = () => {
                     <FontedText
                       variant='body'
                       textType='secondary'
-                      className='text-center mt-2'
+                      className='mt-2 text-center'
                     >
                       {t('health.noSleepData')}
                     </FontedText>
@@ -1579,7 +1579,7 @@ const HealthTrackerScreen = () => {
           {/* Contraction Timer Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1616,7 +1616,7 @@ const HealthTrackerScreen = () => {
                     className='px-6 py-3 rounded-full bg-primary dark:bg-primary-dark'
                     onPress={handleStartContraction}
                   >
-                    <FontedText className='text-white font-bold'>
+                    <FontedText className='font-bold text-white'>
                       {t('health.startContraction')}
                     </FontedText>
                   </TouchableOpacity>
@@ -1625,7 +1625,7 @@ const HealthTrackerScreen = () => {
                     className='px-6 py-3 rounded-full bg-accent dark:bg-accent-dark'
                     onPress={handleEndContraction}
                   >
-                    <FontedText className='text-white font-bold'>
+                    <FontedText className='font-bold text-white'>
                       {t('health.endContraction')}
                     </FontedText>
                   </TouchableOpacity>
@@ -1637,7 +1637,7 @@ const HealthTrackerScreen = () => {
           {/* Exercise Tracker Section */}
           <ThemedView
             backgroundColor='surface'
-            className='rounded-xl p-4 mb-6 shadow-sm'
+            className='p-4 mb-6 shadow-sm rounded-xl'
           >
             <FontedText
               variant='heading-3'
@@ -1656,10 +1656,10 @@ const HealthTrackerScreen = () => {
 
             <View className='mb-4'>
               <TouchableOpacity
-                className='bg-primary dark:bg-primary-dark px-6 py-3 rounded-full w-full items-center mb-4'
+                className='items-center w-full px-6 py-3 mb-4 rounded-full bg-primary dark:bg-primary-dark'
                 onPress={handleAddExercise}
               >
-                <FontedText className='text-white font-bold'>
+                <FontedText className='font-bold text-white'>
                   {t('health.addExercise')}
                 </FontedText>
               </TouchableOpacity>
@@ -1679,7 +1679,7 @@ const HealthTrackerScreen = () => {
                   className='my-4'
                 />
               ) : exerciseLogs.items.length === 0 ? (
-                <FontedText className='text-center text-gray-500 my-4'>
+                <FontedText className='my-4 text-center text-gray-500'>
                   {t('health.noExerciseData')}
                 </FontedText>
               ) : (
@@ -1687,7 +1687,7 @@ const HealthTrackerScreen = () => {
                   <ThemedView
                     key={exerciseLog.id}
                     backgroundColor='background'
-                    className='rounded-lg p-3 mb-3 border border-gray-200 dark:border-gray-700'
+                    className='p-3 mb-3 border border-gray-200 rounded-lg dark:border-gray-700'
                   >
                     <View className='flex-row justify-between mb-1'>
                       <FontedText
@@ -1705,7 +1705,7 @@ const HealthTrackerScreen = () => {
                     <View className='flex-row flex-wrap mb-1'>
                       <ThemedView
                         backgroundColor='primary'
-                        className='rounded-full px-2 py-1 mr-2 mb-1'
+                        className='px-2 py-1 mb-1 mr-2 rounded-full'
                       >
                         <FontedText variant='caption' className='text-white'>
                           {exerciseLog.duration} {t('health.minutes')}
@@ -1714,7 +1714,7 @@ const HealthTrackerScreen = () => {
 
                       <ThemedView
                         backgroundColor='primary'
-                        className='rounded-full px-2 py-1 mr-2 mb-1'
+                        className='px-2 py-1 mb-1 mr-2 rounded-full'
                       >
                         <FontedText variant='caption' className='text-white'>
                           {t('health.intensity')}: {exerciseLog.intensity}/5
@@ -1724,7 +1724,7 @@ const HealthTrackerScreen = () => {
                       {exerciseLog.heart_rate && (
                         <ThemedView
                           backgroundColor='primary'
-                          className='rounded-full px-2 py-1 mr-2 mb-1'
+                          className='px-2 py-1 mb-1 mr-2 rounded-full'
                         >
                           <FontedText variant='caption' className='text-white'>
                             {exerciseLog.heart_rate} {t('health.bpm')}
@@ -1735,7 +1735,7 @@ const HealthTrackerScreen = () => {
                       {exerciseLog.modified_positions && (
                         <ThemedView
                           backgroundColor='primary'
-                          className='rounded-full px-2 py-1 mr-2 mb-1'
+                          className='px-2 py-1 mb-1 mr-2 rounded-full'
                         >
                           <FontedText variant='caption' className='text-white'>
                             {t('health.modifiedPositions')}
@@ -1746,7 +1746,7 @@ const HealthTrackerScreen = () => {
                       {exerciseLog.felt_contractions && (
                         <ThemedView
                           backgroundColor='accent'
-                          className='rounded-full px-2 py-1 mr-2 mb-1'
+                          className='px-2 py-1 mb-1 mr-2 rounded-full'
                         >
                           <FontedText variant='caption' className='text-white'>
                             {t('health.feltContractions')}
@@ -1757,7 +1757,7 @@ const HealthTrackerScreen = () => {
                       {exerciseLog.felt_discomfort && (
                         <ThemedView
                           backgroundColor='accent'
-                          className='rounded-full px-2 py-1 mr-2 mb-1'
+                          className='px-2 py-1 mb-1 mr-2 rounded-full'
                         >
                           <FontedText variant='caption' className='text-white'>
                             {t('health.feltDiscomfort')}
@@ -1797,7 +1797,7 @@ const HealthTrackerScreen = () => {
             <FontedText
               variant='caption'
               textType='secondary'
-              className='text-center mt-2'
+              className='mt-2 text-center'
             >
               {t('health.exerciseWarning')}
             </FontedText>
@@ -1812,7 +1812,7 @@ const HealthTrackerScreen = () => {
         visible={bpModalVisible}
         onRequestClose={() => setBpModalVisible(false)}
       >
-        <View className='flex-1 justify-center items-center bg-black/50'>
+        <View className='items-center justify-center flex-1 bg-black/50'>
           <ThemedView
             backgroundColor='surface'
             className='w-[90%] rounded-xl p-6 max-w-md shadow-md'
@@ -1820,7 +1820,7 @@ const HealthTrackerScreen = () => {
             <FontedText
               variant='heading-3'
               fontFamily='comfortaa'
-              className='text-center mb-4'
+              className='mb-4 text-center'
             >
               {editingBpLog
                 ? t('health.editBloodPressure')
@@ -1831,7 +1831,7 @@ const HealthTrackerScreen = () => {
               <FontedText variant='body' className='mb-2'>
                 {t('health.systolic')} (mmHg) *
               </FontedText>
-              <View className='flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4'>
+              <View className='flex-row px-3 py-2 mb-4 border border-gray-300 rounded-lg dark:border-gray-600'>
                 <TextInput
                   className='flex-1 text-base text-gray-800 dark:text-gray-200'
                   value={bpSystolic}
@@ -1845,7 +1845,7 @@ const HealthTrackerScreen = () => {
               <FontedText variant='body' className='mb-2'>
                 {t('health.diastolic')} (mmHg) *
               </FontedText>
-              <View className='flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4'>
+              <View className='flex-row px-3 py-2 mb-4 border border-gray-300 rounded-lg dark:border-gray-600'>
                 <TextInput
                   className='flex-1 text-base text-gray-800 dark:text-gray-200'
                   value={bpDiastolic}
@@ -1859,7 +1859,7 @@ const HealthTrackerScreen = () => {
               <FontedText variant='body' className='mb-2'>
                 {t('health.pulse')} (bpm)
               </FontedText>
-              <View className='flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4'>
+              <View className='flex-row px-3 py-2 mb-4 border border-gray-300 rounded-lg dark:border-gray-600'>
                 <TextInput
                   className='flex-1 text-base text-gray-800 dark:text-gray-200'
                   value={bpPulse}
@@ -1917,7 +1917,7 @@ const HealthTrackerScreen = () => {
               <FontedText variant='body' className='mb-2'>
                 {t('health.notes')}
               </FontedText>
-              <View className='border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4'>
+              <View className='px-3 py-2 mb-4 border border-gray-300 rounded-lg dark:border-gray-600'>
                 <TextInput
                   className='h-20 text-base text-gray-800 dark:text-gray-200'
                   value={bpNotes}
@@ -1932,18 +1932,18 @@ const HealthTrackerScreen = () => {
 
             <View className='flex-row justify-between'>
               <TouchableOpacity
-                className='flex-1 py-3 bg-gray-400 dark:bg-gray-600 rounded-lg mr-2'
+                className='flex-1 py-3 mr-2 bg-gray-400 rounded-lg dark:bg-gray-600'
                 onPress={() => setBpModalVisible(false)}
               >
-                <FontedText className='text-center text-white font-bold'>
+                <FontedText className='font-bold text-center text-white'>
                   {t('common.buttons.cancel')}
                 </FontedText>
               </TouchableOpacity>
               <TouchableOpacity
-                className='flex-1 py-3 bg-primary dark:bg-primary-dark rounded-lg ml-2'
+                className='flex-1 py-3 ml-2 rounded-lg bg-primary dark:bg-primary-dark'
                 onPress={saveBloodPressureLog}
               >
-                <FontedText className='text-center text-white font-bold'>
+                <FontedText className='font-bold text-center text-white'>
                   {t('common.buttons.save')}
                 </FontedText>
               </TouchableOpacity>
@@ -1959,7 +1959,7 @@ const HealthTrackerScreen = () => {
         visible={moodModalVisible}
         onRequestClose={() => setMoodModalVisible(false)}
       >
-        <View className='flex-1 justify-center items-center bg-black/50'>
+        <View className='items-center justify-center flex-1 bg-black/50'>
           <ThemedView
             backgroundColor='surface'
             className='w-[90%] rounded-xl p-6 max-w-md shadow-md'
@@ -1967,7 +1967,7 @@ const HealthTrackerScreen = () => {
             <FontedText
               variant='heading-3'
               fontFamily='comfortaa'
-              className='text-center mb-4'
+              className='mb-4 text-center'
             >
               {editingMoodLog ? t('health.editMood') : t('health.addMood')}
             </FontedText>
@@ -2066,7 +2066,7 @@ const HealthTrackerScreen = () => {
                   onChangeText={setCustomTrigger}
                 />
                 <TouchableOpacity
-                  className='bg-primary py-2 px-3 rounded-md'
+                  className='px-3 py-2 rounded-md bg-primary'
                   onPress={addCustomTrigger}
                 >
                   <FontedText className='text-white'>
@@ -2084,15 +2084,15 @@ const HealthTrackerScreen = () => {
                     .map((trigger, index) => (
                       <View
                         key={index}
-                        className='bg-primary dark:bg-primary-dark mb-2 mr-2 py-1 px-3 rounded-full flex-row items-center'
+                        className='flex-row items-center px-3 py-1 mb-2 mr-2 rounded-full bg-primary dark:bg-primary-dark'
                       >
-                        <FontedText className='text-white mr-1'>
+                        <FontedText className='mr-1 text-white'>
                           {trigger}
                         </FontedText>
                         <TouchableOpacity
                           onPress={() => toggleTrigger(trigger)}
                         >
-                          <FontedText className='text-white font-bold'>
+                          <FontedText className='font-bold text-white'>
                             ×
                           </FontedText>
                         </TouchableOpacity>
@@ -2127,7 +2127,7 @@ const HealthTrackerScreen = () => {
                 <FontedText>{t('common.buttons.cancel')}</FontedText>
               </TouchableOpacity>
               <TouchableOpacity
-                className='bg-primary px-5 py-2 rounded-md'
+                className='px-5 py-2 rounded-md bg-primary'
                 onPress={saveMoodLog}
               >
                 <FontedText className='text-white'>
@@ -2146,7 +2146,7 @@ const HealthTrackerScreen = () => {
         visible={sleepModalVisible}
         onRequestClose={() => setSleepModalVisible(false)}
       >
-        <View className='flex-1 justify-center items-center bg-black/50'>
+        <View className='items-center justify-center flex-1 bg-black/50'>
           <ThemedView
             backgroundColor='surface'
             className='w-[90%] rounded-xl p-6 max-w-md shadow-md'
@@ -2154,7 +2154,7 @@ const HealthTrackerScreen = () => {
             <FontedText
               variant='heading-3'
               fontFamily='comfortaa'
-              className='text-center mb-4'
+              className='mb-4 text-center'
             >
               {editingSleepLog ? t('health.editSleep') : t('health.addSleep')}
             </FontedText>
@@ -2163,7 +2163,7 @@ const HealthTrackerScreen = () => {
               <FontedText variant='body' className='mb-1'>
                 {t('health.duration')} ({t('health.minutes')})
               </FontedText>
-              <View className='flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4'>
+              <View className='flex-row px-3 py-2 mb-4 border border-gray-300 rounded-lg dark:border-gray-600'>
                 <TextInput
                   className='flex-1 text-base text-gray-800 dark:text-gray-200'
                   value={sleepDuration}
@@ -2269,7 +2269,7 @@ const HealthTrackerScreen = () => {
                   onChangeText={setCustomDisruption}
                 />
                 <TouchableOpacity
-                  className='bg-primary py-2 px-3 rounded-md'
+                  className='px-3 py-2 rounded-md bg-primary'
                   onPress={addCustomDisruption}
                 >
                   <FontedText className='text-white'>
@@ -2289,15 +2289,15 @@ const HealthTrackerScreen = () => {
                     .map((disruption, index) => (
                       <View
                         key={index}
-                        className='bg-primary dark:bg-primary-dark mb-2 mr-2 py-1 px-3 rounded-full flex-row items-center'
+                        className='flex-row items-center px-3 py-1 mb-2 mr-2 rounded-full bg-primary dark:bg-primary-dark'
                       >
-                        <FontedText className='text-white mr-1'>
+                        <FontedText className='mr-1 text-white'>
                           {disruption}
                         </FontedText>
                         <TouchableOpacity
                           onPress={() => toggleDisruption(disruption)}
                         >
-                          <FontedText className='text-white font-bold'>
+                          <FontedText className='font-bold text-white'>
                             ×
                           </FontedText>
                         </TouchableOpacity>
@@ -2332,7 +2332,7 @@ const HealthTrackerScreen = () => {
                 <FontedText>{t('common.buttons.cancel')}</FontedText>
               </TouchableOpacity>
               <TouchableOpacity
-                className='bg-primary px-5 py-2 rounded-md'
+                className='px-5 py-2 rounded-md bg-primary'
                 onPress={saveSleepLog}
               >
                 <FontedText className='text-white'>
@@ -2351,7 +2351,7 @@ const HealthTrackerScreen = () => {
         visible={exerciseModalVisible}
         onRequestClose={() => setExerciseModalVisible(false)}
       >
-        <View className='flex-1 justify-center items-center bg-black/50'>
+        <View className='items-center justify-center flex-1 bg-black/50'>
           <ThemedView
             backgroundColor='surface'
             className='w-[90%] rounded-xl p-6 max-w-md shadow-md'
@@ -2359,7 +2359,7 @@ const HealthTrackerScreen = () => {
             <FontedText
               variant='heading-3'
               fontFamily='comfortaa'
-              className='text-center mb-4'
+              className='mb-4 text-center'
             >
               {editingExerciseLog
                 ? t('health.editExercise')
@@ -2399,7 +2399,7 @@ const HealthTrackerScreen = () => {
               <FontedText variant='body' className='mb-1'>
                 {t('health.duration')} ({t('health.minutes')})
               </FontedText>
-              <View className='flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4'>
+              <View className='flex-row px-3 py-2 mb-4 border border-gray-300 rounded-lg dark:border-gray-600'>
                 <TextInput
                   className='flex-1 text-base text-gray-800 dark:text-gray-200'
                   value={exerciseDuration}
@@ -2444,7 +2444,7 @@ const HealthTrackerScreen = () => {
               <FontedText variant='body' className='mb-1'>
                 {t('health.heartRate')} (bpm)
               </FontedText>
-              <View className='flex-row border border-gray-300 dark:border-gray-600 rounded-lg px-3 py-2 mb-4'>
+              <View className='flex-row px-3 py-2 mb-4 border border-gray-300 rounded-lg dark:border-gray-600'>
                 <TextInput
                   className='flex-1 text-base text-gray-800 dark:text-gray-200'
                   value={heartRate}
@@ -2613,7 +2613,7 @@ const HealthTrackerScreen = () => {
                 <FontedText>{t('common.buttons.cancel')}</FontedText>
               </TouchableOpacity>
               <TouchableOpacity
-                className='bg-primary px-5 py-2 rounded-md'
+                className='px-5 py-2 rounded-md bg-primary'
                 onPress={saveExerciseLog}
               >
                 <FontedText className='text-white'>

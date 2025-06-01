@@ -1,10 +1,10 @@
 import { TouchableOpacity, View } from 'react-native';
 
+import FontedText from '@/components/FontedText';
+import { usePreferences } from '@/contexts/PreferencesContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePreferences } from '../contexts/PreferencesContext';
-import { useTheme } from '../contexts/ThemeContext';
-import FontedText from './FontedText';
 
 interface UnitToggleProps {
   className?: string;
@@ -36,7 +36,7 @@ const UnitToggle: React.FC<UnitToggleProps> = ({
       <View className={`flex-row items-center ${className}`}>
         <TouchableOpacity
           onPress={toggleUnitSystem}
-          className='flex-row items-center py-1 px-2 rounded-full bg-gray-100 dark:bg-gray-700'
+          className='flex-row items-center px-2 py-1 bg-gray-100 rounded-full dark:bg-gray-700'
         >
           <FontedText
             variant='caption'
@@ -76,7 +76,7 @@ const UnitToggle: React.FC<UnitToggleProps> = ({
           {t('preferences.unitSelection')}
         </FontedText>
       )}
-      <View className='flex-row rounded-lg overflow-hidden border border-gray-200 dark:border-gray-700'>
+      <View className='flex-row overflow-hidden border border-gray-200 rounded-lg dark:border-gray-700'>
         <TouchableOpacity
           className={`flex-1 py-2 items-center justify-center ${
             isMetric ? 'bg-primary dark:bg-primary-dark' : 'bg-transparent'

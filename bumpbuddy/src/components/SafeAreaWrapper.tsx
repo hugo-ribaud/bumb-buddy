@@ -1,8 +1,8 @@
 import React, { ReactNode } from 'react';
 
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useTheme } from '../contexts/ThemeContext';
-import ThemedStatusBar from './ThemedStatusBar';
+import ThemedStatusBar from '@/components/ThemedStatusBar';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface SafeAreaWrapperProps {
   children: ReactNode;

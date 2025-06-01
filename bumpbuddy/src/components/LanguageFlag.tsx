@@ -1,7 +1,7 @@
 import { Text, View, useColorScheme } from 'react-native';
 
 import React from 'react';
-import { getLanguageFlag } from '../i18n/languages';
+import { getLanguageFlag } from '@/i18n/languages';
 
 interface LanguageFlagProps {
   languageCode: string;

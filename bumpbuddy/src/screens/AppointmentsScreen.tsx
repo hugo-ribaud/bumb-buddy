@@ -7,11 +7,11 @@ import {
   View,
 } from 'react-native';
 
+import FontedText from '@/components/FontedText';
+import SafeAreaWrapper from '@/components/SafeAreaWrapper';
+import ThemedView from '@/components/ThemedView';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useTranslation } from 'react-i18next';
-import FontedText from '../components/FontedText';
-import SafeAreaWrapper from '../components/SafeAreaWrapper';
-import ThemedView from '../components/ThemedView';
 
 // Define types
 interface Appointment {

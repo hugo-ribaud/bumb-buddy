@@ -1,7 +1,7 @@
 import { Text, View } from 'react-native';
 
+import { WeightLog } from '@/services/healthService';
 import React from 'react';
-import { WeightLog } from '../services/healthService';
 
 interface WeightChartProps {
   data: WeightLog[];

@@ -1,7 +1,7 @@
 import { TouchableOpacity, View, ViewProps } from 'react-native';
 
 import React from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface ThemedViewProps extends ViewProps {
   backgroundColor?:

@@ -6,7 +6,7 @@
 import React, { useMemo } from 'react';
 import { StyleProp, TextStyle, View, ViewProps, ViewStyle } from 'react-native';
 
-import { useRTL } from '../contexts/RTLContext';
+import { useRTL } from '@/contexts/RTLContext';
 
 // RTL-aware style properties that need to be flipped
 const RTL_FLIPPABLE_PROPERTIES = [

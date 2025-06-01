@@ -1,11 +1,11 @@
 import { Image, View } from 'react-native';
 
+import FontedText from '@/components/FontedText';
+import ThemedView from '@/components/ThemedView';
+import { usePreferences } from '@/contexts/PreferencesContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { usePreferences } from '../contexts/PreferencesContext';
-import { useTheme } from '../contexts/ThemeContext';
-import FontedText from './FontedText';
-import ThemedView from './ThemedView';
 
 interface FetalSizeComparisonProps {
   weekNumber: number;

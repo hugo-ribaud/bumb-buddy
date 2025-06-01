@@ -1,6 +1,6 @@
 import React from 'react';
 import { StatusBar } from 'react-native';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 // Component that renders a status bar with theme-appropriate colors
 const ThemedStatusBar: React.FC = () => {

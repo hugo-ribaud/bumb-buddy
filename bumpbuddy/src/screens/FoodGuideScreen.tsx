@@ -11,13 +11,13 @@ import {
   View,
 } from 'react-native';
 
+import FontedText from '@/components/FontedText';
+import SafeAreaWrapper from '@/components/SafeAreaWrapper';
+import ThemedView from '@/components/ThemedView';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
+import foodService from '@/services/foodService';
 import { useTranslation } from 'react-i18next';
-import FontedText from '../components/FontedText';
-import SafeAreaWrapper from '../components/SafeAreaWrapper';
-import ThemedView from '../components/ThemedView';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
-import foodService from '../services/foodService';
 
 // Enhanced Food Item Component with modern card design
 const FoodItem = ({

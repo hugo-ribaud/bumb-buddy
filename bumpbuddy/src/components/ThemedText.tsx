@@ -1,7 +1,7 @@
 import { Text, TextProps } from 'react-native';
 
 import React from 'react';
-import { useTheme } from '../contexts/ThemeContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 export interface ThemedTextProps extends TextProps {
   variant?: 'primary' | 'secondary' | 'accent';

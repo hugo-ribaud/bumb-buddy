@@ -2,8 +2,8 @@ import React, { useCallback } from 'react';
 import { Text, TouchableOpacity, View } from 'react-native';
 
 import { Ionicons } from '@expo/vector-icons';
-import { usePreferences } from '../contexts/PreferencesContext';
-import { useTheme } from '../contexts/ThemeContext';
+import { usePreferences } from '@/contexts/PreferencesContext';
+import { useTheme } from '@/contexts/ThemeContext';
 
 interface ThemeToggleProps {
   className?: string;

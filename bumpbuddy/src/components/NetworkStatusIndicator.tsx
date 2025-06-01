@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
 import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
 
 import { formatDistance } from 'date-fns';
+import { useNetwork } from '@/contexts/NetworkContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import { useTranslation } from 'react-i18next';
-import { useNetwork } from '../contexts/NetworkContext';
-import { useTheme } from '../contexts/ThemeContext';
 
 interface NetworkStatusIndicatorProps {
   showOfflineOnly?: boolean;

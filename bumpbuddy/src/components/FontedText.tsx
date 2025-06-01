@@ -1,4 +1,4 @@
-import ThemedText, { ThemedTextProps } from './ThemedText';
+import ThemedText, { ThemedTextProps } from '@/components/ThemedText';
 
 import React from 'react';
 

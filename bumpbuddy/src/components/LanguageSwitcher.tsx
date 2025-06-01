@@ -4,13 +4,13 @@
  * Uses react-native-element-dropdown for a more customizable experience
  */
 
+import FontedText from '@/components/FontedText';
+import LanguageFlag from '@/components/LanguageFlag';
+import { useLanguage } from '@/contexts/LanguageContext';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View, useColorScheme } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useLanguage } from '../contexts/LanguageContext';
-import FontedText from './FontedText';
-import LanguageFlag from './LanguageFlag';
 
 interface LanguageOption {
   value: string;
@@ -72,8 +72,8 @@ export const LanguageSwitcher: React.FC = () => {
           )}
         </View>
         {isSelected && (
-          <View className='w-6 h-6 rounded-full bg-primary dark:bg-primary-dark items-center justify-center'>
-            <FontedText className='text-white font-bold text-xs'>✓</FontedText>
+          <View className='items-center justify-center w-6 h-6 rounded-full bg-primary dark:bg-primary-dark'>
+            <FontedText className='text-xs font-bold text-white'>✓</FontedText>
           </View>
         )}
       </View>

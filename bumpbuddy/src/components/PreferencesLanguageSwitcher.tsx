@@ -4,14 +4,14 @@
  * Uses react-native-element-dropdown for a more customizable experience
  */
 
+import FontedText from '@/components/FontedText';
+import LanguageFlag from '@/components/LanguageFlag';
+import { useLanguage } from '@/contexts/LanguageContext';
+import { useTheme } from '@/contexts/ThemeContext';
 import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { View } from 'react-native';
 import { Dropdown } from 'react-native-element-dropdown';
-import { useLanguage } from '../contexts/LanguageContext';
-import { useTheme } from '../contexts/ThemeContext';
-import FontedText from './FontedText';
-import LanguageFlag from './LanguageFlag';
 
 interface LanguageOption {
   value: string;
