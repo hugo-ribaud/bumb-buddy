@@ -23,10 +23,10 @@ jobs:
           bun install
 
       # Skip linting for now
-      # - name: Lint code
-      #   run: |
-      #     cd bumpbuddy
-      #     bun run lint
+      - name: Lint code
+        run: |
+          cd bumpbuddy
+          bun run lint
 
       - name: Deploy to VPS
         uses: appleboy/ssh-action@v1.2.2
