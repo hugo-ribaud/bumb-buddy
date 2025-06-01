@@ -131,6 +131,16 @@ The updated workflow now includes:
 
 - **Solution**: Ensure `/var/www/expo-app` exists on the server
 
+### Issue: "command not found: bun"
+
+- **Solution**: Bun is not installed on the server. The updated workflow now automatically installs Bun if missing, or you can manually install it:
+
+```bash
+# SSH into your server and run:
+curl -fsSL https://bun.sh/install | bash
+source ~/.bashrc  # or restart your shell
+```
+
 ## Next Steps
 
 1. **Verify GitHub Secrets**: Double-check all secret values
