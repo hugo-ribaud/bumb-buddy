@@ -33,10 +33,29 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
+          # Try SSH key first, fallback to password if needed
           key: ${{ secrets.SSH_KEY }}
+          password: ${{ secrets.PASSWORD }}
+          port: 22
+          timeout: 60s
+          command_timeout: 15m
+          debug: true
+          # Allow both key and password authentication methods
+          use_insecure_cipher: false
           script: |
             set -e  # Exit on any error
             echo "Starting deployment..."
+            echo "Current user: $(whoami)"
+            echo "Current directory: $(pwd)"
+            echo "Server info: $(uname -a)"
+
+            # Check if the directory exists
+            if [ ! -d "/var/www/expo-app" ]; then
+              echo "Error: /var/www/expo-app directory does not exist"
+              echo "Available directories in /var/www:"
+              ls -la /var/www/ || echo "Cannot access /var/www/"
+              exit 1
+            fi
 
             cd /var/www/expo-app
             echo "Pulling latest changes..."
@@ -46,13 +65,19 @@ jobs:
             echo "Installing dependencies..."
             bun install
 
+            echo "Checking PM2 status..."
+            pm2 list || echo "PM2 not found or not running"
+
             echo "Restarting PM2 service..."
             # Try different possible service names
             if pm2 list | grep -q "bumb-buddy"; then
+              echo "Found bumb-buddy process, restarting..."
               pm2 restart bumb-buddy
             elif pm2 list | grep -q "bumpbuddy"; then
+              echo "Found bumpbuddy process, restarting..."
               pm2 restart bumpbuddy
             elif pm2 list | grep -q "expo-app"; then
+              echo "Found expo-app process, restarting..."
               pm2 restart expo-app
             else
               echo "Warning: No matching PM2 process found. Available processes:"
@@ -61,4 +86,6 @@ jobs:
               pm2 start bun --name bumb-buddy -- start
             fi
 
+            echo "Final PM2 status:"
+            pm2 list
             echo "Deployment completed successfully!"
