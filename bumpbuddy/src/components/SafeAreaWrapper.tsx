@@ -1,8 +1,8 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode } from 'react';
 
-import { SafeAreaView } from "react-native-safe-area-context";
-import { useTheme } from "../contexts/ThemeContext";
-import ThemedStatusBar from "./ThemedStatusBar";
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useTheme } from '../contexts/ThemeContext';
+import ThemedStatusBar from './ThemedStatusBar';
 
 interface SafeAreaWrapperProps {
   children: ReactNode;
@@ -15,7 +15,7 @@ interface SafeAreaWrapperProps {
  */
 const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({
   children,
-  className = "",
+  className = '',
 }) => {
   const { isDark } = useTheme();
 
@@ -24,9 +24,9 @@ const SafeAreaWrapper: React.FC<SafeAreaWrapperProps> = ({
       <ThemedStatusBar />
       <SafeAreaView
         className={`flex-1 ${
-          isDark ? "bg-background-dark" : "bg-background-light"
+          isDark ? 'bg-background-dark' : 'bg-background-light'
         } ${className}`}
-        edges={["top", "right", "left", "bottom"]}
+        edges={['top', 'right', 'left', 'bottom']}
       >
         {children}
       </SafeAreaView>

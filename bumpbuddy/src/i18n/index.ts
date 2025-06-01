@@ -3,35 +3,35 @@
  * Sets up internationalization with device language detection and locale support
  */
 
-import * as Localization from "expo-localization";
+import * as Localization from 'expo-localization';
 
-import { defaultLanguage, en, es, fr, supportedLanguages } from "./languages";
+import { defaultLanguage, en, es, fr, supportedLanguages } from './languages';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import i18next from "i18next";
-import { initReactI18next } from "react-i18next";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18next from 'i18next';
+import { initReactI18next } from 'react-i18next';
 
 // Import translations
 
 // Storage key for language preference
-const LANGUAGE_STORAGE_KEY = "bumpbuddy_language";
+const LANGUAGE_STORAGE_KEY = 'bumpbuddy_language';
 
 // Try to import react-native-localize, fallback to expo-localization if it fails
 let reactNativeLocalize: {
   getLocales: () => Array<{ languageCode: string }>;
 } | null = null;
 try {
-  reactNativeLocalize = require("react-native-localize");
+  reactNativeLocalize = require('react-native-localize');
 } catch (error) {
   console.warn(
-    "react-native-localize not available, falling back to expo-localization"
+    'react-native-localize not available, falling back to expo-localization'
   );
   reactNativeLocalize = null;
 }
 
 // Define custom detector type
 const languageDetector = {
-  type: "languageDetector" as any,
+  type: 'languageDetector' as any,
   async: true,
   detect: async (callback: (lng: string) => void) => {
     try {
@@ -56,20 +56,20 @@ const languageDetector = {
             return callback(language);
           }
         } catch (error) {
-          console.warn("Error using react-native-localize:", error);
+          console.warn('Error using react-native-localize:', error);
         }
       }
 
       // Fallback to Expo's localization
       const locale = Localization.locale;
-      const language = locale.split("-")[0];
+      const language = locale.split('-')[0];
       return callback(
         Object.keys(supportedLanguages).includes(language)
           ? language
           : defaultLanguage
       );
     } catch (error) {
-      console.error("Error detecting language:", error);
+      console.error('Error detecting language:', error);
       callback(defaultLanguage);
     }
   },
@@ -77,7 +77,7 @@ const languageDetector = {
     try {
       await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, language);
     } catch (error) {
-      console.error("Error caching language:", error);
+      console.error('Error caching language:', error);
     }
   },
 };

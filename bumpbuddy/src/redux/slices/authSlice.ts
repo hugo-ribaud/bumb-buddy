@@ -1,4 +1,4 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 // Define types for our state
 interface User {
@@ -39,11 +39,11 @@ const initialState: AuthState = {
 
 // Create the slice
 const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     // Auth request started
-    authRequest: (state) => {
+    authRequest: state => {
       state.isLoading = true;
       state.error = null;
     },
@@ -76,7 +76,7 @@ const authSlice = createSlice({
       state.error = action.payload;
     },
     // Logout
-    logout: (state) => {
+    logout: state => {
       state.isAuthenticated = false;
       state.user = null;
       state.session = null;

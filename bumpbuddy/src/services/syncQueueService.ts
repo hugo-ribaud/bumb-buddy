@@ -1,30 +1,30 @@
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from 'react';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { v4 as uuidv4 } from "uuid";
-import networkService from "./networkService";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { v4 as uuidv4 } from 'uuid';
+import networkService from './networkService';
 
 // Queue storage key
-const QUEUE_STORAGE_KEY = "bumpbuddy:syncQueue";
+const QUEUE_STORAGE_KEY = 'bumpbuddy:syncQueue';
 
 // Operation types
 export enum OperationType {
-  CREATE = "CREATE",
-  UPDATE = "UPDATE",
-  DELETE = "DELETE",
+  CREATE = 'CREATE',
+  UPDATE = 'UPDATE',
+  DELETE = 'DELETE',
 }
 
 // Entity types for sync operations
 export enum EntityType {
-  FOOD_ITEM = "FOOD_ITEM",
-  HEALTH_LOG = "HEALTH_LOG",
-  USER_PROFILE = "USER_PROFILE",
-  TIMELINE = "TIMELINE",
-  CONTRACTION = "CONTRACTION",
-  BLOOD_PRESSURE = "BLOOD_PRESSURE",
-  MOOD = "MOOD",
-  SLEEP = "SLEEP",
-  EXERCISE = "EXERCISE",
+  FOOD_ITEM = 'FOOD_ITEM',
+  HEALTH_LOG = 'HEALTH_LOG',
+  USER_PROFILE = 'USER_PROFILE',
+  TIMELINE = 'TIMELINE',
+  CONTRACTION = 'CONTRACTION',
+  BLOOD_PRESSURE = 'BLOOD_PRESSURE',
+  MOOD = 'MOOD',
+  SLEEP = 'SLEEP',
+  EXERCISE = 'EXERCISE',
 }
 
 // Structure of a pending operation
@@ -78,7 +78,7 @@ export class SyncQueueService {
       // Set up network status listener
       networkService.addListener(this.handleNetworkChange.bind(this));
     } catch (error) {
-      console.error("Failed to initialize sync queue:", error);
+      console.error('Failed to initialize sync queue:', error);
     }
   }
 
@@ -141,7 +141,7 @@ export class SyncQueueService {
    * Remove an operation from the queue
    */
   public async removeFromQueue(operationId: string): Promise<void> {
-    this.queue = this.queue.filter((op) => op.id !== operationId);
+    this.queue = this.queue.filter(op => op.id !== operationId);
     await this.persistQueue();
     this.notifyListeners();
   }
@@ -160,7 +160,7 @@ export class SyncQueueService {
     try {
       await AsyncStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(this.queue));
     } catch (error) {
-      console.error("Failed to persist sync queue:", error);
+      console.error('Failed to persist sync queue:', error);
     }
   }
 
@@ -191,13 +191,13 @@ export class SyncQueueService {
 
             if (success) {
               // Remove from queue if successful
-              this.queue = this.queue.filter((op) => op.id !== operation.id);
+              this.queue = this.queue.filter(op => op.id !== operation.id);
             } else if (operation.retryCount >= this.maxRetries) {
               // Remove from queue if max retries reached
               console.warn(
                 `Operation ${operation.id} reached max retries and will be dropped`
               );
-              this.queue = this.queue.filter((op) => op.id !== operation.id);
+              this.queue = this.queue.filter(op => op.id !== operation.id);
             }
           } catch (error) {
             console.error(`Error processing operation ${operation.id}:`, error);
@@ -208,7 +208,7 @@ export class SyncQueueService {
             `No handler found for entity type ${operation.entityType}`
           );
           // Remove unhandled operations
-          this.queue = this.queue.filter((op) => op.id !== operation.id);
+          this.queue = this.queue.filter(op => op.id !== operation.id);
         }
       }
 
@@ -234,7 +234,7 @@ export class SyncQueueService {
    * Notify all listeners of queue changes
    */
   private notifyListeners(): void {
-    this.listeners.forEach((listener) => listener([...this.queue]));
+    this.listeners.forEach(listener => listener([...this.queue]));
   }
 
   /**
@@ -253,13 +253,16 @@ export class SyncQueueService {
   } {
     const stats = {
       total: this.queue.length,
-      byEntity: Object.values(EntityType).reduce((acc, entity) => {
-        acc[entity] = 0;
-        return acc;
-      }, {} as Record<EntityType, number>),
+      byEntity: Object.values(EntityType).reduce(
+        (acc, entity) => {
+          acc[entity] = 0;
+          return acc;
+        },
+        {} as Record<EntityType, number>
+      ),
     };
 
-    this.queue.forEach((op) => {
+    this.queue.forEach(op => {
       stats.byEntity[op.entityType]++;
     });
 
@@ -287,7 +290,7 @@ export function useSyncQueue() {
     setQueue(syncQueueService.getQueue());
 
     // Listen for changes
-    const unsubscribe = syncQueueService.addListener((updatedQueue) => {
+    const unsubscribe = syncQueueService.addListener(updatedQueue => {
       setQueue(updatedQueue);
     });
 

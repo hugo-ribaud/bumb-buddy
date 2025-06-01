@@ -4,10 +4,10 @@
 
 ```typescript
 // src/redux/slices/fetalSizeSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import { FetalSizeComparison } from "../../types/fetalSize";
-import { fetalSizeService } from "../../services/fetalSizeService";
-import { RootState } from "../store";
+import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit';
+import { FetalSizeComparison } from '../../types/fetalSize';
+import { fetalSizeService } from '../../services/fetalSizeService';
+import { RootState } from '../store';
 
 // Define the state interface
 interface FetalSizeState {
@@ -29,7 +29,7 @@ const initialState: FetalSizeState = {
 
 // Async thunks
 export const fetchAllSizeComparisons = createAsyncThunk(
-  "fetalSize/fetchAll",
+  'fetalSize/fetchAll',
   async (_, { rejectWithValue }) => {
     try {
       return await fetalSizeService.getAllSizeComparisons();
@@ -40,7 +40,7 @@ export const fetchAllSizeComparisons = createAsyncThunk(
 );
 
 export const fetchSizeComparisonByWeek = createAsyncThunk(
-  "fetalSize/fetchByWeek",
+  'fetalSize/fetchByWeek',
   async (week: number, { rejectWithValue }) => {
     try {
       const comparison = await fetalSizeService.getSizeComparisonByWeek(week);
@@ -55,7 +55,7 @@ export const fetchSizeComparisonByWeek = createAsyncThunk(
 );
 
 export const clearFetalSizeCache = createAsyncThunk(
-  "fetalSize/clearCache",
+  'fetalSize/clearCache',
   async (_, { dispatch }) => {
     await fetalSizeService.clearCache();
     // Refetch after clearing cache
@@ -65,26 +65,26 @@ export const clearFetalSizeCache = createAsyncThunk(
 
 // Create the slice
 const fetalSizeSlice = createSlice({
-  name: "fetalSize",
+  name: 'fetalSize',
   initialState,
   reducers: {
     setSelectedWeek: (state, action: PayloadAction<number>) => {
       state.selectedWeekComparison =
-        state.sizeComparisons.find((item) => item.week === action.payload) ||
+        state.sizeComparisons.find(item => item.week === action.payload) ||
         null;
     },
-    clearSelectedWeek: (state) => {
+    clearSelectedWeek: state => {
       state.selectedWeekComparison = null;
     },
     setCurrentWeek: (state, action: PayloadAction<number>) => {
       state.currentWeekComparison =
-        state.sizeComparisons.find((item) => item.week === action.payload) ||
+        state.sizeComparisons.find(item => item.week === action.payload) ||
         null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     // Handle fetchAllSizeComparisons
-    builder.addCase(fetchAllSizeComparisons.pending, (state) => {
+    builder.addCase(fetchAllSizeComparisons.pending, state => {
       state.loading = true;
       state.error = null;
     });
@@ -98,7 +98,7 @@ const fetalSizeSlice = createSlice({
     });
 
     // Handle fetchSizeComparisonByWeek
-    builder.addCase(fetchSizeComparisonByWeek.pending, (state) => {
+    builder.addCase(fetchSizeComparisonByWeek.pending, state => {
       state.loading = true;
       state.error = null;
     });
@@ -138,25 +138,25 @@ Update the Redux store configuration to include the new slice:
 
 ```typescript
 // src/redux/store.ts
-import { configureStore } from "@reduxjs/toolkit";
-import { setupListeners } from "@reduxjs/toolkit/query";
-import { persistStore, persistReducer } from "redux-persist";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { combineReducers } from "redux";
+import { configureStore } from '@reduxjs/toolkit';
+import { setupListeners } from '@reduxjs/toolkit/query';
+import { persistStore, persistReducer } from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { combineReducers } from 'redux';
 
 // Import existing reducers
-import authReducer from "./slices/authSlice";
-import timelineReducer from "./slices/timelineSlice";
-import foodReducer from "./slices/foodSlice";
-import healthReducer from "./slices/healthSlice";
+import authReducer from './slices/authSlice';
+import timelineReducer from './slices/timelineSlice';
+import foodReducer from './slices/foodSlice';
+import healthReducer from './slices/healthSlice';
 
 // Import new reducer
-import fetalSizeReducer from "./slices/fetalSizeSlice";
+import fetalSizeReducer from './slices/fetalSizeSlice';
 
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage: AsyncStorage,
-  whitelist: ["auth", "timeline", "food", "health", "fetalSize"], // Add fetalSize to persist list
+  whitelist: ['auth', 'timeline', 'food', 'health', 'fetalSize'], // Add fetalSize to persist list
 };
 
 const rootReducer = combineReducers({
@@ -171,10 +171,10 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 
 export const store = configureStore({
   reducer: persistedReducer,
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: ["persist/PERSIST", "persist/REHYDRATE"],
+        ignoredActions: ['persist/PERSIST', 'persist/REHYDRATE'],
       },
     }),
 });
@@ -193,14 +193,14 @@ export type AppDispatch = typeof store.dispatch;
 
 ```typescript
 // Inside a component
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchAllSizeComparisons,
   selectAllSizeComparisons,
   selectFetalSizeLoading,
-} from "../redux/slices/fetalSizeSlice";
-import { AppDispatch } from "../redux/store";
+} from '../redux/slices/fetalSizeSlice';
+import { AppDispatch } from '../redux/store';
 
 const Component = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -220,11 +220,11 @@ const Component = () => {
 ### Selecting a Week
 
 ```typescript
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector } from 'react-redux';
 import {
   setSelectedWeek,
   selectSelectedWeekComparison,
-} from "../redux/slices/fetalSizeSlice";
+} from '../redux/slices/fetalSizeSlice';
 
 const WeekSelector = () => {
   const dispatch = useDispatch();
@@ -241,11 +241,11 @@ const WeekSelector = () => {
 ### Settings Current Week Based on Due Date
 
 ```typescript
-import { useEffect } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { setCurrentWeek } from "../redux/slices/fetalSizeSlice";
-import { selectUserProfile } from "../redux/slices/authSlice";
-import { calculateCurrentWeek } from "../utils/pregnancyUtils";
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { setCurrentWeek } from '../redux/slices/fetalSizeSlice';
+import { selectUserProfile } from '../redux/slices/authSlice';
+import { calculateCurrentWeek } from '../utils/pregnancyUtils';
 
 const PregnancyTracker = () => {
   const dispatch = useDispatch();

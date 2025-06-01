@@ -1,4 +1,4 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 import healthService, {
   BloodPressureLog,
   Contraction,
@@ -8,7 +8,7 @@ import healthService, {
   SleepLog,
   Symptom,
   WeightLog,
-} from "../../services/healthService";
+} from '../../services/healthService';
 
 // State interface
 interface HealthState {
@@ -104,225 +104,225 @@ const initialState: HealthState = {
 
 // Async thunks
 export const fetchSymptoms = createAsyncThunk(
-  "health/fetchSymptoms",
+  'health/fetchSymptoms',
   async (userId: string, { rejectWithValue }) => {
     try {
       return await healthService.getSymptoms(userId);
     } catch (error) {
-      return rejectWithValue("Failed to fetch symptoms");
+      return rejectWithValue('Failed to fetch symptoms');
     }
   }
 );
 
 export const addSymptom = createAsyncThunk(
-  "health/addSymptom",
+  'health/addSymptom',
   async (
-    symptom: Omit<Symptom, "id" | "created_at" | "updated_at">,
+    symptom: Omit<Symptom, 'id' | 'created_at' | 'updated_at'>,
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.addSymptom(symptom);
-      if (!result) return rejectWithValue("Failed to add symptom");
+      if (!result) return rejectWithValue('Failed to add symptom');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to add symptom");
+      return rejectWithValue('Failed to add symptom');
     }
   }
 );
 
 export const updateSymptom = createAsyncThunk(
-  "health/updateSymptom",
+  'health/updateSymptom',
   async (
     { id, updates }: { id: string; updates: Partial<Symptom> },
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.updateSymptom(id, updates);
-      if (!result) return rejectWithValue("Failed to update symptom");
+      if (!result) return rejectWithValue('Failed to update symptom');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to update symptom");
+      return rejectWithValue('Failed to update symptom');
     }
   }
 );
 
 export const deleteSymptom = createAsyncThunk(
-  "health/deleteSymptom",
+  'health/deleteSymptom',
   async (id: string, { rejectWithValue }) => {
     try {
       const success = await healthService.deleteSymptom(id);
-      if (!success) return rejectWithValue("Failed to delete symptom");
+      if (!success) return rejectWithValue('Failed to delete symptom');
       return id;
     } catch (error) {
-      return rejectWithValue("Failed to delete symptom");
+      return rejectWithValue('Failed to delete symptom');
     }
   }
 );
 
 export const fetchKickCounts = createAsyncThunk(
-  "health/fetchKickCounts",
+  'health/fetchKickCounts',
   async (userId: string, { rejectWithValue }) => {
     try {
       return await healthService.getKickCounts(userId);
     } catch (error) {
-      return rejectWithValue("Failed to fetch kick counts");
+      return rejectWithValue('Failed to fetch kick counts');
     }
   }
 );
 
 export const startKickCount = createAsyncThunk(
-  "health/startKickCount",
+  'health/startKickCount',
   async (userId: string, { rejectWithValue }) => {
     try {
       const result = await healthService.startKickCount(userId);
-      if (!result) return rejectWithValue("Failed to start kick count");
+      if (!result) return rejectWithValue('Failed to start kick count');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to start kick count");
+      return rejectWithValue('Failed to start kick count');
     }
   }
 );
 
 export const updateKickCount = createAsyncThunk(
-  "health/updateKickCount",
+  'health/updateKickCount',
   async ({ id, count }: { id: string; count: number }, { rejectWithValue }) => {
     try {
       const result = await healthService.updateKickCount(id, count);
-      if (!result) return rejectWithValue("Failed to update kick count");
+      if (!result) return rejectWithValue('Failed to update kick count');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to update kick count");
+      return rejectWithValue('Failed to update kick count');
     }
   }
 );
 
 export const endKickCount = createAsyncThunk(
-  "health/endKickCount",
+  'health/endKickCount',
   async (
     { id, notes }: { id: string; notes?: string },
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.endKickCount(id, notes);
-      if (!result) return rejectWithValue("Failed to end kick count");
+      if (!result) return rejectWithValue('Failed to end kick count');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to end kick count");
+      return rejectWithValue('Failed to end kick count');
     }
   }
 );
 
 export const fetchWeightLogs = createAsyncThunk(
-  "health/fetchWeightLogs",
+  'health/fetchWeightLogs',
   async (userId: string, { rejectWithValue }) => {
     try {
       return await healthService.getWeightLogs(userId);
     } catch (error) {
-      return rejectWithValue("Failed to fetch weight logs");
+      return rejectWithValue('Failed to fetch weight logs');
     }
   }
 );
 
 export const addWeightLog = createAsyncThunk(
-  "health/addWeightLog",
+  'health/addWeightLog',
   async (
-    weightLog: Omit<WeightLog, "id" | "created_at" | "updated_at">,
+    weightLog: Omit<WeightLog, 'id' | 'created_at' | 'updated_at'>,
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.addWeightLog(weightLog);
-      if (!result) return rejectWithValue("Failed to add weight log");
+      if (!result) return rejectWithValue('Failed to add weight log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to add weight log");
+      return rejectWithValue('Failed to add weight log');
     }
   }
 );
 
 // Contraction thunks
 export const fetchContractions = createAsyncThunk(
-  "health/fetchContractions",
+  'health/fetchContractions',
   async (userId: string, { rejectWithValue }) => {
     try {
       return await healthService.getContractions(userId);
     } catch (error) {
-      return rejectWithValue("Failed to fetch contractions");
+      return rejectWithValue('Failed to fetch contractions');
     }
   }
 );
 
 export const startContraction = createAsyncThunk(
-  "health/startContraction",
+  'health/startContraction',
   async (userId: string, { rejectWithValue }) => {
     try {
       const result = await healthService.startContraction(userId);
-      if (!result) return rejectWithValue("Failed to start contraction");
+      if (!result) return rejectWithValue('Failed to start contraction');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to start contraction");
+      return rejectWithValue('Failed to start contraction');
     }
   }
 );
 
 export const endContraction = createAsyncThunk(
-  "health/endContraction",
+  'health/endContraction',
   async (
     { id, intensity, notes }: { id: string; intensity: number; notes?: string },
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.endContraction(id, intensity, notes);
-      if (!result) return rejectWithValue("Failed to end contraction");
+      if (!result) return rejectWithValue('Failed to end contraction');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to end contraction");
+      return rejectWithValue('Failed to end contraction');
     }
   }
 );
 
 export const deleteContraction = createAsyncThunk(
-  "health/deleteContraction",
+  'health/deleteContraction',
   async (id: string, { rejectWithValue }) => {
     try {
       const success = await healthService.deleteContraction(id);
-      if (!success) return rejectWithValue("Failed to delete contraction");
+      if (!success) return rejectWithValue('Failed to delete contraction');
       return id;
     } catch (error) {
-      return rejectWithValue("Failed to delete contraction");
+      return rejectWithValue('Failed to delete contraction');
     }
   }
 );
 
 // Blood Pressure thunks
 export const fetchBloodPressureLogs = createAsyncThunk(
-  "health/fetchBloodPressureLogs",
+  'health/fetchBloodPressureLogs',
   async (userId: string, { rejectWithValue }) => {
     try {
       return await healthService.getBloodPressureLogs(userId);
     } catch (error) {
-      return rejectWithValue("Failed to fetch blood pressure logs");
+      return rejectWithValue('Failed to fetch blood pressure logs');
     }
   }
 );
 
 export const addBloodPressureLog = createAsyncThunk(
-  "health/addBloodPressureLog",
+  'health/addBloodPressureLog',
   async (
-    bpLog: Omit<BloodPressureLog, "id" | "created_at" | "updated_at">,
+    bpLog: Omit<BloodPressureLog, 'id' | 'created_at' | 'updated_at'>,
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.addBloodPressureLog(bpLog);
-      if (!result) return rejectWithValue("Failed to add blood pressure log");
+      if (!result) return rejectWithValue('Failed to add blood pressure log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to add blood pressure log");
+      return rejectWithValue('Failed to add blood pressure log');
     }
   }
 );
 
 export const updateBloodPressureLog = createAsyncThunk(
-  "health/updateBloodPressureLog",
+  'health/updateBloodPressureLog',
   async (
     { id, updates }: { id: string; updates: Partial<BloodPressureLog> },
     { rejectWithValue }
@@ -330,206 +330,206 @@ export const updateBloodPressureLog = createAsyncThunk(
     try {
       const result = await healthService.updateBloodPressureLog(id, updates);
       if (!result)
-        return rejectWithValue("Failed to update blood pressure log");
+        return rejectWithValue('Failed to update blood pressure log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to update blood pressure log");
+      return rejectWithValue('Failed to update blood pressure log');
     }
   }
 );
 
 export const deleteBloodPressureLog = createAsyncThunk(
-  "health/deleteBloodPressureLog",
+  'health/deleteBloodPressureLog',
   async (id: string, { rejectWithValue }) => {
     try {
       const success = await healthService.deleteBloodPressureLog(id);
       if (!success)
-        return rejectWithValue("Failed to delete blood pressure log");
+        return rejectWithValue('Failed to delete blood pressure log');
       return id;
     } catch (error) {
-      return rejectWithValue("Failed to delete blood pressure log");
+      return rejectWithValue('Failed to delete blood pressure log');
     }
   }
 );
 
 // Mood tracking thunks
 export const fetchMoodLogs = createAsyncThunk(
-  "health/fetchMoodLogs",
+  'health/fetchMoodLogs',
   async (userId: string, { rejectWithValue }) => {
     try {
       return await healthService.getMoodLogs(userId);
     } catch (error) {
-      return rejectWithValue("Failed to fetch mood logs");
+      return rejectWithValue('Failed to fetch mood logs');
     }
   }
 );
 
 export const addMoodLog = createAsyncThunk(
-  "health/addMoodLog",
+  'health/addMoodLog',
   async (
-    moodLog: Omit<MoodLog, "id" | "created_at" | "updated_at">,
+    moodLog: Omit<MoodLog, 'id' | 'created_at' | 'updated_at'>,
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.addMoodLog(moodLog);
-      if (!result) return rejectWithValue("Failed to add mood log");
+      if (!result) return rejectWithValue('Failed to add mood log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to add mood log");
+      return rejectWithValue('Failed to add mood log');
     }
   }
 );
 
 export const updateMoodLog = createAsyncThunk(
-  "health/updateMoodLog",
+  'health/updateMoodLog',
   async (
     { id, updates }: { id: string; updates: Partial<MoodLog> },
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.updateMoodLog(id, updates);
-      if (!result) return rejectWithValue("Failed to update mood log");
+      if (!result) return rejectWithValue('Failed to update mood log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to update mood log");
+      return rejectWithValue('Failed to update mood log');
     }
   }
 );
 
 export const deleteMoodLog = createAsyncThunk(
-  "health/deleteMoodLog",
+  'health/deleteMoodLog',
   async (id: string, { rejectWithValue }) => {
     try {
       const success = await healthService.deleteMoodLog(id);
-      if (!success) return rejectWithValue("Failed to delete mood log");
+      if (!success) return rejectWithValue('Failed to delete mood log');
       return id;
     } catch (error) {
-      return rejectWithValue("Failed to delete mood log");
+      return rejectWithValue('Failed to delete mood log');
     }
   }
 );
 
 // Sleep tracking thunks
 export const fetchSleepLogs = createAsyncThunk(
-  "health/fetchSleepLogs",
+  'health/fetchSleepLogs',
   async (userId: string, { rejectWithValue }) => {
     try {
       return await healthService.getSleepLogs(userId);
     } catch (error) {
-      return rejectWithValue("Failed to fetch sleep logs");
+      return rejectWithValue('Failed to fetch sleep logs');
     }
   }
 );
 
 export const addSleepLog = createAsyncThunk(
-  "health/addSleepLog",
+  'health/addSleepLog',
   async (
-    sleepLog: Omit<SleepLog, "id" | "created_at" | "updated_at">,
+    sleepLog: Omit<SleepLog, 'id' | 'created_at' | 'updated_at'>,
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.addSleepLog(sleepLog);
-      if (!result) return rejectWithValue("Failed to add sleep log");
+      if (!result) return rejectWithValue('Failed to add sleep log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to add sleep log");
+      return rejectWithValue('Failed to add sleep log');
     }
   }
 );
 
 export const updateSleepLog = createAsyncThunk(
-  "health/updateSleepLog",
+  'health/updateSleepLog',
   async (
     { id, updates }: { id: string; updates: Partial<SleepLog> },
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.updateSleepLog(id, updates);
-      if (!result) return rejectWithValue("Failed to update sleep log");
+      if (!result) return rejectWithValue('Failed to update sleep log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to update sleep log");
+      return rejectWithValue('Failed to update sleep log');
     }
   }
 );
 
 export const deleteSleepLog = createAsyncThunk(
-  "health/deleteSleepLog",
+  'health/deleteSleepLog',
   async (id: string, { rejectWithValue }) => {
     try {
       const success = await healthService.deleteSleepLog(id);
-      if (!success) return rejectWithValue("Failed to delete sleep log");
+      if (!success) return rejectWithValue('Failed to delete sleep log');
       return id;
     } catch (error) {
-      return rejectWithValue("Failed to delete sleep log");
+      return rejectWithValue('Failed to delete sleep log');
     }
   }
 );
 
 // Exercise tracking thunks
 export const fetchExerciseLogs = createAsyncThunk(
-  "health/fetchExerciseLogs",
+  'health/fetchExerciseLogs',
   async (userId: string, { rejectWithValue }) => {
     try {
       const exerciseLogs = await healthService.getExerciseLogs(userId);
       return exerciseLogs;
     } catch (error) {
-      return rejectWithValue("Failed to fetch exercise logs");
+      return rejectWithValue('Failed to fetch exercise logs');
     }
   }
 );
 
 export const addExerciseLog = createAsyncThunk(
-  "health/addExerciseLog",
+  'health/addExerciseLog',
   async (
-    exerciseLog: Omit<ExerciseLog, "id" | "created_at" | "updated_at">,
+    exerciseLog: Omit<ExerciseLog, 'id' | 'created_at' | 'updated_at'>,
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.addExerciseLog(exerciseLog);
-      if (!result) return rejectWithValue("Failed to add exercise log");
+      if (!result) return rejectWithValue('Failed to add exercise log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to add exercise log");
+      return rejectWithValue('Failed to add exercise log');
     }
   }
 );
 
 export const updateExerciseLog = createAsyncThunk(
-  "health/updateExerciseLog",
+  'health/updateExerciseLog',
   async (
     { id, updates }: { id: string; updates: Partial<ExerciseLog> },
     { rejectWithValue }
   ) => {
     try {
       const result = await healthService.updateExerciseLog(id, updates);
-      if (!result) return rejectWithValue("Failed to update exercise log");
+      if (!result) return rejectWithValue('Failed to update exercise log');
       return result;
     } catch (error) {
-      return rejectWithValue("Failed to update exercise log");
+      return rejectWithValue('Failed to update exercise log');
     }
   }
 );
 
 export const deleteExerciseLog = createAsyncThunk(
-  "health/deleteExerciseLog",
+  'health/deleteExerciseLog',
   async (id: string, { rejectWithValue }) => {
     try {
       const success = await healthService.deleteExerciseLog(id);
-      if (!success) return rejectWithValue("Failed to delete exercise log");
+      if (!success) return rejectWithValue('Failed to delete exercise log');
       return id;
     } catch (error) {
-      return rejectWithValue("Failed to delete exercise log");
+      return rejectWithValue('Failed to delete exercise log');
     }
   }
 );
 
 // Create slice
 const healthSlice = createSlice({
-  name: "health",
+  name: 'health',
   initialState,
   reducers: {
-    clearHealthErrors: (state) => {
+    clearHealthErrors: state => {
       state.symptoms.error = null;
       state.kickCounts.error = null;
       state.weightLogs.error = null;
@@ -539,17 +539,17 @@ const healthSlice = createSlice({
       state.sleepLogs.error = null;
       state.exerciseLogs.error = null;
     },
-    resetCurrentKickCount: (state) => {
+    resetCurrentKickCount: state => {
       state.kickCounts.currentSession = null;
     },
-    resetCurrentContraction: (state) => {
+    resetCurrentContraction: state => {
       state.contractions.currentContraction = null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       // Symptoms
-      .addCase(fetchSymptoms.pending, (state) => {
+      .addCase(fetchSymptoms.pending, state => {
         state.symptoms.loading = true;
         state.symptoms.error = null;
       })
@@ -574,7 +574,7 @@ const healthSlice = createSlice({
         updateSymptom.fulfilled,
         (state, action: PayloadAction<Symptom>) => {
           const index = state.symptoms.items.findIndex(
-            (s) => s.id === action.payload.id
+            s => s.id === action.payload.id
           );
           if (index !== -1) {
             state.symptoms.items[index] = action.payload;
@@ -585,13 +585,13 @@ const healthSlice = createSlice({
         deleteSymptom.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.symptoms.items = state.symptoms.items.filter(
-            (s) => s.id !== action.payload
+            s => s.id !== action.payload
           );
         }
       )
 
       // Kick counts
-      .addCase(fetchKickCounts.pending, (state) => {
+      .addCase(fetchKickCounts.pending, state => {
         state.kickCounts.loading = true;
         state.kickCounts.error = null;
       })
@@ -602,7 +602,7 @@ const healthSlice = createSlice({
           state.kickCounts.items = action.payload;
 
           // Find any active session (no end_time)
-          const activeSession = action.payload.find((k) => !k.end_time);
+          const activeSession = action.payload.find(k => !k.end_time);
           if (activeSession) {
             state.kickCounts.currentSession = activeSession;
           }
@@ -623,7 +623,7 @@ const healthSlice = createSlice({
         updateKickCount.fulfilled,
         (state, action: PayloadAction<KickCount>) => {
           const index = state.kickCounts.items.findIndex(
-            (k) => k.id === action.payload.id
+            k => k.id === action.payload.id
           );
           if (index !== -1) {
             state.kickCounts.items[index] = action.payload;
@@ -638,7 +638,7 @@ const healthSlice = createSlice({
         endKickCount.fulfilled,
         (state, action: PayloadAction<KickCount>) => {
           const index = state.kickCounts.items.findIndex(
-            (k) => k.id === action.payload.id
+            k => k.id === action.payload.id
           );
           if (index !== -1) {
             state.kickCounts.items[index] = action.payload;
@@ -651,7 +651,7 @@ const healthSlice = createSlice({
       )
 
       // Weight logs
-      .addCase(fetchWeightLogs.pending, (state) => {
+      .addCase(fetchWeightLogs.pending, state => {
         state.weightLogs.loading = true;
         state.weightLogs.error = null;
       })
@@ -674,7 +674,7 @@ const healthSlice = createSlice({
       )
 
       // Contractions
-      .addCase(fetchContractions.pending, (state) => {
+      .addCase(fetchContractions.pending, state => {
         state.contractions.loading = true;
         state.contractions.error = null;
       })
@@ -685,7 +685,7 @@ const healthSlice = createSlice({
           state.contractions.items = action.payload;
 
           // Find any active contraction (no end_time)
-          const activeContraction = action.payload.find((c) => !c.end_time);
+          const activeContraction = action.payload.find(c => !c.end_time);
           if (activeContraction) {
             state.contractions.currentContraction = activeContraction;
           }
@@ -706,7 +706,7 @@ const healthSlice = createSlice({
         endContraction.fulfilled,
         (state, action: PayloadAction<Contraction>) => {
           const index = state.contractions.items.findIndex(
-            (c) => c.id === action.payload.id
+            c => c.id === action.payload.id
           );
           if (index !== -1) {
             state.contractions.items[index] = action.payload;
@@ -721,7 +721,7 @@ const healthSlice = createSlice({
         deleteContraction.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.contractions.items = state.contractions.items.filter(
-            (c) => c.id !== action.payload
+            c => c.id !== action.payload
           );
 
           if (state.contractions.currentContraction?.id === action.payload) {
@@ -731,7 +731,7 @@ const healthSlice = createSlice({
       )
 
       // Blood Pressure logs
-      .addCase(fetchBloodPressureLogs.pending, (state) => {
+      .addCase(fetchBloodPressureLogs.pending, state => {
         state.bloodPressureLogs.loading = true;
         state.bloodPressureLogs.error = null;
       })
@@ -756,7 +756,7 @@ const healthSlice = createSlice({
         updateBloodPressureLog.fulfilled,
         (state, action: PayloadAction<BloodPressureLog>) => {
           const index = state.bloodPressureLogs.items.findIndex(
-            (bp) => bp.id === action.payload.id
+            bp => bp.id === action.payload.id
           );
           if (index !== -1) {
             state.bloodPressureLogs.items[index] = action.payload;
@@ -767,13 +767,13 @@ const healthSlice = createSlice({
         deleteBloodPressureLog.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.bloodPressureLogs.items = state.bloodPressureLogs.items.filter(
-            (bp) => bp.id !== action.payload
+            bp => bp.id !== action.payload
           );
         }
       )
 
       // Mood logs
-      .addCase(fetchMoodLogs.pending, (state) => {
+      .addCase(fetchMoodLogs.pending, state => {
         state.moodLogs.loading = true;
         state.moodLogs.error = null;
       })
@@ -798,7 +798,7 @@ const healthSlice = createSlice({
         updateMoodLog.fulfilled,
         (state, action: PayloadAction<MoodLog>) => {
           const index = state.moodLogs.items.findIndex(
-            (log) => log.id === action.payload.id
+            log => log.id === action.payload.id
           );
           if (index !== -1) {
             state.moodLogs.items[index] = action.payload;
@@ -809,13 +809,13 @@ const healthSlice = createSlice({
         deleteMoodLog.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.moodLogs.items = state.moodLogs.items.filter(
-            (log) => log.id !== action.payload
+            log => log.id !== action.payload
           );
         }
       )
 
       // Sleep logs
-      .addCase(fetchSleepLogs.pending, (state) => {
+      .addCase(fetchSleepLogs.pending, state => {
         state.sleepLogs.loading = true;
         state.sleepLogs.error = null;
       })
@@ -851,13 +851,13 @@ const healthSlice = createSlice({
         deleteSleepLog.fulfilled,
         (state, action: PayloadAction<string>) => {
           state.sleepLogs.items = state.sleepLogs.items.filter(
-            (log) => log.id !== action.payload
+            log => log.id !== action.payload
           );
         }
       )
 
       // Exercise logs
-      .addCase(fetchExerciseLogs.pending, (state) => {
+      .addCase(fetchExerciseLogs.pending, state => {
         state.exerciseLogs.loading = true;
         state.exerciseLogs.error = null;
       })

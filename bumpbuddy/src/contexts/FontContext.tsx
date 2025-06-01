@@ -1,20 +1,20 @@
-import * as SplashScreen from "expo-splash-screen";
+import * as SplashScreen from 'expo-splash-screen';
 
 import {
   Comfortaa_400Regular,
   Comfortaa_500Medium,
   Comfortaa_600SemiBold,
   Comfortaa_700Bold,
-} from "@expo-google-fonts/comfortaa";
+} from '@expo-google-fonts/comfortaa';
 import {
   Poppins_400Regular,
   Poppins_500Medium,
   Poppins_600SemiBold,
   Poppins_700Bold,
-} from "@expo-google-fonts/poppins";
-import React, { createContext, useContext, useEffect, useState } from "react";
+} from '@expo-google-fonts/poppins';
+import React, { createContext, useContext, useEffect, useState } from 'react';
 
-import { useFonts } from "expo-font";
+import { useFonts } from 'expo-font';
 
 // Keep the splash screen visible while we fetch resources
 SplashScreen.preventAutoHideAsync();
@@ -48,7 +48,7 @@ export const FontProvider: React.FC<{ children: React.ReactNode }> = ({
         // Wait for fonts to load
         if (fontsLoaded) {
           // Artificially delay for half a second to simulate preparation
-          await new Promise((resolve) => setTimeout(resolve, 500));
+          await new Promise(resolve => setTimeout(resolve, 500));
         }
       } catch (e) {
         console.warn(e);
@@ -87,7 +87,7 @@ export const FontProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useFont = (): FontContextProps => {
   const context = useContext(FontContext);
   if (!context) {
-    throw new Error("useFont must be used within a FontProvider");
+    throw new Error('useFont must be used within a FontProvider');
   }
   return context;
 };

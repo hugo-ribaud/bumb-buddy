@@ -1,4 +1,4 @@
-declare module "timeline-types" {
+declare module 'timeline-types' {
   export interface PregnancyWeek {
     week: number;
     fetal_development: string;

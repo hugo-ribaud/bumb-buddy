@@ -1,7 +1,7 @@
-import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
-import { fetalSizeService } from "../../services/fetalSizeService";
-import { FetalSizeComparison } from "../../types/fetalSize";
+import { fetalSizeService } from '../../services/fetalSizeService';
+import { FetalSizeComparison } from '../../types/fetalSize';
 
 interface FetalSizeState {
   allComparisons: FetalSizeComparison[];
@@ -18,33 +18,33 @@ const initialState: FetalSizeState = {
 };
 
 export const fetchAllFetalSizes = createAsyncThunk(
-  "fetalSize/fetchAll",
-  async (language: string = "en") => {
+  'fetalSize/fetchAll',
+  async (language: string = 'en') => {
     const data = await fetalSizeService.getAll(language);
     return data;
   }
 );
 
 export const fetchFetalSizeByWeek = createAsyncThunk(
-  "fetalSize/fetchByWeek",
-  async ({ week, language = "en" }: { week: number; language?: string }) => {
+  'fetalSize/fetchByWeek',
+  async ({ week, language = 'en' }: { week: number; language?: string }) => {
     const data = await fetalSizeService.getByWeek(week, language);
     return data;
   }
 );
 
 const fetalSizeSlice = createSlice({
-  name: "fetalSize",
+  name: 'fetalSize',
   initialState,
   reducers: {
-    clearFetalSizeData: (state) => {
+    clearFetalSizeData: state => {
       state.allComparisons = [];
       state.currentComparison = null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
-      .addCase(fetchAllFetalSizes.pending, (state) => {
+      .addCase(fetchAllFetalSizes.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -57,9 +57,9 @@ const fetalSizeSlice = createSlice({
       )
       .addCase(fetchAllFetalSizes.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch fetal size data";
+        state.error = action.error.message || 'Failed to fetch fetal size data';
       })
-      .addCase(fetchFetalSizeByWeek.pending, (state) => {
+      .addCase(fetchFetalSizeByWeek.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -72,7 +72,7 @@ const fetalSizeSlice = createSlice({
       )
       .addCase(fetchFetalSizeByWeek.rejected, (state, action) => {
         state.loading = false;
-        state.error = action.error.message || "Failed to fetch fetal size data";
+        state.error = action.error.message || 'Failed to fetch fetal size data';
       });
   },
 });

@@ -1,4 +1,4 @@
-import supabase from "../config/supabaseConfig";
+import supabase from '../config/supabaseConfig';
 
 // Define types
 interface SignUpParams {
@@ -36,7 +36,7 @@ const authService = {
       if (error) throw error;
       return { data, error: null };
     } catch (error: any) {
-      return { data: null, error: error.message || "Failed to sign up" };
+      return { data: null, error: error.message || 'Failed to sign up' };
     }
   },
 
@@ -51,7 +51,7 @@ const authService = {
       if (error) throw error;
       return { data, error: null };
     } catch (error: any) {
-      return { data: null, error: error.message || "Failed to sign in" };
+      return { data: null, error: error.message || 'Failed to sign in' };
     }
   },
 
@@ -62,7 +62,7 @@ const authService = {
       if (error) throw error;
       return { error: null };
     } catch (error: any) {
-      return { error: error.message || "Failed to sign out" };
+      return { error: error.message || 'Failed to sign out' };
     }
   },
 
@@ -73,7 +73,7 @@ const authService = {
       if (error) throw error;
       return { data, error: null };
     } catch (error: any) {
-      return { data: null, error: error.message || "Failed to get session" };
+      return { data: null, error: error.message || 'Failed to get session' };
     }
   },
 
@@ -81,13 +81,13 @@ const authService = {
   resetPassword: async (email: string) => {
     try {
       const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "bumpbuddy://reset-password",
+        redirectTo: 'bumpbuddy://reset-password',
       });
 
       if (error) throw error;
       return { data, error: null };
     } catch (error: any) {
-      return { data: null, error: error.message || "Failed to reset password" };
+      return { data: null, error: error.message || 'Failed to reset password' };
     }
   },
 
@@ -95,9 +95,9 @@ const authService = {
   getProfile: async (userId: string) => {
     try {
       const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("id", userId)
+        .from('users')
+        .select('*')
+        .eq('id', userId)
         .single();
 
       if (error) throw error;
@@ -105,7 +105,7 @@ const authService = {
     } catch (error: any) {
       return {
         data: null,
-        error: error.message || "Failed to get user profile",
+        error: error.message || 'Failed to get user profile',
       };
     }
   },
@@ -121,9 +121,9 @@ const authService = {
     try {
       // Get current user data to merge with updates
       const { data: currentUser, error: fetchError } = await supabase
-        .from("users")
-        .select("app_settings")
-        .eq("id", id)
+        .from('users')
+        .select('app_settings')
+        .eq('id', id)
         .single();
 
       if (fetchError) throw fetchError;
@@ -153,9 +153,9 @@ const authService = {
       // Make update if there's anything to update
       if (Object.keys(updates).length > 0) {
         const { data, error } = await supabase
-          .from("users")
+          .from('users')
           .update(updates)
-          .eq("id", id)
+          .eq('id', id)
           .select();
 
         if (error) throw error;
@@ -164,7 +164,7 @@ const authService = {
 
       return { data: currentUser, error: null };
     } catch (error: any) {
-      return { data: null, error: error.message || "Failed to update profile" };
+      return { data: null, error: error.message || 'Failed to update profile' };
     }
   },
 };

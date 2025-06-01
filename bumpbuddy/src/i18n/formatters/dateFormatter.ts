@@ -4,28 +4,29 @@
  */
 
 import {
+  Locale,
   format,
   formatDistance,
   formatRelative,
   isToday,
   isTomorrow,
   isYesterday,
-  Locale,
-} from "date-fns";
-import { enUS, es, fr } from "date-fns/locale";
-import i18next from "i18next";
+} from 'date-fns';
+import { enUS, es, fr } from 'date-fns/locale';
+
+import i18next from 'i18next';
 
 // Map of supported locales
 const locales: { [key: string]: Locale } = {
   en: enUS,
-  es: es,
-  fr: fr,
+  es,
+  fr,
 };
 
 // Get current locale from i18next
 const getCurrentLocale = (): Locale => {
-  const language = i18next.language || "en";
-  return locales[language.split("-")[0]] || enUS;
+  const language = i18next.language || 'en';
+  return locales[language.split('-')[0]] || enUS;
 };
 
 /**
@@ -36,7 +37,7 @@ const getCurrentLocale = (): Locale => {
  */
 export const formatDate = (
   date: Date | number,
-  formatStr: string = "PPP"
+  formatStr: string = 'PPP'
 ): string => {
   const locale = getCurrentLocale();
   return format(date, formatStr, { locale });
@@ -48,7 +49,7 @@ export const formatDate = (
  * @returns Formatted date string
  */
 export const formatShortDate = (date: Date | number): string => {
-  return formatDate(date, "P");
+  return formatDate(date, 'P');
 };
 
 /**
@@ -57,7 +58,7 @@ export const formatShortDate = (date: Date | number): string => {
  * @returns Formatted date string
  */
 export const formatLongDate = (date: Date | number): string => {
-  return formatDate(date, "PPP");
+  return formatDate(date, 'PPP');
 };
 
 /**
@@ -66,7 +67,7 @@ export const formatLongDate = (date: Date | number): string => {
  * @returns Formatted time string
  */
 export const formatTime = (date: Date | number): string => {
-  return formatDate(date, "p");
+  return formatDate(date, 'p');
 };
 
 /**
@@ -75,7 +76,7 @@ export const formatTime = (date: Date | number): string => {
  * @returns Formatted date and time string
  */
 export const formatDateTime = (date: Date | number): string => {
-  return formatDate(date, "PPp");
+  return formatDate(date, 'PPp');
 };
 
 /**
@@ -100,9 +101,9 @@ export const formatRelativeTime = (
 export const formatContextualDate = (date: Date | number): string => {
   const t = i18next.t;
 
-  if (isToday(date)) return t("common.labels.today");
-  if (isYesterday(date)) return t("common.labels.yesterday");
-  if (isTomorrow(date)) return t("common.labels.tomorrow");
+  if (isToday(date)) return t('common.labels.today');
+  if (isYesterday(date)) return t('common.labels.yesterday');
+  if (isTomorrow(date)) return t('common.labels.tomorrow');
 
   const locale = getCurrentLocale();
   return formatRelative(date, new Date(), { locale });

@@ -1,4 +1,4 @@
-import { combineReducers, configureStore } from "@reduxjs/toolkit";
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
   FLUSH,
   PAUSE,
@@ -8,20 +8,20 @@ import {
   REHYDRATE,
   persistReducer,
   persistStore,
-} from "redux-persist";
+} from 'redux-persist';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { createSlice } from "@reduxjs/toolkit";
-import authReducer from "./slices/authSlice";
-import fetalSizeReducer from "./slices/fetalSizeSlice";
-import healthReducer from "./slices/healthSlice";
-import preferencesReducer from "./slices/preferencesSlice";
-import timelineReducer from "./slices/timelineSlice";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createSlice } from '@reduxjs/toolkit';
+import authReducer from './slices/authSlice';
+import fetalSizeReducer from './slices/fetalSizeSlice';
+import healthReducer from './slices/healthSlice';
+import preferencesReducer from './slices/preferencesSlice';
+import timelineReducer from './slices/timelineSlice';
 
 // Create a sync reducer interface for tracking offline operations
 
 const networkSlice = createSlice({
-  name: "network",
+  name: 'network',
   initialState: {
     isConnected: true,
     lastOnline: new Date().toISOString(),
@@ -45,17 +45,17 @@ export const { setConnectionStatus, setPendingSyncCount } =
 
 // Configure redux-persist
 const persistConfig = {
-  key: "root",
+  key: 'root',
   storage: AsyncStorage,
   // Don't persist auth state as it's managed by Supabase
-  blacklist: ["auth"],
+  blacklist: ['auth'],
   // Add state recovery options
   timeout: 10000, // 10 seconds
 };
 
 // Configure specific persistence settings for health data
 const healthPersistConfig = {
-  key: "health",
+  key: 'health',
   storage: AsyncStorage,
   // Optional: use stateReconciler to handle conflicts
   // stateReconciler: autoMergeLevel2,
@@ -78,7 +78,7 @@ const persistedReducer = persistReducer(persistConfig, rootReducer);
 export const store = configureStore({
   reducer: persistedReducer,
   // Add middleware for async operations
-  middleware: (getDefaultMiddleware) =>
+  middleware: getDefaultMiddleware =>
     getDefaultMiddleware({
       serializableCheck: {
         ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],

@@ -3,7 +3,7 @@
  * Provides locale-aware formatting for weights, measurements, and currencies
  */
 
-import i18next from "i18next";
+import i18next from 'i18next';
 
 /**
  * Format a number according to the current locale
@@ -15,7 +15,7 @@ export const formatNumber = (
   value: number,
   options: Intl.NumberFormatOptions = {}
 ): string => {
-  const locale = i18next.language || "en";
+  const locale = i18next.language || 'en';
   return new Intl.NumberFormat(locale, options).format(value);
 };
 
@@ -109,7 +109,7 @@ export const convertLength = (value: number, toImperial: boolean): number => {
  */
 export const formatPercentage = (value: number): string => {
   return formatNumber(value * 100, {
-    style: "percent",
+    style: 'percent',
     maximumFractionDigits: 0,
   });
 };
@@ -122,9 +122,9 @@ export const formatPercentage = (value: number): string => {
  */
 export const formatCurrency = (
   value: number,
-  currency: string = "USD"
+  currency: string = 'USD'
 ): string => {
-  return formatNumber(value, { style: "currency", currency });
+  return formatNumber(value, { style: 'currency', currency });
 };
 
 export default {

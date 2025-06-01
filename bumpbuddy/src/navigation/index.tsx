@@ -3,27 +3,27 @@ import {
   DefaultTheme,
   NavigationContainer,
   useNavigationContainerRef,
-} from "@react-navigation/native";
-import React, { useEffect, useRef } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { authFailure, authSuccess } from "../redux/slices/authSlice";
+} from '@react-navigation/native';
+import React, { useEffect, useRef } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { authFailure, authSuccess } from '../redux/slices/authSlice';
 
-import { Ionicons } from "@expo/vector-icons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import { createStackNavigator } from "@react-navigation/stack";
-import { useTranslation } from "react-i18next";
-import NetworkStatusIndicator from "../components/NetworkStatusIndicator";
-import supabase from "../config/supabaseConfig";
-import { useTheme } from "../contexts/ThemeContext";
-import { RootState } from "../redux/store";
-import AppointmentsScreen from "../screens/AppointmentsScreen";
-import AuthScreen from "../screens/auth/AuthScreen";
-import FoodGuideScreen from "../screens/FoodGuideScreen";
-import HomeScreen from "../screens/HomeScreen";
-import ProfileScreen from "../screens/ProfileScreen";
-import TimelineScreen from "../screens/TimelineScreen";
-import WeekDetailScreen from "../screens/WeekDetailScreen";
-import authService from "../services/authService";
+import { Ionicons } from '@expo/vector-icons';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createStackNavigator } from '@react-navigation/stack';
+import { useTranslation } from 'react-i18next';
+import NetworkStatusIndicator from '../components/NetworkStatusIndicator';
+import supabase from '../config/supabaseConfig';
+import { useTheme } from '../contexts/ThemeContext';
+import { RootState } from '../redux/store';
+import AppointmentsScreen from '../screens/AppointmentsScreen';
+import AuthScreen from '../screens/auth/AuthScreen';
+import FoodGuideScreen from '../screens/FoodGuideScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
+import TimelineScreen from '../screens/TimelineScreen';
+import WeekDetailScreen from '../screens/WeekDetailScreen';
+import authService from '../services/authService';
 
 // import HealthTrackerScreen from "../screens/HealthTrackerScreen"; // Temporarily disabled for v1.0 release
 
@@ -63,16 +63,16 @@ const TimelineNavigator = () => {
   return (
     <TimelineStack.Navigator>
       <TimelineStack.Screen
-        name="TimelineMain"
+        name='TimelineMain'
         component={TimelineScreen}
         options={{ headerShown: false }}
       />
       <TimelineStack.Screen
-        name="WeekDetail"
+        name='WeekDetail'
         component={WeekDetailScreen}
         options={{
           headerShown: true,
-          title: t("navigation.weekDetail"),
+          title: t('navigation.weekDetail'),
         }}
       />
     </TimelineStack.Navigator>
@@ -89,45 +89,45 @@ const MainTabNavigator = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
 
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Timeline") {
-            iconName = focused ? "calendar" : "calendar-outline";
-          } else if (route.name === "FoodGuide") {
-            iconName = focused ? "restaurant" : "restaurant-outline";
+          if (route.name === 'Home') {
+            iconName = focused ? 'home' : 'home-outline';
+          } else if (route.name === 'Timeline') {
+            iconName = focused ? 'calendar' : 'calendar-outline';
+          } else if (route.name === 'FoodGuide') {
+            iconName = focused ? 'restaurant' : 'restaurant-outline';
             // } else if (route.name === "HealthTracker") {
             //   iconName = focused ? "heart" : "heart-outline"; // Temporarily disabled for v1.0 release
-          } else if (route.name === "Appointments") {
-            iconName = focused ? "calendar" : "calendar-outline";
-          } else if (route.name === "Profile") {
-            iconName = focused ? "person" : "person-outline";
+          } else if (route.name === 'Appointments') {
+            iconName = focused ? 'calendar' : 'calendar-outline';
+          } else if (route.name === 'Profile') {
+            iconName = focused ? 'person' : 'person-outline';
           }
 
           return <Ionicons name={iconName as any} size={size} color={color} />;
         },
-        tabBarActiveTintColor: isDark ? "#C2AADF" : "#9B85C4",
-        tabBarInactiveTintColor: isDark ? "#9ca3af" : "#6c757d",
+        tabBarActiveTintColor: isDark ? '#C2AADF' : '#9B85C4',
+        tabBarInactiveTintColor: isDark ? '#9ca3af' : '#6c757d',
         headerShown: false,
         tabBarStyle: {
-          backgroundColor: isDark ? "#1f2937" : "#ffffff",
-          borderTopColor: isDark ? "#374151" : "#e5e7eb",
+          backgroundColor: isDark ? '#1f2937' : '#ffffff',
+          borderTopColor: isDark ? '#374151' : '#e5e7eb',
         },
         tabBarLabelStyle: {
-          fontFamily: "Poppins",
+          fontFamily: 'Poppins',
           fontSize: 12,
         },
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
+      <Tab.Screen name='Home' component={HomeScreen} />
       <Tab.Screen
-        name="Timeline"
+        name='Timeline'
         component={TimelineNavigator}
-        options={{ title: "Timeline" }}
+        options={{ title: 'Timeline' }}
       />
       <Tab.Screen
-        name="FoodGuide"
+        name='FoodGuide'
         component={FoodGuideScreen}
-        options={{ title: "Food Guide" }}
+        options={{ title: 'Food Guide' }}
       />
       {/* <Tab.Screen
         name="HealthTracker"
@@ -135,8 +135,8 @@ const MainTabNavigator = () => {
         options={{ title: "Health" }}
       /> */}
       {/* HealthTracker temporarily disabled for v1.0 release */}
-      <Tab.Screen name="Appointments" component={AppointmentsScreen} />
-      <Tab.Screen name="Profile" component={ProfileScreen} />
+      <Tab.Screen name='Appointments' component={AppointmentsScreen} />
+      <Tab.Screen name='Profile' component={ProfileScreen} />
     </Tab.Navigator>
   );
 };
@@ -160,7 +160,7 @@ const RootNavigator = () => {
         const { data, error } = await authService.getSession();
 
         if (error || !data?.session) {
-          dispatch(authFailure(error?.message || "No active session"));
+          dispatch(authFailure(error?.message || 'No active session'));
           return;
         }
 
@@ -169,20 +169,20 @@ const RootNavigator = () => {
 
           // Fetch user data from public.users table
           const { data: userData, error: userError } = await supabase
-            .from("users")
-            .select("*")
-            .eq("id", userId)
+            .from('users')
+            .select('*')
+            .eq('id', userId)
             .single();
 
           if (userError) {
-            console.error("Error fetching user data:", userError);
+            console.error('Error fetching user data:', userError);
 
             // Fall back to basic user data from session
             dispatch(
               authSuccess({
                 user: {
                   id: userId,
-                  email: data.session.user.email || "",
+                  email: data.session.user.email || '',
                   created_at:
                     data.session.user.created_at || new Date().toISOString(),
                 },
@@ -201,7 +201,7 @@ const RootNavigator = () => {
           );
         }
       } catch (error: any) {
-        console.error("Session check error:", error);
+        console.error('Session check error:', error);
       }
     };
 
@@ -227,7 +227,7 @@ const RootNavigator = () => {
             headerShown: false,
           }}
         >
-          <MainStack.Screen name="MainTabs" component={MainTabNavigator} />
+          <MainStack.Screen name='MainTabs' component={MainTabNavigator} />
         </MainStack.Navigator>
       ) : (
         <AuthScreen />

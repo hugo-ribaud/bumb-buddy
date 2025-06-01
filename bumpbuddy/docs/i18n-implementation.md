@@ -76,12 +76,12 @@ A UI component for selecting the app language with features:
 ### Basic Text Translation
 
 ```jsx
-import { useTranslation } from "react-i18next";
+import { useTranslation } from 'react-i18next';
 
 function MyComponent() {
   const { t } = useTranslation();
 
-  return <Text>{t("common.buttons.save")}</Text>; // "Save" or "Guardar" based on language
+  return <Text>{t('common.buttons.save')}</Text>; // "Save" or "Guardar" based on language
 }
 ```
 
@@ -89,17 +89,17 @@ function MyComponent() {
 
 ```jsx
 // For interpolation with variables
-const welcomeMessage = t("home.welcome", { name: userName });
+const welcomeMessage = t('home.welcome', { name: userName });
 // "Welcome, John!" or "¡Bienvenida, John!" based on language
 ```
 
 ### Formatting Dates
 
 ```jsx
-import { formatDate } from "../i18n/formatters/dateFormatter";
+import { formatDate } from '../i18n/formatters/dateFormatter';
 
 // Will format based on current locale
-const formattedDate = formatDate(new Date(), "PPP");
+const formattedDate = formatDate(new Date(), 'PPP');
 ```
 
 ### Formatting Numbers
@@ -108,11 +108,11 @@ const formattedDate = formatDate(new Date(), "PPP");
 import {
   formatNumber,
   formatCurrency,
-} from "../i18n/formatters/numberFormatter";
+} from '../i18n/formatters/numberFormatter';
 
 // Format based on current locale
 const formattedNumber = formatNumber(1000.5); // "1,000.5" or "1 000,5" based on locale
-const price = formatCurrency(19.99, "USD"); // "$19.99" or "19,99 $" based on locale
+const price = formatCurrency(19.99, 'USD'); // "$19.99" or "19,99 $" based on locale
 ```
 
 ## Adding New Languages
@@ -128,8 +128,8 @@ To add a new language:
 export const supportedLanguages = {
   // Existing languages...
   de: {
-    name: "German",
-    nativeName: "Deutsch",
+    name: 'German',
+    nativeName: 'Deutsch',
     isRTL: false,
   },
 };
@@ -138,7 +138,7 @@ export const supportedLanguages = {
 5. Add the language to the resources in `src/i18n/index.ts`:
 
 ```typescript
-import de from "./languages/de.json";
+import de from './languages/de.json';
 
 const resources = {
   // Existing languages...

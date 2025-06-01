@@ -1,11 +1,11 @@
-import { Image, View } from "react-native";
+import { Image, View } from 'react-native';
 
-import React from "react";
-import { useTranslation } from "react-i18next";
-import { usePreferences } from "../contexts/PreferencesContext";
-import { useTheme } from "../contexts/ThemeContext";
-import FontedText from "./FontedText";
-import ThemedView from "./ThemedView";
+import React from 'react';
+import { useTranslation } from 'react-i18next';
+import { usePreferences } from '../contexts/PreferencesContext';
+import { useTheme } from '../contexts/ThemeContext';
+import FontedText from './FontedText';
+import ThemedView from './ThemedView';
 
 interface FetalSizeComparisonProps {
   weekNumber: number;
@@ -20,8 +20,8 @@ interface FetalSizeComparisonProps {
 
 const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   weekNumber,
-  itemName = "",
-  imageUrl = "",
+  itemName = '',
+  imageUrl = '',
   sizeInCm,
   sizeInInches,
   weightInG,
@@ -32,14 +32,14 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   const { t } = useTranslation();
   const { units } = usePreferences();
 
-  const isMetric = units === "metric";
+  const isMetric = units === 'metric';
 
   const getImageUrl = (url: string) => {
     // Handle missing URLs
-    if (!url) return "";
+    if (!url) return '';
 
     // If it's a full URL, use it directly
-    if (url.startsWith("http")) {
+    if (url.startsWith('http')) {
       return url;
     }
 
@@ -50,55 +50,55 @@ const FetalSizeComparison: React.FC<FetalSizeComparisonProps> = ({
   // Format the item name to be displayed (capitalize)
   const formattedName = itemName
     ? itemName
-        .split(" ")
-        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-        .join(" ")
-    : t("fetalSize.notAvailable");
+        .split(' ')
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(' ')
+    : t('fetalSize.notAvailable');
 
   return (
     <ThemedView
-      backgroundColor="surface"
-      className={`rounded-xl overflow-hidden ${compact ? "p-2" : "p-4"}`}
+      backgroundColor='surface'
+      className={`rounded-xl overflow-hidden ${compact ? 'p-2' : 'p-4'}`}
     >
-      <View className="flex-row items-center">
+      <View className='flex-row items-center'>
         {imageUrl && (
           <View
             className={`${
-              compact ? "w-12 h-12" : "w-20 h-20"
+              compact ? 'w-12 h-12' : 'w-20 h-20'
             } rounded-lg overflow-hidden mr-3 items-center justify-center`}
           >
             <Image
               source={{ uri: getImageUrl(imageUrl) }}
-              className="w-full h-full"
-              resizeMode="contain"
+              className='w-full h-full'
+              resizeMode='contain'
             />
           </View>
         )}
-        <View className="flex-1">
+        <View className='flex-1'>
           <FontedText
-            variant={compact ? "body-small" : "body"}
-            className="font-semibold"
+            variant={compact ? 'body-small' : 'body'}
+            className='font-semibold'
           >
             {formattedName}
           </FontedText>
 
           {!compact && (
-            <View className="mt-1">
+            <View className='mt-1'>
               {(sizeInCm || sizeInInches) && (
-                <FontedText variant="caption" colorVariant="primary">
-                  {t("fetalSize.sizeLabel")}:{" "}
-                  {isMetric && sizeInCm ? `${sizeInCm} cm` : ""}
-                  {isMetric && sizeInCm && sizeInInches ? "" : ""}
-                  {!isMetric && sizeInInches ? `${sizeInInches} in` : ""}
+                <FontedText variant='caption' colorVariant='primary'>
+                  {t('fetalSize.sizeLabel')}:{' '}
+                  {isMetric && sizeInCm ? `${sizeInCm} cm` : ''}
+                  {isMetric && sizeInCm && sizeInInches ? '' : ''}
+                  {!isMetric && sizeInInches ? `${sizeInInches} in` : ''}
                 </FontedText>
               )}
 
               {(weightInG || weightInOz) && (
-                <FontedText variant="caption" colorVariant="primary">
-                  {t("fetalSize.weightLabel")}:{" "}
-                  {isMetric && weightInG ? `${weightInG} g` : ""}
-                  {isMetric && weightInG && weightInOz ? " " : ""}
-                  {!isMetric && weightInOz ? `${weightInOz} oz` : ""}
+                <FontedText variant='caption' colorVariant='primary'>
+                  {t('fetalSize.weightLabel')}:{' '}
+                  {isMetric && weightInG ? `${weightInG} g` : ''}
+                  {isMetric && weightInG && weightInOz ? ' ' : ''}
+                  {!isMetric && weightInOz ? `${weightInOz} oz` : ''}
                 </FontedText>
               )}
             </View>

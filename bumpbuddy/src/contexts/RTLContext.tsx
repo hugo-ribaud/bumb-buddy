@@ -9,10 +9,10 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from "react";
+} from 'react';
 
-import { I18nManager } from "react-native";
-import { useLanguage } from "./LanguageContext";
+import { I18nManager } from 'react-native';
+import { useLanguage } from './LanguageContext';
 
 // Context type definition
 interface RTLContextType {

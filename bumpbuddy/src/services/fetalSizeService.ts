@@ -1,12 +1,12 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import supabase from "../config/supabaseConfig";
-import { FetalSizeComparison } from "../types/fetalSize";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import supabase from '../config/supabaseConfig';
+import { FetalSizeComparison } from '../types/fetalSize';
 
-const CACHE_KEY = "fetal_size_data";
+const CACHE_KEY = 'fetal_size_data';
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 
 export const fetalSizeService = {
-  async getAll(language: string = "en"): Promise<FetalSizeComparison[]> {
+  async getAll(language: string = 'en'): Promise<FetalSizeComparison[]> {
     // Try to get from cache first (cache by language)
     const cacheKey = `${CACHE_KEY}_${language}`;
     try {
@@ -18,25 +18,25 @@ export const fetalSizeService = {
         }
       }
     } catch (error) {
-      console.error("Error reading from cache:", error);
+      console.error('Error reading from cache:', error);
     }
 
     try {
       // First, get all base fetal size data
       const { data: allFetalData, error: fetalError } = await supabase
-        .from("fetal_size_comparisons")
-        .select("*")
-        .order("week");
+        .from('fetal_size_comparisons')
+        .select('*')
+        .order('week');
 
       if (fetalError || !allFetalData) {
-        console.error("Error fetching fetal size data:", fetalError);
+        console.error('Error fetching fetal size data:', fetalError);
         throw new Error(
           `Error fetching fetal size data: ${fetalError?.message}`
         );
       }
 
       // If requesting English, return the base data
-      if (language === "en") {
+      if (language === 'en') {
         // Cache the data
         try {
           await AsyncStorage.setItem(
@@ -47,7 +47,7 @@ export const fetalSizeService = {
             })
           );
         } catch (error) {
-          console.error("Error writing to cache:", error);
+          console.error('Error writing to cache:', error);
         }
         return allFetalData as FetalSizeComparison[];
       }
@@ -55,9 +55,9 @@ export const fetalSizeService = {
       // Get all available translations for the requested language
       const { data: translationsData, error: translationsError } =
         await supabase
-          .from("fetal_size_translations")
-          .select("week, translations")
-          .eq("language", language);
+          .from('fetal_size_translations')
+          .select('week, translations')
+          .eq('language', language);
 
       if (translationsError) {
         // Cache the English data
@@ -70,7 +70,7 @@ export const fetalSizeService = {
             })
           );
         } catch (error) {
-          console.error("Error writing to cache:", error);
+          console.error('Error writing to cache:', error);
         }
         return allFetalData as FetalSizeComparison[];
       }
@@ -78,13 +78,13 @@ export const fetalSizeService = {
       // Create a map of translations for quick lookup
       const translationsMap = new Map();
       if (translationsData) {
-        translationsData.forEach((translation) => {
+        translationsData.forEach(translation => {
           translationsMap.set(translation.week, translation.translations);
         });
       }
 
       // Transform data to use translated content where available
-      const transformedData = allFetalData.map((item) => {
+      const transformedData = allFetalData.map(item => {
         const translation = translationsMap.get(item.week);
 
         if (!translation) {
@@ -111,15 +111,15 @@ export const fetalSizeService = {
           })
         );
       } catch (error) {
-        console.error("Error writing to cache:", error);
+        console.error('Error writing to cache:', error);
       }
 
       return transformedData as FetalSizeComparison[];
     } catch (supabaseError) {
-      console.error("Error in Supabase query:", supabaseError);
+      console.error('Error in Supabase query:', supabaseError);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return fetalSizeService.getAll("en");
+      if (language !== 'en') {
+        return fetalSizeService.getAll('en');
       }
       return [];
     }
@@ -127,7 +127,7 @@ export const fetalSizeService = {
 
   async getByWeek(
     week: number,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<FetalSizeComparison | null> {
     // Try to get from cache first (cache by language)
     const cacheKey = `${CACHE_KEY}_${language}`;
@@ -145,15 +145,15 @@ export const fetalSizeService = {
         }
       }
     } catch (error) {
-      console.error("Error reading from cache:", error);
+      console.error('Error reading from cache:', error);
     }
 
     try {
       // First, get the base fetal size data for this week
       const { data: fetalData, error: fetalError } = await supabase
-        .from("fetal_size_comparisons")
-        .select("*")
-        .eq("week", week)
+        .from('fetal_size_comparisons')
+        .select('*')
+        .eq('week', week)
         .single();
 
       if (fetalError || !fetalData) {
@@ -165,16 +165,16 @@ export const fetalSizeService = {
       }
 
       // If requesting English, return the base data
-      if (language === "en") {
+      if (language === 'en') {
         return fetalData as FetalSizeComparison;
       }
 
       // Try to get translation for the requested language
       const { data: translationData, error: translationError } = await supabase
-        .from("fetal_size_translations")
-        .select("translations")
-        .eq("week", week)
-        .eq("language", language)
+        .from('fetal_size_translations')
+        .select('translations')
+        .eq('week', week)
+        .eq('language', language)
         .single();
 
       if (translationError || !translationData) {
@@ -192,7 +192,7 @@ export const fetalSizeService = {
 
       return transformedData as FetalSizeComparison;
     } catch (supabaseError) {
-      console.error("Error in Supabase query:", supabaseError);
+      console.error('Error in Supabase query:', supabaseError);
       return null;
     }
   },
@@ -200,14 +200,14 @@ export const fetalSizeService = {
   async clearCache(): Promise<void> {
     try {
       // Clear cache for all languages
-      const languages = ["en", "es", "fr"];
+      const languages = ['en', 'es', 'fr'];
       for (const lang of languages) {
         await AsyncStorage.removeItem(`${CACHE_KEY}_${lang}`);
       }
       // Also clear the old cache key for backward compatibility
       await AsyncStorage.removeItem(CACHE_KEY);
     } catch (error) {
-      console.error("Error clearing cache:", error);
+      console.error('Error clearing cache:', error);
     }
   },
 };

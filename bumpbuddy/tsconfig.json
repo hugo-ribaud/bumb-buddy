@@ -3,6 +3,23 @@
   "compilerOptions": {
     "strict": true,
     "typeRoots": ["./src/types", "./node_modules/@types"],
-    "skipLibCheck": true
-  }
+    "skipLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"],
+      "@/components/*": ["src/components/*"],
+      "@/screens/*": ["src/screens/*"],
+      "@/navigation/*": ["src/navigation/*"],
+      "@/services/*": ["src/services/*"],
+      "@/utils/*": ["src/utils/*"],
+      "@/types/*": ["src/types/*"],
+      "@/contexts/*": ["src/contexts/*"],
+      "@/redux/*": ["src/redux/*"],
+      "@/config/*": ["src/config/*"],
+      "@/i18n/*": ["src/i18n/*"],
+      "@/assets/*": ["assets/*"]
+    }
+  },
+  "include": ["**/*.ts", "**/*.tsx", ".expo/types/**/*.ts", "expo-env.d.ts"],
+  "exclude": ["node_modules"]
 }

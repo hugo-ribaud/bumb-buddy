@@ -3,27 +3,27 @@
  * A View component that adapts to RTL direction changes
  */
 
-import React, { useMemo } from "react";
-import { StyleProp, TextStyle, View, ViewProps, ViewStyle } from "react-native";
+import React, { useMemo } from 'react';
+import { StyleProp, TextStyle, View, ViewProps, ViewStyle } from 'react-native';
 
-import { useRTL } from "../contexts/RTLContext";
+import { useRTL } from '../contexts/RTLContext';
 
 // RTL-aware style properties that need to be flipped
 const RTL_FLIPPABLE_PROPERTIES = [
-  "marginStart",
-  "marginEnd",
-  "paddingStart",
-  "paddingEnd",
-  "borderStartWidth",
-  "borderEndWidth",
-  "borderStartColor",
-  "borderEndColor",
-  "borderTopStartRadius",
-  "borderTopEndRadius",
-  "borderBottomStartRadius",
-  "borderBottomEndRadius",
-  "start",
-  "end",
+  'marginStart',
+  'marginEnd',
+  'paddingStart',
+  'paddingEnd',
+  'borderStartWidth',
+  'borderEndWidth',
+  'borderStartColor',
+  'borderEndColor',
+  'borderTopStartRadius',
+  'borderTopEndRadius',
+  'borderBottomStartRadius',
+  'borderBottomEndRadius',
+  'start',
+  'end',
 ];
 
 // Convert style values between LTR and RTL
@@ -43,18 +43,18 @@ const convertStyleForRTL = (
   }
 
   // Handle flexDirection
-  if (style.flexDirection === "row") {
-    result.flexDirection = "row-reverse";
-  } else if (style.flexDirection === "row-reverse") {
-    result.flexDirection = "row";
+  if (style.flexDirection === 'row') {
+    result.flexDirection = 'row-reverse';
+  } else if (style.flexDirection === 'row-reverse') {
+    result.flexDirection = 'row';
   }
 
   // Handle text alignment (only if TextStyle)
   const textStyle = style as TextStyle;
-  if (textStyle.textAlign === "left") {
-    (result as TextStyle).textAlign = "right";
-  } else if (textStyle.textAlign === "right") {
-    (result as TextStyle).textAlign = "left";
+  if (textStyle.textAlign === 'left') {
+    (result as TextStyle).textAlign = 'right';
+  } else if (textStyle.textAlign === 'right') {
+    (result as TextStyle).textAlign = 'left';
   }
 
   // Handle RTL logical properties
@@ -62,9 +62,9 @@ const convertStyleForRTL = (
     if (style[prop as keyof typeof style] !== undefined) {
       const value = style[prop as keyof typeof style];
       const oppositeKey = prop
-        .replace("Start", "TEMP")
-        .replace("End", "Start")
-        .replace("TEMP", "End");
+        .replace('Start', 'TEMP')
+        .replace('End', 'Start')
+        .replace('TEMP', 'End');
 
       // Apply to opposite side
       (result as any)[oppositeKey] = value;
@@ -95,8 +95,8 @@ const DirectionalView: React.FC<DirectionalViewProps> = ({
 
     // Handle arrays of styles
     if (Array.isArray(style)) {
-      return style.map((s) =>
-        typeof s === "object" && s !== null
+      return style.map(s =>
+        typeof s === 'object' && s !== null
           ? convertStyleForRTL(s as ViewStyle)
           : s
       );

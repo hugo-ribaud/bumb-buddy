@@ -1,5 +1,5 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import supabase from "../config/supabaseConfig";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import supabase from '../config/supabaseConfig';
 
 // Types
 export interface Symptom {
@@ -106,14 +106,14 @@ export interface ExerciseLog {
 }
 
 // Cache keys
-const SYMPTOMS_CACHE_KEY = "health_symptoms_cache";
-const KICK_COUNTS_CACHE_KEY = "health_kick_counts_cache";
-const WEIGHT_LOGS_CACHE_KEY = "health_weight_logs_cache";
-const CONTRACTIONS_CACHE_KEY = "health_contractions_cache";
-const BLOOD_PRESSURE_LOGS_CACHE_KEY = "health_bp_logs_cache";
-const MOOD_LOGS_CACHE_KEY = "health_mood_logs_cache";
-const SLEEP_LOGS_CACHE_KEY = "health_sleep_logs_cache";
-const EXERCISE_LOGS_CACHE_KEY = "health_exercise_logs_cache";
+const SYMPTOMS_CACHE_KEY = 'health_symptoms_cache';
+const KICK_COUNTS_CACHE_KEY = 'health_kick_counts_cache';
+const WEIGHT_LOGS_CACHE_KEY = 'health_weight_logs_cache';
+const CONTRACTIONS_CACHE_KEY = 'health_contractions_cache';
+const BLOOD_PRESSURE_LOGS_CACHE_KEY = 'health_bp_logs_cache';
+const MOOD_LOGS_CACHE_KEY = 'health_mood_logs_cache';
+const SLEEP_LOGS_CACHE_KEY = 'health_sleep_logs_cache';
+const EXERCISE_LOGS_CACHE_KEY = 'health_exercise_logs_cache';
 
 // Health tracking service
 const healthService = {
@@ -130,13 +130,13 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("symptoms")
-        .select("*")
-        .eq("user_id", userId)
-        .order("date", { ascending: false });
+        .from('symptoms')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false });
 
       if (error) {
-        console.error("Error fetching symptoms:", error);
+        console.error('Error fetching symptoms:', error);
         return symptoms; // Return cached data if available
       }
 
@@ -148,23 +148,23 @@ const healthService = {
 
       return symptoms;
     } catch (error) {
-      console.error("Error in getSymptoms:", error);
+      console.error('Error in getSymptoms:', error);
       return [];
     }
   },
 
   addSymptom: async (
-    symptom: Omit<Symptom, "id" | "created_at" | "updated_at">
+    symptom: Omit<Symptom, 'id' | 'created_at' | 'updated_at'>
   ): Promise<Symptom | null> => {
     try {
       const { data, error } = await supabase
-        .from("symptoms")
+        .from('symptoms')
         .insert(symptom)
         .select()
         .single();
 
       if (error) {
-        console.error("Error adding symptom:", error);
+        console.error('Error adding symptom:', error);
         return null;
       }
 
@@ -181,7 +181,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in addSymptom:", error);
+      console.error('Error in addSymptom:', error);
       return null;
     }
   },
@@ -192,14 +192,14 @@ const healthService = {
   ): Promise<Symptom | null> => {
     try {
       const { data, error } = await supabase
-        .from("symptoms")
+        .from('symptoms')
         .update(updates)
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error updating symptom:", error);
+        console.error('Error updating symptom:', error);
         return null;
       }
 
@@ -207,7 +207,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(SYMPTOMS_CACHE_KEY);
       if (cachedData) {
         const symptoms: Symptom[] = JSON.parse(cachedData);
-        const index = symptoms.findIndex((s) => s.id === id);
+        const index = symptoms.findIndex(s => s.id === id);
         if (index !== -1) {
           symptoms[index] = { ...symptoms[index], ...updates };
           await AsyncStorage.setItem(
@@ -219,17 +219,17 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in updateSymptom:", error);
+      console.error('Error in updateSymptom:', error);
       return null;
     }
   },
 
   deleteSymptom: async (id: string): Promise<boolean> => {
     try {
-      const { error } = await supabase.from("symptoms").delete().eq("id", id);
+      const { error } = await supabase.from('symptoms').delete().eq('id', id);
 
       if (error) {
-        console.error("Error deleting symptom:", error);
+        console.error('Error deleting symptom:', error);
         return false;
       }
 
@@ -237,7 +237,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(SYMPTOMS_CACHE_KEY);
       if (cachedData) {
         const symptoms: Symptom[] = JSON.parse(cachedData);
-        const updatedSymptoms = symptoms.filter((s) => s.id !== id);
+        const updatedSymptoms = symptoms.filter(s => s.id !== id);
         await AsyncStorage.setItem(
           SYMPTOMS_CACHE_KEY,
           JSON.stringify(updatedSymptoms)
@@ -246,7 +246,7 @@ const healthService = {
 
       return true;
     } catch (error) {
-      console.error("Error in deleteSymptom:", error);
+      console.error('Error in deleteSymptom:', error);
       return false;
     }
   },
@@ -264,13 +264,13 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("kick_counts")
-        .select("*")
-        .eq("user_id", userId)
-        .order("start_time", { ascending: false });
+        .from('kick_counts')
+        .select('*')
+        .eq('user_id', userId)
+        .order('start_time', { ascending: false });
 
       if (error) {
-        console.error("Error fetching kick counts:", error);
+        console.error('Error fetching kick counts:', error);
         return kickCounts; // Return cached data if available
       }
 
@@ -282,7 +282,7 @@ const healthService = {
 
       return kickCounts;
     } catch (error) {
-      console.error("Error in getKickCounts:", error);
+      console.error('Error in getKickCounts:', error);
       return [];
     }
   },
@@ -296,19 +296,19 @@ const healthService = {
       };
 
       const { data, error } = await supabase
-        .from("kick_counts")
+        .from('kick_counts')
         .insert(newKickCount)
         .select()
         .single();
 
       if (error) {
-        console.error("Error starting kick count:", error);
+        console.error('Error starting kick count:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error("Error in startKickCount:", error);
+      console.error('Error in startKickCount:', error);
       return null;
     }
   },
@@ -319,20 +319,20 @@ const healthService = {
   ): Promise<KickCount | null> => {
     try {
       const { data, error } = await supabase
-        .from("kick_counts")
+        .from('kick_counts')
         .update({ count })
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error updating kick count:", error);
+        console.error('Error updating kick count:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error("Error in updateKickCount:", error);
+      console.error('Error in updateKickCount:', error);
       return null;
     }
   },
@@ -343,17 +343,17 @@ const healthService = {
   ): Promise<KickCount | null> => {
     try {
       const { data, error } = await supabase
-        .from("kick_counts")
+        .from('kick_counts')
         .update({
           end_time: new Date().toISOString(),
           notes,
         })
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error ending kick count:", error);
+        console.error('Error ending kick count:', error);
         return null;
       }
 
@@ -361,7 +361,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(KICK_COUNTS_CACHE_KEY);
       if (cachedData) {
         const kickCounts: KickCount[] = JSON.parse(cachedData);
-        const index = kickCounts.findIndex((k) => k.id === id);
+        const index = kickCounts.findIndex(k => k.id === id);
         if (index !== -1) {
           kickCounts[index] = data;
           await AsyncStorage.setItem(
@@ -373,7 +373,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in endKickCount:", error);
+      console.error('Error in endKickCount:', error);
       return null;
     }
   },
@@ -391,13 +391,13 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("weight_logs")
-        .select("*")
-        .eq("user_id", userId)
-        .order("date", { ascending: false });
+        .from('weight_logs')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false });
 
       if (error) {
-        console.error("Error fetching weight logs:", error);
+        console.error('Error fetching weight logs:', error);
         return weightLogs; // Return cached data if available
       }
 
@@ -409,23 +409,23 @@ const healthService = {
 
       return weightLogs;
     } catch (error) {
-      console.error("Error in getWeightLogs:", error);
+      console.error('Error in getWeightLogs:', error);
       return [];
     }
   },
 
   addWeightLog: async (
-    weightLog: Omit<WeightLog, "id" | "created_at" | "updated_at">
+    weightLog: Omit<WeightLog, 'id' | 'created_at' | 'updated_at'>
   ): Promise<WeightLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("weight_logs")
+        .from('weight_logs')
         .insert(weightLog)
         .select()
         .single();
 
       if (error) {
-        console.error("Error adding weight log:", error);
+        console.error('Error adding weight log:', error);
         return null;
       }
 
@@ -442,7 +442,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in addWeightLog:", error);
+      console.error('Error in addWeightLog:', error);
       return null;
     }
   },
@@ -460,13 +460,13 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("contractions")
-        .select("*")
-        .eq("user_id", userId)
-        .order("start_time", { ascending: false });
+        .from('contractions')
+        .select('*')
+        .eq('user_id', userId)
+        .order('start_time', { ascending: false });
 
       if (error) {
-        console.error("Error fetching contractions:", error);
+        console.error('Error fetching contractions:', error);
         return contractions; // Return cached data if available
       }
 
@@ -481,7 +481,7 @@ const healthService = {
 
       return contractions;
     } catch (error) {
-      console.error("Error in getContractions:", error);
+      console.error('Error in getContractions:', error);
       return [];
     }
   },
@@ -495,19 +495,19 @@ const healthService = {
       };
 
       const { data, error } = await supabase
-        .from("contractions")
+        .from('contractions')
         .insert(newContraction)
         .select()
         .single();
 
       if (error) {
-        console.error("Error starting contraction:", error);
+        console.error('Error starting contraction:', error);
         return null;
       }
 
       return data;
     } catch (error) {
-      console.error("Error in startContraction:", error);
+      console.error('Error in startContraction:', error);
       return null;
     }
   },
@@ -519,18 +519,18 @@ const healthService = {
   ): Promise<Contraction | null> => {
     try {
       const { data, error } = await supabase
-        .from("contractions")
+        .from('contractions')
         .update({
           end_time: new Date().toISOString(),
           intensity,
           notes,
         })
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error ending contraction:", error);
+        console.error('Error ending contraction:', error);
         return null;
       }
 
@@ -538,7 +538,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(CONTRACTIONS_CACHE_KEY);
       if (cachedData) {
         const contractions: Contraction[] = JSON.parse(cachedData);
-        const index = contractions.findIndex((c) => c.id === id);
+        const index = contractions.findIndex(c => c.id === id);
         if (index !== -1) {
           contractions[index] = data;
           await AsyncStorage.setItem(
@@ -550,7 +550,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in endContraction:", error);
+      console.error('Error in endContraction:', error);
       return null;
     }
   },
@@ -558,12 +558,12 @@ const healthService = {
   deleteContraction: async (id: string): Promise<boolean> => {
     try {
       const { error } = await supabase
-        .from("contractions")
+        .from('contractions')
         .delete()
-        .eq("id", id);
+        .eq('id', id);
 
       if (error) {
-        console.error("Error deleting contraction:", error);
+        console.error('Error deleting contraction:', error);
         return false;
       }
 
@@ -571,7 +571,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(CONTRACTIONS_CACHE_KEY);
       if (cachedData) {
         const contractions: Contraction[] = JSON.parse(cachedData);
-        const updatedContractions = contractions.filter((c) => c.id !== id);
+        const updatedContractions = contractions.filter(c => c.id !== id);
         await AsyncStorage.setItem(
           CONTRACTIONS_CACHE_KEY,
           JSON.stringify(updatedContractions)
@@ -580,7 +580,7 @@ const healthService = {
 
       return true;
     } catch (error) {
-      console.error("Error in deleteContraction:", error);
+      console.error('Error in deleteContraction:', error);
       return false;
     }
   },
@@ -600,14 +600,14 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("blood_pressure_logs")
-        .select("*")
-        .eq("user_id", userId)
-        .order("date", { ascending: false })
-        .order("time", { ascending: false });
+        .from('blood_pressure_logs')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false })
+        .order('time', { ascending: false });
 
       if (error) {
-        console.error("Error fetching blood pressure logs:", error);
+        console.error('Error fetching blood pressure logs:', error);
         return bloodPressureLogs; // Return cached data if available
       }
 
@@ -622,23 +622,23 @@ const healthService = {
 
       return bloodPressureLogs;
     } catch (error) {
-      console.error("Error in getBloodPressureLogs:", error);
+      console.error('Error in getBloodPressureLogs:', error);
       return [];
     }
   },
 
   addBloodPressureLog: async (
-    bpLog: Omit<BloodPressureLog, "id" | "created_at" | "updated_at">
+    bpLog: Omit<BloodPressureLog, 'id' | 'created_at' | 'updated_at'>
   ): Promise<BloodPressureLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("blood_pressure_logs")
+        .from('blood_pressure_logs')
         .insert(bpLog)
         .select()
         .single();
 
       if (error) {
-        console.error("Error adding blood pressure log:", error);
+        console.error('Error adding blood pressure log:', error);
         return null;
       }
 
@@ -657,7 +657,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in addBloodPressureLog:", error);
+      console.error('Error in addBloodPressureLog:', error);
       return null;
     }
   },
@@ -668,14 +668,14 @@ const healthService = {
   ): Promise<BloodPressureLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("blood_pressure_logs")
+        .from('blood_pressure_logs')
         .update(updates)
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error updating blood pressure log:", error);
+        console.error('Error updating blood pressure log:', error);
         return null;
       }
 
@@ -685,7 +685,7 @@ const healthService = {
       );
       if (cachedData) {
         const bpLogs: BloodPressureLog[] = JSON.parse(cachedData);
-        const index = bpLogs.findIndex((log) => log.id === id);
+        const index = bpLogs.findIndex(log => log.id === id);
         if (index !== -1) {
           bpLogs[index] = { ...bpLogs[index], ...updates };
           await AsyncStorage.setItem(
@@ -697,7 +697,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in updateBloodPressureLog:", error);
+      console.error('Error in updateBloodPressureLog:', error);
       return null;
     }
   },
@@ -705,12 +705,12 @@ const healthService = {
   deleteBloodPressureLog: async (id: string): Promise<boolean> => {
     try {
       const { error } = await supabase
-        .from("blood_pressure_logs")
+        .from('blood_pressure_logs')
         .delete()
-        .eq("id", id);
+        .eq('id', id);
 
       if (error) {
-        console.error("Error deleting blood pressure log:", error);
+        console.error('Error deleting blood pressure log:', error);
         return false;
       }
 
@@ -720,7 +720,7 @@ const healthService = {
       );
       if (cachedData) {
         const bpLogs: BloodPressureLog[] = JSON.parse(cachedData);
-        const updatedLogs = bpLogs.filter((log) => log.id !== id);
+        const updatedLogs = bpLogs.filter(log => log.id !== id);
         await AsyncStorage.setItem(
           BLOOD_PRESSURE_LOGS_CACHE_KEY,
           JSON.stringify(updatedLogs)
@@ -729,7 +729,7 @@ const healthService = {
 
       return true;
     } catch (error) {
-      console.error("Error in deleteBloodPressureLog:", error);
+      console.error('Error in deleteBloodPressureLog:', error);
       return false;
     }
   },
@@ -747,14 +747,14 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("mood_logs")
-        .select("*")
-        .eq("user_id", userId)
-        .order("date", { ascending: false })
-        .order("time", { ascending: false });
+        .from('mood_logs')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false })
+        .order('time', { ascending: false });
 
       if (error) {
-        console.error("Error fetching mood logs:", error);
+        console.error('Error fetching mood logs:', error);
         return moodLogs; // Return cached data if available
       }
 
@@ -766,23 +766,23 @@ const healthService = {
 
       return moodLogs;
     } catch (error) {
-      console.error("Error in getMoodLogs:", error);
+      console.error('Error in getMoodLogs:', error);
       return [];
     }
   },
 
   addMoodLog: async (
-    moodLog: Omit<MoodLog, "id" | "created_at" | "updated_at">
+    moodLog: Omit<MoodLog, 'id' | 'created_at' | 'updated_at'>
   ): Promise<MoodLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("mood_logs")
+        .from('mood_logs')
         .insert(moodLog)
         .select()
         .single();
 
       if (error) {
-        console.error("Error adding mood log:", error);
+        console.error('Error adding mood log:', error);
         return null;
       }
 
@@ -799,7 +799,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in addMoodLog:", error);
+      console.error('Error in addMoodLog:', error);
       return null;
     }
   },
@@ -810,14 +810,14 @@ const healthService = {
   ): Promise<MoodLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("mood_logs")
+        .from('mood_logs')
         .update(updates)
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error updating mood log:", error);
+        console.error('Error updating mood log:', error);
         return null;
       }
 
@@ -825,7 +825,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(MOOD_LOGS_CACHE_KEY);
       if (cachedData) {
         const moodLogs: MoodLog[] = JSON.parse(cachedData);
-        const index = moodLogs.findIndex((log) => log.id === id);
+        const index = moodLogs.findIndex(log => log.id === id);
         if (index !== -1) {
           moodLogs[index] = { ...moodLogs[index], ...updates };
           await AsyncStorage.setItem(
@@ -837,17 +837,17 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in updateMoodLog:", error);
+      console.error('Error in updateMoodLog:', error);
       return null;
     }
   },
 
   deleteMoodLog: async (id: string): Promise<boolean> => {
     try {
-      const { error } = await supabase.from("mood_logs").delete().eq("id", id);
+      const { error } = await supabase.from('mood_logs').delete().eq('id', id);
 
       if (error) {
-        console.error("Error deleting mood log:", error);
+        console.error('Error deleting mood log:', error);
         return false;
       }
 
@@ -855,7 +855,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(MOOD_LOGS_CACHE_KEY);
       if (cachedData) {
         const moodLogs: MoodLog[] = JSON.parse(cachedData);
-        const updatedLogs = moodLogs.filter((log) => log.id !== id);
+        const updatedLogs = moodLogs.filter(log => log.id !== id);
         await AsyncStorage.setItem(
           MOOD_LOGS_CACHE_KEY,
           JSON.stringify(updatedLogs)
@@ -864,7 +864,7 @@ const healthService = {
 
       return true;
     } catch (error) {
-      console.error("Error in deleteMoodLog:", error);
+      console.error('Error in deleteMoodLog:', error);
       return false;
     }
   },
@@ -882,14 +882,14 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("sleep_logs")
-        .select("*")
-        .eq("user_id", userId)
-        .order("date", { ascending: false })
-        .order("time", { ascending: false });
+        .from('sleep_logs')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false })
+        .order('time', { ascending: false });
 
       if (error) {
-        console.error("Error fetching sleep logs:", error);
+        console.error('Error fetching sleep logs:', error);
         return sleepLogs; // Return cached data if available
       }
 
@@ -901,23 +901,23 @@ const healthService = {
 
       return sleepLogs;
     } catch (error) {
-      console.error("Error in getSleepLogs:", error);
+      console.error('Error in getSleepLogs:', error);
       return [];
     }
   },
 
   addSleepLog: async (
-    sleepLog: Omit<SleepLog, "id" | "created_at" | "updated_at">
+    sleepLog: Omit<SleepLog, 'id' | 'created_at' | 'updated_at'>
   ): Promise<SleepLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("sleep_logs")
+        .from('sleep_logs')
         .insert(sleepLog)
         .select()
         .single();
 
       if (error) {
-        console.error("Error adding sleep log:", error);
+        console.error('Error adding sleep log:', error);
         return null;
       }
 
@@ -934,7 +934,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in addSleepLog:", error);
+      console.error('Error in addSleepLog:', error);
       return null;
     }
   },
@@ -945,14 +945,14 @@ const healthService = {
   ): Promise<SleepLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("sleep_logs")
+        .from('sleep_logs')
         .update(updates)
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error updating sleep log:", error);
+        console.error('Error updating sleep log:', error);
         return null;
       }
 
@@ -960,7 +960,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(SLEEP_LOGS_CACHE_KEY);
       if (cachedData) {
         const sleepLogs: SleepLog[] = JSON.parse(cachedData);
-        const index = sleepLogs.findIndex((log) => log.id === id);
+        const index = sleepLogs.findIndex(log => log.id === id);
         if (index !== -1) {
           sleepLogs[index] = { ...sleepLogs[index], ...updates };
           await AsyncStorage.setItem(
@@ -972,17 +972,17 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in updateSleepLog:", error);
+      console.error('Error in updateSleepLog:', error);
       return null;
     }
   },
 
   deleteSleepLog: async (id: string): Promise<boolean> => {
     try {
-      const { error } = await supabase.from("sleep_logs").delete().eq("id", id);
+      const { error } = await supabase.from('sleep_logs').delete().eq('id', id);
 
       if (error) {
-        console.error("Error deleting sleep log:", error);
+        console.error('Error deleting sleep log:', error);
         return false;
       }
 
@@ -990,7 +990,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(SLEEP_LOGS_CACHE_KEY);
       if (cachedData) {
         const sleepLogs: SleepLog[] = JSON.parse(cachedData);
-        const updatedLogs = sleepLogs.filter((log) => log.id !== id);
+        const updatedLogs = sleepLogs.filter(log => log.id !== id);
         await AsyncStorage.setItem(
           SLEEP_LOGS_CACHE_KEY,
           JSON.stringify(updatedLogs)
@@ -999,7 +999,7 @@ const healthService = {
 
       return true;
     } catch (error) {
-      console.error("Error in deleteSleepLog:", error);
+      console.error('Error in deleteSleepLog:', error);
       return false;
     }
   },
@@ -1017,13 +1017,13 @@ const healthService = {
 
       // Fetch from API
       const { data, error } = await supabase
-        .from("exercise_logs")
-        .select("*")
-        .eq("user_id", userId)
-        .order("date", { ascending: false });
+        .from('exercise_logs')
+        .select('*')
+        .eq('user_id', userId)
+        .order('date', { ascending: false });
 
       if (error) {
-        console.error("Error fetching exercise logs:", error);
+        console.error('Error fetching exercise logs:', error);
         return exerciseLogs; // Return cached data if available
       }
 
@@ -1038,23 +1038,23 @@ const healthService = {
 
       return exerciseLogs;
     } catch (error) {
-      console.error("Error in getExerciseLogs:", error);
+      console.error('Error in getExerciseLogs:', error);
       return [];
     }
   },
 
   addExerciseLog: async (
-    exerciseLog: Omit<ExerciseLog, "id" | "created_at" | "updated_at">
+    exerciseLog: Omit<ExerciseLog, 'id' | 'created_at' | 'updated_at'>
   ): Promise<ExerciseLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("exercise_logs")
+        .from('exercise_logs')
         .insert(exerciseLog)
         .select()
         .single();
 
       if (error) {
-        console.error("Error adding exercise log:", error);
+        console.error('Error adding exercise log:', error);
         return null;
       }
 
@@ -1071,7 +1071,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in addExerciseLog:", error);
+      console.error('Error in addExerciseLog:', error);
       return null;
     }
   },
@@ -1082,14 +1082,14 @@ const healthService = {
   ): Promise<ExerciseLog | null> => {
     try {
       const { data, error } = await supabase
-        .from("exercise_logs")
+        .from('exercise_logs')
         .update(updates)
-        .eq("id", id)
+        .eq('id', id)
         .select()
         .single();
 
       if (error) {
-        console.error("Error updating exercise log:", error);
+        console.error('Error updating exercise log:', error);
         return null;
       }
 
@@ -1097,7 +1097,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(EXERCISE_LOGS_CACHE_KEY);
       if (cachedData) {
         const exerciseLogs: ExerciseLog[] = JSON.parse(cachedData);
-        const index = exerciseLogs.findIndex((log) => log.id === id);
+        const index = exerciseLogs.findIndex(log => log.id === id);
         if (index !== -1) {
           exerciseLogs[index] = { ...exerciseLogs[index], ...updates };
           await AsyncStorage.setItem(
@@ -1109,7 +1109,7 @@ const healthService = {
 
       return data;
     } catch (error) {
-      console.error("Error in updateExerciseLog:", error);
+      console.error('Error in updateExerciseLog:', error);
       return null;
     }
   },
@@ -1117,12 +1117,12 @@ const healthService = {
   deleteExerciseLog: async (id: string): Promise<boolean> => {
     try {
       const { error } = await supabase
-        .from("exercise_logs")
+        .from('exercise_logs')
         .delete()
-        .eq("id", id);
+        .eq('id', id);
 
       if (error) {
-        console.error("Error deleting exercise log:", error);
+        console.error('Error deleting exercise log:', error);
         return false;
       }
 
@@ -1130,7 +1130,7 @@ const healthService = {
       const cachedData = await AsyncStorage.getItem(EXERCISE_LOGS_CACHE_KEY);
       if (cachedData) {
         const exerciseLogs: ExerciseLog[] = JSON.parse(cachedData);
-        const updatedLogs = exerciseLogs.filter((log) => log.id !== id);
+        const updatedLogs = exerciseLogs.filter(log => log.id !== id);
         await AsyncStorage.setItem(
           EXERCISE_LOGS_CACHE_KEY,
           JSON.stringify(updatedLogs)
@@ -1139,7 +1139,7 @@ const healthService = {
 
       return true;
     } catch (error) {
-      console.error("Error in deleteExerciseLog:", error);
+      console.error('Error in deleteExerciseLog:', error);
       return false;
     }
   },

@@ -89,7 +89,7 @@ The app fully supports light and dark mode themes with enhanced contrast and rea
 `ThemedView` is the foundation for all containers in the app. It automatically adjusts background colors based on the current theme and supports multiple surface variants.
 
 ```tsx
-<ThemedView backgroundColor="surface-elevated" className="rounded-xl p-5">
+<ThemedView backgroundColor='surface-elevated' className='rounded-xl p-5'>
   {/* Content */}
 </ThemedView>
 ```
@@ -106,10 +106,10 @@ Props:
 
 ```tsx
 <FontedText
-  variant="heading-3"
-  fontFamily="comfortaa"
-  textType="primary"
-  className="mb-4"
+  variant='heading-3'
+  fontFamily='comfortaa'
+  textType='primary'
+  className='mb-4'
 >
   Hello World
 </FontedText>
@@ -132,13 +132,13 @@ Cards should use elevated surface backgrounds for better definition:
 
 ```tsx
 <ThemedView
-  backgroundColor="surface-elevated"
-  className="rounded-xl p-5 mb-4 shadow-sm border border-border-light dark:border-border-dark"
+  backgroundColor='surface-elevated'
+  className='rounded-xl p-5 mb-4 shadow-sm border border-border-light dark:border-border-dark'
 >
-  <FontedText variant="heading-4" textType="primary" className="mb-3">
+  <FontedText variant='heading-4' textType='primary' className='mb-3'>
     Card Title
   </FontedText>
-  <FontedText variant="body" textType="secondary">
+  <FontedText variant='body' textType='secondary'>
     Card content goes here.
   </FontedText>
 </ThemedView>
@@ -149,8 +149,8 @@ Cards should use elevated surface backgrounds for better definition:
 Primary buttons use the accent color with white text:
 
 ```tsx
-<TouchableOpacity className="bg-accent dark:bg-accent-dark rounded-xl p-4 items-center">
-  <FontedText className="text-white font-bold">Button Text</FontedText>
+<TouchableOpacity className='bg-accent dark:bg-accent-dark rounded-xl p-4 items-center'>
+  <FontedText className='text-white font-bold'>Button Text</FontedText>
 </TouchableOpacity>
 ```
 
@@ -163,9 +163,9 @@ For lists, use FontedText with appropriate text hierarchy:
   items.map((item, index) => (
     <FontedText
       key={index}
-      variant="body-small"
-      textType="secondary"
-      className="mb-2"
+      variant='body-small'
+      textType='secondary'
+      className='mb-2'
     >
       • {item}
     </FontedText>

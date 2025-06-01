@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { Animated, Pressable, StyleSheet, Text, View } from "react-native";
+import React, { useEffect, useState } from 'react';
+import { Animated, Pressable, StyleSheet, Text, View } from 'react-native';
 
-import { formatDistance } from "date-fns";
-import { useTranslation } from "react-i18next";
-import { useNetwork } from "../contexts/NetworkContext";
-import { useTheme } from "../contexts/ThemeContext";
+import { formatDistance } from 'date-fns';
+import { useTranslation } from 'react-i18next';
+import { useNetwork } from '../contexts/NetworkContext';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface NetworkStatusIndicatorProps {
   showOfflineOnly?: boolean;
@@ -26,7 +26,7 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
   // Format the last online time
   const formattedLastOnline = lastOnlineTime
     ? formatDistance(new Date(lastOnlineTime), new Date(), { addSuffix: true })
-    : t("network.unknown");
+    : t('network.unknown');
 
   // Show the indicator if offline or if pending sync operations
   useEffect(() => {
@@ -54,19 +54,19 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
   // Define colors based on theme
   const backgroundColor = isDark
     ? isOffline
-      ? "#33272b"
-      : "#263333"
+      ? '#33272b'
+      : '#263333'
     : isOffline
-    ? "#ffe5e5"
-    : "#e5f0f0";
+      ? '#ffe5e5'
+      : '#e5f0f0';
 
   const textColor = isDark
     ? isOffline
-      ? "#ff8080"
-      : "#80ffdd"
+      ? '#ff8080'
+      : '#80ffdd'
     : isOffline
-    ? "#dd2020"
-    : "#207560";
+      ? '#dd2020'
+      : '#207560';
 
   return (
     <Animated.View
@@ -84,16 +84,16 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
           <View
             style={[
               styles.statusDot,
-              { backgroundColor: isOffline ? "#ff4040" : "#40c060" },
+              { backgroundColor: isOffline ? '#ff4040' : '#40c060' },
             ]}
           />
 
           <Text style={[styles.statusText, { color: textColor }]}>
             {isOffline
-              ? t("network.offline")
+              ? t('network.offline')
               : pendingSyncCount > 0
-              ? t("network.syncPending", { count: pendingSyncCount })
-              : t("network.online")}
+                ? t('network.syncPending', { count: pendingSyncCount })
+                : t('network.online')}
           </Text>
         </View>
 
@@ -102,14 +102,14 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
             {/* Last online time */}
             {isOffline && lastOnlineTime && (
               <Text style={[styles.detailText, { color: textColor }]}>
-                {t("network.lastOnline")}: {formattedLastOnline}
+                {t('network.lastOnline')}: {formattedLastOnline}
               </Text>
             )}
 
             {/* Sync queue details */}
             {showSyncStatus && pendingSyncCount > 0 && !isOffline && (
               <Text style={[styles.detailText, { color: textColor }]}>
-                {t("network.pendingSync", { count: pendingSyncCount })}
+                {t('network.pendingSync', { count: pendingSyncCount })}
               </Text>
             )}
           </View>
@@ -121,7 +121,7 @@ const NetworkStatusIndicator: React.FC<NetworkStatusIndicatorProps> = ({
 
 const styles = StyleSheet.create({
   container: {
-    position: "absolute",
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
@@ -138,8 +138,8 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   content: {
-    flexDirection: "row",
-    alignItems: "center",
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   statusDot: {
     width: 8,
@@ -149,13 +149,13 @@ const styles = StyleSheet.create({
   },
   statusText: {
     fontSize: 14,
-    fontWeight: "600",
+    fontWeight: '600',
   },
   expandedContent: {
     marginTop: 8,
     paddingTop: 8,
     borderTopWidth: 1,
-    borderTopColor: "rgba(0,0,0,0.1)",
+    borderTopColor: 'rgba(0,0,0,0.1)',
   },
   detailText: {
     fontSize: 12,

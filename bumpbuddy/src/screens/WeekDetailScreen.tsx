@@ -1,17 +1,17 @@
-import React, { useEffect } from "react";
-import { ActivityIndicator, ScrollView, View } from "react-native";
-import { useDispatch, useSelector } from "react-redux";
-import { AppDispatch, RootState } from "../redux/store";
+import React, { useEffect } from 'react';
+import { ActivityIndicator, ScrollView, View } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../redux/store';
 
-import { useTranslation } from "react-i18next";
-import FetalSizeComparison from "../components/FetalSizeComparison";
-import FontedText from "../components/FontedText";
-import SafeAreaWrapper from "../components/SafeAreaWrapper";
-import ThemedView from "../components/ThemedView";
-import { useLanguage } from "../contexts/LanguageContext";
-import { useTheme } from "../contexts/ThemeContext";
-import { fetchFetalSizeByWeek } from "../redux/slices/fetalSizeSlice";
-import { fetchWeekData } from "../redux/slices/timelineSlice";
+import { useTranslation } from 'react-i18next';
+import FetalSizeComparison from '../components/FetalSizeComparison';
+import FontedText from '../components/FontedText';
+import SafeAreaWrapper from '../components/SafeAreaWrapper';
+import ThemedView from '../components/ThemedView';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { fetchFetalSizeByWeek } from '../redux/slices/fetalSizeSlice';
+import { fetchWeekData } from '../redux/slices/timelineSlice';
 
 type Props = {};
 
@@ -38,14 +38,14 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
   // Determine the trimester
   const getTrimester = () => {
-    if (!selectedWeek) return "";
+    if (!selectedWeek) return '';
 
     if (selectedWeek <= 13) {
-      return t("timeline.firstTrimester");
+      return t('timeline.firstTrimester');
     } else if (selectedWeek <= 26) {
-      return t("timeline.secondTrimester");
+      return t('timeline.secondTrimester');
     } else {
-      return t("timeline.thirdTrimester");
+      return t('timeline.thirdTrimester');
     }
   };
 
@@ -53,13 +53,13 @@ const WeekDetailScreen: React.FC<Props> = () => {
   if (loading) {
     return (
       <SafeAreaWrapper>
-        <ThemedView className="items-center justify-center flex-1">
+        <ThemedView className='items-center justify-center flex-1'>
           <ActivityIndicator
-            size="large"
-            color={isDark ? "#C2AADF" : "#9B85C4"}
+            size='large'
+            color={isDark ? '#C2AADF' : '#9B85C4'}
           />
-          <FontedText variant="body" className="mt-4" textType="secondary">
-            {t("timeline.loading")}
+          <FontedText variant='body' className='mt-4' textType='secondary'>
+            {t('timeline.loading')}
           </FontedText>
         </ThemedView>
       </SafeAreaWrapper>
@@ -70,20 +70,20 @@ const WeekDetailScreen: React.FC<Props> = () => {
   if (error || !weekData) {
     return (
       <SafeAreaWrapper>
-        <ThemedView className="items-center justify-center flex-1 p-6">
+        <ThemedView className='items-center justify-center flex-1 p-6'>
           <FontedText
-            variant="heading-3"
-            colorVariant="accent"
-            className="mb-4 text-center"
+            variant='heading-3'
+            colorVariant='accent'
+            className='mb-4 text-center'
           >
-            {error || t("timeline.weekNotFound")}
+            {error || t('timeline.weekNotFound')}
           </FontedText>
           <FontedText
-            variant="body"
-            textType="secondary"
-            className="text-center"
+            variant='body'
+            textType='secondary'
+            className='text-center'
           >
-            {t("common.errors.generic")}
+            {t('common.errors.generic')}
           </FontedText>
         </ThemedView>
       </SafeAreaWrapper>
@@ -92,37 +92,37 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
   return (
     <SafeAreaWrapper>
-      <ThemedView className="flex-1">
+      <ThemedView className='flex-1'>
         <ScrollView
-          className="flex-1"
+          className='flex-1'
           showsVerticalScrollIndicator={false}
           contentContainerStyle={{ paddingBottom: 20 }}
         >
           {/* Header Section */}
-          <View className="px-6 pt-2 pb-6">
-            <FontedText variant="heading-1" textType="primary" className="mb-2">
-              {t("timeline.weekLabel", { week: weekData.week })}
+          <View className='px-6 pt-2 pb-6'>
+            <FontedText variant='heading-1' textType='primary' className='mb-2'>
+              {t('timeline.weekLabel', { week: weekData.week })}
             </FontedText>
-            <View className="flex-row items-center">
+            <View className='flex-row items-center'>
               <ThemedView
-                backgroundColor="surface-subtle"
-                className="px-3 py-1 mr-3 rounded-full"
+                backgroundColor='surface-subtle'
+                className='px-3 py-1 mr-3 rounded-full'
               >
-                <FontedText variant="body-small" textType="muted">
+                <FontedText variant='body-small' textType='muted'>
                   {getTrimester()}
                 </FontedText>
               </ThemedView>
               <View
-                className="px-3 py-1 rounded-full"
+                className='px-3 py-1 rounded-full'
                 style={{
-                  backgroundColor: isDark ? "#065f46" : "#d1fae5",
+                  backgroundColor: isDark ? '#065f46' : '#d1fae5',
                 }}
               >
                 <FontedText
-                  variant="body-small"
-                  className={isDark ? "text-emerald-200" : "text-emerald-800"}
+                  variant='body-small'
+                  className={isDark ? 'text-emerald-200' : 'text-emerald-800'}
                 >
-                  {t("timeline.weekLabel", { week: weekData.week })} of 40
+                  {t('timeline.weekLabel', { week: weekData.week })} of 40
                 </FontedText>
               </View>
             </View>
@@ -130,21 +130,21 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
           {/* Fetal Size Comparison - Featured Card */}
           {fetalSize && (
-            <View className="px-6 mb-6">
+            <View className='px-6 mb-6'>
               <ThemedView
-                backgroundColor="surface-elevated"
-                className="p-6 shadow-lg rounded-2xl"
+                backgroundColor='surface-elevated'
+                className='p-6 shadow-lg rounded-2xl'
                 style={{
                   borderWidth: 1,
-                  borderColor: isDark ? "#374151" : "#E5E7EB",
+                  borderColor: isDark ? '#374151' : '#E5E7EB',
                 }}
               >
                 <FontedText
-                  variant="heading-3"
-                  className="mb-4"
-                  textType="primary"
+                  variant='heading-3'
+                  className='mb-4'
+                  textType='primary'
                 >
-                  {t("fetalSize.comparisonTitle")}
+                  {t('fetalSize.comparisonTitle')}
                 </FontedText>
                 <FetalSizeComparison
                   weekNumber={selectedWeek || 0}
@@ -157,16 +157,16 @@ const WeekDetailScreen: React.FC<Props> = () => {
                 />
                 {fetalSize.description && (
                   <View
-                    className="pt-4 mt-4"
+                    className='pt-4 mt-4'
                     style={{
                       borderTopWidth: 1,
-                      borderTopColor: isDark ? "#374151" : "#E5E7EB",
+                      borderTopColor: isDark ? '#374151' : '#E5E7EB',
                     }}
                   >
                     <FontedText
-                      variant="body"
-                      className="leading-6"
-                      textType="secondary"
+                      variant='body'
+                      className='leading-6'
+                      textType='secondary'
                     >
                       {fetalSize.description}
                     </FontedText>
@@ -177,31 +177,31 @@ const WeekDetailScreen: React.FC<Props> = () => {
           )}
 
           {/* Content Sections */}
-          <View className="px-6 space-y-4">
+          <View className='px-6 space-y-4'>
             {/* Development information */}
             <ThemedView
-              backgroundColor="surface-elevated"
-              className="p-5 shadow-sm rounded-xl"
+              backgroundColor='surface-elevated'
+              className='p-5 shadow-sm rounded-xl'
               style={{
                 borderWidth: 1,
-                borderColor: isDark ? "#374151" : "#E5E7EB",
+                borderColor: isDark ? '#374151' : '#E5E7EB',
               }}
             >
-              <View className="flex-row items-center mb-3">
+              <View className='flex-row items-center mb-3'>
                 <View
-                  className="w-1 h-6 mr-3 rounded-full"
+                  className='w-1 h-6 mr-3 rounded-full'
                   style={{
-                    backgroundColor: isDark ? "#C2AADF" : "#9B85C4",
+                    backgroundColor: isDark ? '#C2AADF' : '#9B85C4',
                   }}
                 />
-                <FontedText variant="heading-4" textType="primary">
-                  {t("timeline.development")}
+                <FontedText variant='heading-4' textType='primary'>
+                  {t('timeline.development')}
                 </FontedText>
               </View>
               <FontedText
-                variant="body"
-                className="leading-6"
-                textType="secondary"
+                variant='body'
+                className='leading-6'
+                textType='secondary'
               >
                 {weekData.fetal_development}
               </FontedText>
@@ -209,28 +209,28 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
             {/* Maternal changes */}
             <ThemedView
-              backgroundColor="surface-elevated"
-              className="p-5 shadow-sm rounded-xl"
+              backgroundColor='surface-elevated'
+              className='p-5 shadow-sm rounded-xl'
               style={{
                 borderWidth: 1,
-                borderColor: isDark ? "#374151" : "#E5E7EB",
+                borderColor: isDark ? '#374151' : '#E5E7EB',
               }}
             >
-              <View className="flex-row items-center mb-3">
+              <View className='flex-row items-center mb-3'>
                 <View
-                  className="w-1 h-6 mr-3 rounded-full"
+                  className='w-1 h-6 mr-3 rounded-full'
                   style={{
-                    backgroundColor: isDark ? "#f59e0b" : "#f59e0b",
+                    backgroundColor: isDark ? '#f59e0b' : '#f59e0b',
                   }}
                 />
-                <FontedText variant="heading-4" textType="primary">
-                  {t("timeline.maternalChanges")}
+                <FontedText variant='heading-4' textType='primary'>
+                  {t('timeline.maternalChanges')}
                 </FontedText>
               </View>
               <FontedText
-                variant="body"
-                className="leading-6"
-                textType="secondary"
+                variant='body'
+                className='leading-6'
+                textType='secondary'
               >
                 {weekData.maternal_changes}
               </FontedText>
@@ -238,28 +238,28 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
             {/* Common symptoms */}
             <ThemedView
-              backgroundColor="surface-elevated"
-              className="p-5 shadow-sm rounded-xl"
+              backgroundColor='surface-elevated'
+              className='p-5 shadow-sm rounded-xl'
               style={{
                 borderWidth: 1,
-                borderColor: isDark ? "#374151" : "#E5E7EB",
+                borderColor: isDark ? '#374151' : '#E5E7EB',
               }}
             >
-              <View className="flex-row items-center mb-3">
+              <View className='flex-row items-center mb-3'>
                 <View
-                  className="w-1 h-6 mr-3 rounded-full"
+                  className='w-1 h-6 mr-3 rounded-full'
                   style={{
-                    backgroundColor: isDark ? "#ec4899" : "#ec4899",
+                    backgroundColor: isDark ? '#ec4899' : '#ec4899',
                   }}
                 />
-                <FontedText variant="heading-4" textType="primary">
-                  {t("timeline.commonSymptoms")}
+                <FontedText variant='heading-4' textType='primary'>
+                  {t('timeline.commonSymptoms')}
                 </FontedText>
               </View>
               <FontedText
-                variant="body"
-                className="leading-6"
-                textType="secondary"
+                variant='body'
+                className='leading-6'
+                textType='secondary'
               >
                 {weekData.common_symptoms}
               </FontedText>
@@ -267,28 +267,28 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
             {/* Tips */}
             <ThemedView
-              backgroundColor="surface-elevated"
-              className="p-5 shadow-sm rounded-xl"
+              backgroundColor='surface-elevated'
+              className='p-5 shadow-sm rounded-xl'
               style={{
                 borderWidth: 1,
-                borderColor: isDark ? "#374151" : "#E5E7EB",
+                borderColor: isDark ? '#374151' : '#E5E7EB',
               }}
             >
-              <View className="flex-row items-center mb-3">
+              <View className='flex-row items-center mb-3'>
                 <View
-                  className="w-1 h-6 mr-3 rounded-full"
+                  className='w-1 h-6 mr-3 rounded-full'
                   style={{
-                    backgroundColor: isDark ? "#10b981" : "#10b981",
+                    backgroundColor: isDark ? '#10b981' : '#10b981',
                   }}
                 />
-                <FontedText variant="heading-4" textType="primary">
-                  {t("timeline.tips")}
+                <FontedText variant='heading-4' textType='primary'>
+                  {t('timeline.tips')}
                 </FontedText>
               </View>
               <FontedText
-                variant="body"
-                className="leading-6"
-                textType="secondary"
+                variant='body'
+                className='leading-6'
+                textType='secondary'
               >
                 {weekData.tips}
               </FontedText>
@@ -296,28 +296,28 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
             {/* Nutrition advice */}
             <ThemedView
-              backgroundColor="surface-elevated"
-              className="p-5 shadow-sm rounded-xl"
+              backgroundColor='surface-elevated'
+              className='p-5 shadow-sm rounded-xl'
               style={{
                 borderWidth: 1,
-                borderColor: isDark ? "#374151" : "#E5E7EB",
+                borderColor: isDark ? '#374151' : '#E5E7EB',
               }}
             >
-              <View className="flex-row items-center mb-3">
+              <View className='flex-row items-center mb-3'>
                 <View
-                  className="w-1 h-6 mr-3 rounded-full"
+                  className='w-1 h-6 mr-3 rounded-full'
                   style={{
-                    backgroundColor: isDark ? "#8b5cf6" : "#8b5cf6",
+                    backgroundColor: isDark ? '#8b5cf6' : '#8b5cf6',
                   }}
                 />
-                <FontedText variant="heading-4" textType="primary">
-                  {t("timeline.nutritionAdvice")}
+                <FontedText variant='heading-4' textType='primary'>
+                  {t('timeline.nutritionAdvice')}
                 </FontedText>
               </View>
               <FontedText
-                variant="body"
-                className="leading-6"
-                textType="secondary"
+                variant='body'
+                className='leading-6'
+                textType='secondary'
               >
                 {weekData.nutrition_advice}
               </FontedText>
@@ -325,28 +325,28 @@ const WeekDetailScreen: React.FC<Props> = () => {
 
             {/* Medical checkups */}
             <ThemedView
-              backgroundColor="surface-elevated"
-              className="p-5 shadow-sm rounded-xl"
+              backgroundColor='surface-elevated'
+              className='p-5 shadow-sm rounded-xl'
               style={{
                 borderWidth: 1,
-                borderColor: isDark ? "#374151" : "#E5E7EB",
+                borderColor: isDark ? '#374151' : '#E5E7EB',
               }}
             >
-              <View className="flex-row items-center mb-3">
+              <View className='flex-row items-center mb-3'>
                 <View
-                  className="w-1 h-6 mr-3 rounded-full"
+                  className='w-1 h-6 mr-3 rounded-full'
                   style={{
-                    backgroundColor: isDark ? "#ef4444" : "#ef4444",
+                    backgroundColor: isDark ? '#ef4444' : '#ef4444',
                   }}
                 />
-                <FontedText variant="heading-4" textType="primary">
-                  {t("timeline.medicalCheckups")}
+                <FontedText variant='heading-4' textType='primary'>
+                  {t('timeline.medicalCheckups')}
                 </FontedText>
               </View>
               <FontedText
-                variant="body"
-                className="leading-6"
-                textType="secondary"
+                variant='body'
+                className='leading-6'
+                textType='secondary'
               >
                 {weekData.medical_checkups}
               </FontedText>

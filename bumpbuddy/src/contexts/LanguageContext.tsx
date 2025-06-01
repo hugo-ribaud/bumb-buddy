@@ -9,17 +9,17 @@ import React, {
   useContext,
   useEffect,
   useState,
-} from "react";
-import { isRTL, supportedLanguages } from "../i18n/languages";
+} from 'react';
+import { isRTL, supportedLanguages } from '../i18n/languages';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import i18next from "i18next";
-import { useSelector } from "react-redux";
-import { RootState } from "../redux/store";
-import authService from "../services/authService";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18next from 'i18next';
+import { useSelector } from 'react-redux';
+import { RootState } from '../redux/store';
+import authService from '../services/authService';
 
 // Storage key for language preference
-const LANGUAGE_STORAGE_KEY = "bumpbuddy_language";
+const LANGUAGE_STORAGE_KEY = 'bumpbuddy_language';
 
 // Context type definition
 interface LanguageContextType {
@@ -31,7 +31,7 @@ interface LanguageContextType {
 
 // Create context with default values
 const LanguageContext = createContext<LanguageContextType>({
-  language: "en",
+  language: 'en',
   setLanguage: async () => {},
   isRTL: false,
   supportedLanguages,
@@ -51,10 +51,10 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
 }) => {
   // Ensure we always start with a valid language
   const getInitialLanguage = () => {
-    const currentLang = i18next.language || "en";
+    const currentLang = i18next.language || 'en';
     return Object.keys(supportedLanguages).includes(currentLang)
       ? currentLang
-      : "en";
+      : 'en';
   };
 
   const [language, setLanguageState] = useState(getInitialLanguage());
@@ -70,7 +70,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
           await changeLanguage(savedLanguage);
         }
       } catch (error) {
-        console.error("Failed to load language:", error);
+        console.error('Failed to load language:', error);
       }
     };
 
@@ -85,7 +85,7 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
         console.warn(
           `Language ${lang} is not supported, falling back to English`
         );
-        lang = "en";
+        lang = 'en';
       }
 
       // Change i18next language
@@ -109,13 +109,13 @@ export const LanguageProvider: React.FC<LanguageProviderProps> = ({
           });
         } catch (error) {
           console.error(
-            "Failed to save language preference to profile:",
+            'Failed to save language preference to profile:',
             error
           );
         }
       }
     } catch (error) {
-      console.error("Failed to change language:", error);
+      console.error('Failed to change language:', error);
     }
   };
 

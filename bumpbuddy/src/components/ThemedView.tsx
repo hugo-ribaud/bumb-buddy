@@ -1,17 +1,17 @@
-import { TouchableOpacity, View, ViewProps } from "react-native";
+import { TouchableOpacity, View, ViewProps } from 'react-native';
 
-import React from "react";
-import { useTheme } from "../contexts/ThemeContext";
+import React from 'react';
+import { useTheme } from '../contexts/ThemeContext';
 
 interface ThemedViewProps extends ViewProps {
   backgroundColor?:
-    | "primary"
-    | "secondary"
-    | "accent"
-    | "background"
-    | "surface"
-    | "surface-elevated"
-    | "surface-subtle";
+    | 'primary'
+    | 'secondary'
+    | 'accent'
+    | 'background'
+    | 'surface'
+    | 'surface-elevated'
+    | 'surface-subtle';
   className?: string;
   pressable?: boolean;
   onPress?: () => void;
@@ -19,8 +19,8 @@ interface ThemedViewProps extends ViewProps {
 
 // Component that renders a View with theme-appropriate background colors
 const ThemedView: React.FC<ThemedViewProps> = ({
-  backgroundColor = "background",
-  className = "",
+  backgroundColor = 'background',
+  className = '',
   children,
   pressable = false,
   onPress,
@@ -31,21 +31,21 @@ const ThemedView: React.FC<ThemedViewProps> = ({
   // Map the backgroundColor prop to the appropriate Tailwind class
   const getBackgroundClass = () => {
     switch (backgroundColor) {
-      case "primary":
-        return isDark ? "bg-primary-dark" : "bg-primary";
-      case "secondary":
-        return isDark ? "bg-secondary-dark" : "bg-secondary";
-      case "accent":
-        return isDark ? "bg-accent-dark" : "bg-accent";
-      case "surface":
-        return isDark ? "bg-surface-dark" : "bg-surface-light";
-      case "surface-elevated":
-        return isDark ? "bg-surface-dark" : "bg-surface-elevated";
-      case "surface-subtle":
-        return isDark ? "bg-surface-dark" : "bg-surface-subtle";
-      case "background":
+      case 'primary':
+        return isDark ? 'bg-primary-dark' : 'bg-primary';
+      case 'secondary':
+        return isDark ? 'bg-secondary-dark' : 'bg-secondary';
+      case 'accent':
+        return isDark ? 'bg-accent-dark' : 'bg-accent';
+      case 'surface':
+        return isDark ? 'bg-surface-dark' : 'bg-surface-light';
+      case 'surface-elevated':
+        return isDark ? 'bg-surface-dark' : 'bg-surface-elevated';
+      case 'surface-subtle':
+        return isDark ? 'bg-surface-dark' : 'bg-surface-subtle';
+      case 'background':
       default:
-        return isDark ? "bg-background-dark" : "bg-background-light";
+        return isDark ? 'bg-background-dark' : 'bg-background-light';
     }
   };
 

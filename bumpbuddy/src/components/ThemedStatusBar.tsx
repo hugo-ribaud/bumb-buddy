@@ -1,6 +1,6 @@
-import React from "react";
-import { StatusBar } from "react-native";
-import { useTheme } from "../contexts/ThemeContext";
+import React from 'react';
+import { StatusBar } from 'react-native';
+import { useTheme } from '../contexts/ThemeContext';
 
 // Component that renders a status bar with theme-appropriate colors
 const ThemedStatusBar: React.FC = () => {
@@ -8,8 +8,8 @@ const ThemedStatusBar: React.FC = () => {
 
   return (
     <StatusBar
-      backgroundColor="transparent"
-      barStyle={isDark ? "light-content" : "dark-content"}
+      backgroundColor='transparent'
+      barStyle={isDark ? 'light-content' : 'dark-content'}
       translucent
     />
   );

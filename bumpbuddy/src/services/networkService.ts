@@ -1,14 +1,14 @@
 import NetInfo, {
   NetInfoState,
   NetInfoSubscription,
-} from "@react-native-community/netinfo";
-import { useCallback, useEffect, useState } from "react";
+} from '@react-native-community/netinfo';
+import { useCallback, useEffect, useState } from 'react';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 // Constants for storage
-const CONNECTIVITY_KEY = "bumpbuddy:connectivity:status";
-const LAST_ONLINE_KEY = "bumpbuddy:connectivity:lastOnline";
+const CONNECTIVITY_KEY = 'bumpbuddy:connectivity:status';
+const LAST_ONLINE_KEY = 'bumpbuddy:connectivity:lastOnline';
 
 // Network service for managing connectivity state
 export class NetworkService {
@@ -31,14 +31,12 @@ export class NetworkService {
     this.updateConnectionStatus(initialState.isConnected ?? false);
 
     // Subscribe to network status changes
-    this.unsubscribe = NetInfo.addEventListener((state) => {
+    this.unsubscribe = NetInfo.addEventListener(state => {
       this.currentNetState = state;
       this.updateConnectionStatus(state.isConnected ?? false);
 
       // Notify all listeners about the change
-      this.listeners.forEach((listener) =>
-        listener(state.isConnected ?? false)
-      );
+      this.listeners.forEach(listener => listener(state.isConnected ?? false));
     });
   }
 
@@ -77,7 +75,7 @@ export class NetworkService {
         await AsyncStorage.setItem(LAST_ONLINE_KEY, now);
       }
     } catch (error) {
-      console.error("Failed to update network status in storage:", error);
+      console.error('Failed to update network status in storage:', error);
     }
   }
 
@@ -92,7 +90,7 @@ export class NetworkService {
    * Check if the connection is WiFi
    */
   public isWifi(): boolean {
-    return this.currentNetState?.type === "wifi";
+    return this.currentNetState?.type === 'wifi';
   }
 
   /**
@@ -119,7 +117,7 @@ export class NetworkService {
     try {
       return await AsyncStorage.getItem(LAST_ONLINE_KEY);
     } catch (error) {
-      console.error("Failed to get last online time:", error);
+      console.error('Failed to get last online time:', error);
       return null;
     }
   }
@@ -139,7 +137,7 @@ export function useNetworkStatus() {
     setIsLoading(false);
 
     // Set up listener for changes
-    const unsubscribe = networkService.addListener((connected) => {
+    const unsubscribe = networkService.addListener(connected => {
       setIsConnected(connected);
     });
 

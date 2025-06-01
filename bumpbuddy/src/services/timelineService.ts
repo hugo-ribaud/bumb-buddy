@@ -1,12 +1,12 @@
-import { PregnancyWeek, TimelineService } from "timeline-types";
+import { PregnancyWeek, TimelineService } from 'timeline-types';
 
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import supabase from "../config/supabaseConfig";
-import { calculatePregnancyWeek } from "../utils/pregnancyCalculations";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import supabase from '../config/supabaseConfig';
+import { calculatePregnancyWeek } from '../utils/pregnancyCalculations';
 
 // Keys for AsyncStorage (now include language)
-const TIMELINE_DATA_KEY = "timeline_data";
-const TIMELINE_LAST_UPDATED_KEY = "timeline_last_updated";
+const TIMELINE_DATA_KEY = 'timeline_data';
+const TIMELINE_LAST_UPDATED_KEY = 'timeline_last_updated';
 
 // Cache expiration time (24 hours in milliseconds)
 const CACHE_EXPIRATION = 24 * 60 * 60 * 1000;
@@ -15,14 +15,14 @@ const timelineService: TimelineService = {
   // Get specific week information with translations
   getWeekInfo: async (
     weekNumber: number,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<PregnancyWeek | null> => {
     try {
       // First, get the base week data
       const { data: weekData, error: weekError } = await supabase
-        .from("pregnancy_weeks")
-        .select("*")
-        .eq("week", weekNumber)
+        .from('pregnancy_weeks')
+        .select('*')
+        .eq('week', weekNumber)
         .single();
 
       if (weekError || !weekData) {
@@ -31,16 +31,16 @@ const timelineService: TimelineService = {
       }
 
       // If requesting English, return the base data
-      if (language === "en") {
+      if (language === 'en') {
         return weekData as PregnancyWeek;
       }
 
       // Try to get translation for the requested language
       const { data: translationData, error: translationError } = await supabase
-        .from("pregnancy_week_translations")
-        .select("translations")
-        .eq("week", weekNumber)
-        .eq("language", language)
+        .from('pregnancy_week_translations')
+        .select('translations')
+        .eq('week', weekNumber)
+        .eq('language', language)
         .single();
 
       if (translationError || !translationData) {
@@ -70,13 +70,13 @@ const timelineService: TimelineService = {
 
       return transformedData as PregnancyWeek;
     } catch (error) {
-      console.error("Unexpected error fetching week info:", error);
+      console.error('Unexpected error fetching week info:', error);
       return null;
     }
   },
 
   // Get all pregnancy weeks with translations
-  getAllWeeks: async (language: string = "en"): Promise<PregnancyWeek[]> => {
+  getAllWeeks: async (language: string = 'en'): Promise<PregnancyWeek[]> => {
     try {
       // Check if we have cached data and it's still valid (cache by language)
       const cacheKey = `${TIMELINE_DATA_KEY}_${language}`;
@@ -99,9 +99,9 @@ const timelineService: TimelineService = {
       // Otherwise fetch from Supabase with translations
       // First, get all base week data
       const { data: allWeeksData, error: weeksError } = await supabase
-        .from("pregnancy_weeks")
-        .select("*")
-        .order("week");
+        .from('pregnancy_weeks')
+        .select('*')
+        .order('week');
 
       if (weeksError || !allWeeksData) {
         console.error(`Error fetching pregnancy weeks:`, weeksError);
@@ -114,7 +114,7 @@ const timelineService: TimelineService = {
       }
 
       // If requesting English, return the base data
-      if (language === "en") {
+      if (language === 'en') {
         await AsyncStorage.setItem(cacheKey, JSON.stringify(allWeeksData));
         await AsyncStorage.setItem(lastUpdatedKey, Date.now().toString());
         return allWeeksData as PregnancyWeek[];
@@ -123,9 +123,9 @@ const timelineService: TimelineService = {
       // Get all available translations for the requested language
       const { data: translationsData, error: translationsError } =
         await supabase
-          .from("pregnancy_week_translations")
-          .select("week, translations")
-          .eq("language", language);
+          .from('pregnancy_week_translations')
+          .select('week, translations')
+          .eq('language', language);
 
       if (translationsError) {
         await AsyncStorage.setItem(cacheKey, JSON.stringify(allWeeksData));
@@ -136,13 +136,13 @@ const timelineService: TimelineService = {
       // Create a map of translations for quick lookup
       const translationsMap = new Map();
       if (translationsData) {
-        translationsData.forEach((translation) => {
+        translationsData.forEach(translation => {
           translationsMap.set(translation.week, translation.translations);
         });
       }
 
       // Transform data to use translated content where available
-      const transformedData = allWeeksData.map((week) => {
+      const transformedData = allWeeksData.map(week => {
         const translation = translationsMap.get(week.week);
 
         if (!translation) {
@@ -176,8 +176,8 @@ const timelineService: TimelineService = {
         error
       );
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return timelineService.getAllWeeks("en");
+      if (language !== 'en') {
+        return timelineService.getAllWeeks('en');
       }
       // Use cached data as last resort
       const cacheKey = `${TIMELINE_DATA_KEY}_${language}`;
@@ -193,7 +193,7 @@ const timelineService: TimelineService = {
   // Get trimester information with translations
   getTrimesterWeeks: async (
     trimester: 1 | 2 | 3,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<PregnancyWeek[]> => {
     try {
       const allWeeks = await timelineService.getAllWeeks(language);
@@ -213,7 +213,7 @@ const timelineService: TimelineService = {
         );
       }
     } catch (error) {
-      console.error("Error fetching trimester weeks:", error);
+      console.error('Error fetching trimester weeks:', error);
       return [];
     }
   },
@@ -226,7 +226,7 @@ const timelineService: TimelineService = {
   // Get current week information based on user's due date with translations
   getCurrentWeekInfo: async (
     dueDate: string | null,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<PregnancyWeek | null> => {
     const currentWeek = timelineService.calculateCurrentWeek(dueDate);
     if (currentWeek === 0) {
@@ -241,7 +241,7 @@ const timelineService: TimelineService = {
       await AsyncStorage.removeItem(TIMELINE_DATA_KEY);
       await AsyncStorage.removeItem(TIMELINE_LAST_UPDATED_KEY);
     } catch (error) {
-      console.error("Error clearing timeline cache:", error);
+      console.error('Error clearing timeline cache:', error);
     }
   },
 };

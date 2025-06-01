@@ -1,17 +1,17 @@
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   LanguageCode,
   ThemeMode,
   UnitSystem,
-} from "../redux/slices/preferencesSlice";
-import authService from "./authService";
+} from '../redux/slices/preferencesSlice';
+import authService from './authService';
 
 // Define storage keys
 const STORAGE_KEYS = {
-  THEME: "bumpbuddy_theme",
-  LANGUAGE: "bumpbuddy_language",
-  UNITS: "bumpbuddy_units",
-  LAST_SYNCED: "bumpbuddy_preferences_last_synced",
+  THEME: 'bumpbuddy_theme',
+  LANGUAGE: 'bumpbuddy_language',
+  UNITS: 'bumpbuddy_units',
+  LAST_SYNCED: 'bumpbuddy_preferences_last_synced',
 };
 
 // Define interfaces
@@ -27,7 +27,7 @@ interface LoadPreferencesResult {
   language?: LanguageCode;
   units?: UnitSystem;
   lastSynced?: string;
-  source: "local" | "remote" | "default";
+  source: 'local' | 'remote' | 'default';
   error?: string;
 }
 
@@ -46,10 +46,10 @@ const preferencesService = {
 
       // Only include valid values
       const preferences: LoadPreferencesResult = {
-        source: "local",
+        source: 'local',
       };
 
-      if (theme && ["light", "dark", "system"].includes(theme)) {
+      if (theme && ['light', 'dark', 'system'].includes(theme)) {
         preferences.theme = theme as ThemeMode;
       }
 
@@ -57,7 +57,7 @@ const preferencesService = {
         preferences.language = language as LanguageCode;
       }
 
-      if (units && ["metric", "imperial"].includes(units)) {
+      if (units && ['metric', 'imperial'].includes(units)) {
         preferences.units = units as UnitSystem;
       }
 
@@ -67,8 +67,8 @@ const preferencesService = {
 
       return preferences;
     } catch (error: any) {
-      console.error("Failed to load preferences from local storage:", error);
-      return { source: "local", error: error.message };
+      console.error('Failed to load preferences from local storage:', error);
+      return { source: 'local', error: error.message };
     }
   },
 
@@ -105,7 +105,7 @@ const preferencesService = {
       await Promise.all(promises);
       return { error: null, lastSynced: now };
     } catch (error: any) {
-      console.error("Failed to save preferences to local storage:", error);
+      console.error('Failed to save preferences to local storage:', error);
       return { error: error.message };
     }
   },
@@ -122,18 +122,18 @@ const preferencesService = {
       }
 
       if (!data || !data.app_settings) {
-        return { source: "remote" };
+        return { source: 'remote' };
       }
 
       const appSettings = data.app_settings;
       const preferences: LoadPreferencesResult = {
-        source: "remote",
+        source: 'remote',
       };
 
       // Extract preferences from app_settings
       if (
         appSettings.theme &&
-        ["light", "dark", "system"].includes(appSettings.theme)
+        ['light', 'dark', 'system'].includes(appSettings.theme)
       ) {
         preferences.theme = appSettings.theme as ThemeMode;
       }
@@ -144,15 +144,15 @@ const preferencesService = {
 
       if (
         appSettings.units &&
-        ["metric", "imperial"].includes(appSettings.units)
+        ['metric', 'imperial'].includes(appSettings.units)
       ) {
         preferences.units = appSettings.units as UnitSystem;
       }
 
       return preferences;
     } catch (error: any) {
-      console.error("Failed to load preferences from Supabase:", error);
-      return { source: "remote", error: error.message };
+      console.error('Failed to load preferences from Supabase:', error);
+      return { source: 'remote', error: error.message };
     }
   },
 
@@ -202,7 +202,7 @@ const preferencesService = {
 
       return { error: null };
     } catch (error: any) {
-      console.error("Failed to sync preferences to Supabase:", error);
+      console.error('Failed to sync preferences to Supabase:', error);
       return { error: error.message };
     }
   },
@@ -227,7 +227,7 @@ const preferencesService = {
       language: shouldUseRemote ? remotePrefs.language : localPrefs.language,
       units: shouldUseRemote ? remotePrefs.units : localPrefs.units,
       lastSynced: localPrefs.lastSynced,
-      source: shouldUseRemote ? "remote" : "local",
+      source: shouldUseRemote ? 'remote' : 'local',
     };
 
     // If we used remote preferences, update local storage

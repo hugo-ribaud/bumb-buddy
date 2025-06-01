@@ -1,8 +1,8 @@
-import { PayloadAction, createSlice } from "@reduxjs/toolkit";
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
-export type ThemeMode = "light" | "dark" | "system";
-export type LanguageCode = "en" | "es" | "fr" | "de" | string;
-export type UnitSystem = "metric" | "imperial";
+export type ThemeMode = 'light' | 'dark' | 'system';
+export type LanguageCode = 'en' | 'es' | 'fr' | 'de' | string;
+export type UnitSystem = 'metric' | 'imperial';
 
 interface PreferencesState {
   theme: ThemeMode;
@@ -15,9 +15,9 @@ interface PreferencesState {
 
 // Initial state with defaults
 const initialState: PreferencesState = {
-  theme: "system",
-  language: "en",
-  units: "metric",
+  theme: 'system',
+  language: 'en',
+  units: 'metric',
   isLoading: false,
   error: null,
   lastSynced: null,
@@ -25,11 +25,11 @@ const initialState: PreferencesState = {
 
 // Create the preferences slice
 const preferencesSlice = createSlice({
-  name: "preferences",
+  name: 'preferences',
   initialState,
   reducers: {
     // Start loading preferences
-    preferencesRequest: (state) => {
+    preferencesRequest: state => {
       state.isLoading = true;
       state.error = null;
     },
@@ -85,15 +85,15 @@ const preferencesSlice = createSlice({
     },
 
     // Mark as synced
-    markSynced: (state) => {
+    markSynced: state => {
       state.lastSynced = new Date().toISOString();
     },
 
     // Reset to defaults
-    resetPreferences: (state) => {
-      state.theme = "system";
-      state.language = "en";
-      state.units = "metric";
+    resetPreferences: state => {
+      state.theme = 'system';
+      state.language = 'en';
+      state.units = 'metric';
       state.lastSynced = new Date().toISOString();
     },
   },

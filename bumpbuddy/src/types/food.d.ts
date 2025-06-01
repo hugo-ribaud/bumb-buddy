@@ -1,5 +1,5 @@
-declare module "food-types" {
-  export type SafetyRating = "safe" | "caution" | "avoid";
+declare module 'food-types' {
+  export type SafetyRating = 'safe' | 'caution' | 'avoid';
 
   export interface FoodCategory {
     id: string;

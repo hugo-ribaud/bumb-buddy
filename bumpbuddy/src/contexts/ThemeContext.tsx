@@ -1,7 +1,7 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { useColorScheme as useDeviceColorScheme } from "react-native";
-import { ThemeMode } from "../redux/slices/preferencesSlice";
-import { usePreferences } from "./PreferencesContext";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useColorScheme as useDeviceColorScheme } from 'react-native';
+import { ThemeMode } from '../redux/slices/preferencesSlice';
+import { usePreferences } from './PreferencesContext';
 
 interface ThemeContextProps {
   isDark: boolean;
@@ -16,37 +16,37 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const deviceTheme = useDeviceColorScheme();
   const { theme, updateTheme } = usePreferences();
   const [isDark, setIsDark] = useState<boolean>(
-    theme === "dark" || (theme === "system" && deviceTheme === "dark")
+    theme === 'dark' || (theme === 'system' && deviceTheme === 'dark')
   );
 
   // Effect to listen for device theme changes when in system mode
   useEffect(() => {
-    if (theme === "system") {
-      setIsDark(deviceTheme === "dark");
+    if (theme === 'system') {
+      setIsDark(deviceTheme === 'dark');
     }
   }, [deviceTheme, theme]);
 
   // Effect to update isDark based on the selected theme
   useEffect(() => {
-    if (theme === "dark") {
+    if (theme === 'dark') {
       setIsDark(true);
-    } else if (theme === "light") {
+    } else if (theme === 'light') {
       setIsDark(false);
     } else {
       // system
-      setIsDark(deviceTheme === "dark");
+      setIsDark(deviceTheme === 'dark');
     }
   }, [theme, deviceTheme]);
 
   const toggleTheme = async () => {
     let newTheme: ThemeMode;
 
-    if (theme === "system") {
-      newTheme = isDark ? "light" : "dark";
-    } else if (theme === "light") {
-      newTheme = "dark";
+    if (theme === 'system') {
+      newTheme = isDark ? 'light' : 'dark';
+    } else if (theme === 'light') {
+      newTheme = 'dark';
     } else {
-      newTheme = "light";
+      newTheme = 'light';
     }
 
     await updateTheme(newTheme);
@@ -67,7 +67,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 export const useTheme = (): ThemeContextProps => {
   const context = useContext(ThemeContext);
   if (!context) {
-    throw new Error("useTheme must be used within a ThemeProvider");
+    throw new Error('useTheme must be used within a ThemeProvider');
   }
   return context;
 };

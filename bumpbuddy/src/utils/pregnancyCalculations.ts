@@ -33,7 +33,7 @@ export const calculatePregnancyWeek = (dueDate: string | null): number => {
     // Return valid week range (1-40)
     return Math.max(1, Math.min(currentWeek, 40));
   } catch (error) {
-    console.error("Error calculating pregnancy week:", error);
+    console.error('Error calculating pregnancy week:', error);
     return 0;
   }
 };

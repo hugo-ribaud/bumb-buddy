@@ -1,0 +1,56 @@
+# Dependencies
+node_modules/
+bun.lockb
+package-lock.json
+
+# Build outputs
+.expo/
+dist/
+build/
+*.tgz
+
+# Environment files
+.env
+.env.local
+.env.production
+
+# Generated files
+*.d.ts
+!src/**/*.d.ts
+
+# Config files
+*.config.js
+metro.config.js
+babel.config.js
+
+# Assets
+assets/
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.svg
+*.ico
+
+# Documentation
+README.md
+CHANGELOG.md
+
+# Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+
+# Logs
+*.log
+logs/
+
+# Coverage
+coverage/
+
+# Temporary files
+*.tmp
+*.temp 

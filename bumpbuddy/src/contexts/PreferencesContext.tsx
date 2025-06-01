@@ -1,5 +1,5 @@
-import React, { createContext, useContext, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import React, { createContext, useContext, useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   LanguageCode,
   ThemeMode,
@@ -8,9 +8,9 @@ import {
   setPreferences,
   setTheme,
   setUnits,
-} from "../redux/slices/preferencesSlice";
-import { RootState } from "../redux/store";
-import preferencesService from "../services/preferencesService";
+} from '../redux/slices/preferencesSlice';
+import { RootState } from '../redux/store';
+import preferencesService from '../services/preferencesService';
 
 interface PreferencesContextProps {
   theme: ThemeMode;
@@ -72,7 +72,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
           }
         }
       } catch (error) {
-        console.error("Failed to initialize preferences:", error);
+        console.error('Failed to initialize preferences:', error);
       } finally {
         setInitialized(true);
       }
@@ -100,7 +100,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
         });
       }
     } catch (error) {
-      console.error("Failed to update theme:", error);
+      console.error('Failed to update theme:', error);
     }
   };
 
@@ -121,7 +121,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
         });
       }
     } catch (error) {
-      console.error("Failed to update language:", error);
+      console.error('Failed to update language:', error);
     }
   };
 
@@ -142,7 +142,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
         });
       }
     } catch (error) {
-      console.error("Failed to update units:", error);
+      console.error('Failed to update units:', error);
     }
   };
 
@@ -165,7 +165,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
         );
       }
     } catch (error) {
-      console.error("Failed to sync preferences:", error);
+      console.error('Failed to sync preferences:', error);
     }
   };
 
@@ -190,7 +190,7 @@ export const PreferencesProvider: React.FC<{ children: React.ReactNode }> = ({
 export const usePreferences = (): PreferencesContextProps => {
   const context = useContext(PreferencesContext);
   if (!context) {
-    throw new Error("usePreferences must be used within a PreferencesProvider");
+    throw new Error('usePreferences must be used within a PreferencesProvider');
   }
   return context;
 };

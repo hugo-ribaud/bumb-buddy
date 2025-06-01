@@ -1,28 +1,28 @@
-import ThemedText, { ThemedTextProps } from "./ThemedText";
+import ThemedText, { ThemedTextProps } from './ThemedText';
 
-import React from "react";
+import React from 'react';
 
-interface FontedTextProps extends Omit<ThemedTextProps, "variant"> {
-  fontFamily?: "poppins" | "comfortaa";
+interface FontedTextProps extends Omit<ThemedTextProps, 'variant'> {
+  fontFamily?: 'poppins' | 'comfortaa';
   variant?:
-    | "heading-1"
-    | "heading-2"
-    | "heading-3"
-    | "heading-4"
-    | "body"
-    | "body-small"
-    | "caption";
-  colorVariant?: "primary" | "secondary" | "accent";
-  textType?: "primary" | "secondary" | "muted";
+    | 'heading-1'
+    | 'heading-2'
+    | 'heading-3'
+    | 'heading-4'
+    | 'body'
+    | 'body-small'
+    | 'caption';
+  colorVariant?: 'primary' | 'secondary' | 'accent';
+  textType?: 'primary' | 'secondary' | 'muted';
 }
 
 // Component that renders text with theme colors and typography
 const FontedText: React.FC<FontedTextProps> = ({
-  fontFamily = "poppins",
+  fontFamily = 'poppins',
   variant,
   colorVariant,
   textType,
-  className = "",
+  className = '',
   children,
   ...rest
 }) => {
@@ -31,7 +31,7 @@ const FontedText: React.FC<FontedTextProps> = ({
     if (variant) {
       return `text-${variant}`;
     }
-    return "";
+    return '';
   };
 
   // Build the font family class

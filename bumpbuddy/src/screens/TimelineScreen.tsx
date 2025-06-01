@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -7,24 +7,24 @@ import {
   Pressable,
   TouchableOpacity,
   View,
-} from "react-native";
-import { useDispatch, useSelector } from "react-redux";
+} from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import {
   fetchAllWeeks,
   fetchCurrentWeekData,
   selectWeek,
-} from "../redux/slices/timelineSlice";
-import { AppDispatch, RootState } from "../redux/store";
+} from '../redux/slices/timelineSlice';
+import { AppDispatch, RootState } from '../redux/store';
 
-import { useNavigation } from "@react-navigation/native";
-import { useTranslation } from "react-i18next";
-import FontedText from "../components/FontedText";
-import SafeAreaWrapper from "../components/SafeAreaWrapper";
-import ThemedView from "../components/ThemedView";
-import { useLanguage } from "../contexts/LanguageContext";
-import { useTheme } from "../contexts/ThemeContext";
-import { fetchAllFetalSizes } from "../redux/slices/fetalSizeSlice";
-import timelineService from "../services/timelineService";
+import { useNavigation } from '@react-navigation/native';
+import { useTranslation } from 'react-i18next';
+import FontedText from '../components/FontedText';
+import SafeAreaWrapper from '../components/SafeAreaWrapper';
+import ThemedView from '../components/ThemedView';
+import { useLanguage } from '../contexts/LanguageContext';
+import { useTheme } from '../contexts/ThemeContext';
+import { fetchAllFetalSizes } from '../redux/slices/fetalSizeSlice';
+import timelineService from '../services/timelineService';
 
 type Props = {};
 
@@ -66,17 +66,17 @@ const TimelineScreen: React.FC<Props> = () => {
           fetchCurrentWeekData({ dueDate: user.dueDate, language })
         ).unwrap();
       }
-      Alert.alert(t("common.labels.success"), t("timeline.refreshSuccess"));
+      Alert.alert(t('common.labels.success'), t('timeline.refreshSuccess'));
     } catch (error) {
-      console.error("Error refreshing data:", error);
-      Alert.alert(t("common.errors.generic"), t("timeline.refreshError"));
+      console.error('Error refreshing data:', error);
+      Alert.alert(t('common.errors.generic'), t('timeline.refreshError'));
     } finally {
       setRefreshing(false);
     }
   };
 
   // Filter weeks by trimester
-  const filteredWeeks = allWeeks.filter((week) => {
+  const filteredWeeks = allWeeks.filter(week => {
     if (activeTab === 1) return week.week >= 1 && week.week <= 13;
     if (activeTab === 2) return week.week >= 14 && week.week <= 26;
     return week.week >= 27 && week.week <= 40;
@@ -85,7 +85,7 @@ const TimelineScreen: React.FC<Props> = () => {
   // Handle week selection
   const handleWeekSelect = (weekNumber: number) => {
     dispatch(selectWeek(weekNumber));
-    navigation.navigate("WeekDetail" as never);
+    navigation.navigate('WeekDetail' as never);
   };
 
   // Get trimester info
@@ -111,80 +111,80 @@ const TimelineScreen: React.FC<Props> = () => {
   const renderWeekItem = ({ item }: { item: any }) => {
     const isCurrentWeek = item.week === currentWeek;
     const isPastWeek = (currentWeek || 0) > item.week;
-    const weekFetalSize = fetalSizeData.find((size) => size.week === item.week);
+    const weekFetalSize = fetalSizeData.find(size => size.week === item.week);
 
     return (
       <Pressable
         className={`mx-5 mb-4 rounded-2xl shadow-sm overflow-hidden ${
-          isCurrentWeek ? "shadow-lg" : ""
+          isCurrentWeek ? 'shadow-lg' : ''
         }`}
         style={{
-          backgroundColor: isDark ? "#1f2937" : "#FFFFFF",
+          backgroundColor: isDark ? '#1f2937' : '#FFFFFF',
           elevation: isCurrentWeek ? 4 : 2,
           borderWidth: isCurrentWeek ? 2 : 1,
           borderColor: isCurrentWeek
             ? isDark
-              ? "#C2AADF"
-              : "#9B85C4"
+              ? '#C2AADF'
+              : '#9B85C4'
             : isDark
-            ? "#374151"
-            : "#E5E7EB",
+              ? '#374151'
+              : '#E5E7EB',
         }}
         onPress={() => handleWeekSelect(item.week)}
       >
         {/* Current week indicator */}
         {isCurrentWeek && (
-          <ThemedView backgroundColor="surface-subtle" className="px-4 py-2">
+          <ThemedView backgroundColor='surface-subtle' className='px-4 py-2'>
             <FontedText
-              variant="body-small"
-              textType="primary"
-              className="font-semibold text-center"
+              variant='body-small'
+              textType='primary'
+              className='font-semibold text-center'
               style={{
-                color: isDark ? "#C2AADF" : "#9B85C4",
+                color: isDark ? '#C2AADF' : '#9B85C4',
               }}
             >
-              {t("timeline.currentWeek")}
+              {t('timeline.currentWeek')}
             </FontedText>
           </ThemedView>
         )}
 
-        <View className="p-5">
+        <View className='p-5'>
           {/* Week header */}
-          <View className="flex-row items-center justify-between mb-4">
-            <View className="flex-row items-center">
+          <View className='flex-row items-center justify-between mb-4'>
+            <View className='flex-row items-center'>
               <View
-                className="items-center justify-center w-12 h-12 mr-3 overflow-hidden rounded-full"
+                className='items-center justify-center w-12 h-12 mr-3 overflow-hidden rounded-full'
                 style={{
-                  backgroundColor: isDark ? "#374151" : "#f3f4f6",
+                  backgroundColor: isDark ? '#374151' : '#f3f4f6',
                   borderWidth: isCurrentWeek ? 2 : isPastWeek ? 1 : 0,
                   borderColor: isCurrentWeek
                     ? isDark
-                      ? "#C2AADF"
-                      : "#9B85C4"
+                      ? '#C2AADF'
+                      : '#9B85C4'
                     : isPastWeek
-                    ? isDark
-                      ? "#059669"
-                      : "#10b981"
-                    : "transparent",
+                      ? isDark
+                        ? '#059669'
+                        : '#10b981'
+                      : 'transparent',
                 }}
               >
                 {weekFetalSize?.image_url ? (
                   <Image
                     source={{ uri: weekFetalSize.image_url }}
-                    className="w-full h-full"
-                    resizeMode="cover"
+                    className='w-full h-full'
+                    resizeMode='cover'
                   />
                 ) : (
                   <FontedText
-                    variant="body-small"
+                    variant='body-small'
                     className={
                       isCurrentWeek || isPastWeek
                         ? isDark
-                          ? "text-purple-300"
-                          : "text-purple-600"
+                          ? 'text-purple-300'
+                          : 'text-purple-600'
                         : isDark
-                        ? "text-gray-300"
-                        : "text-gray-600"
+                          ? 'text-gray-300'
+                          : 'text-gray-600'
                     }
                   >
                     {item.week}
@@ -192,46 +192,46 @@ const TimelineScreen: React.FC<Props> = () => {
                 )}
               </View>
               <View>
-                <FontedText variant="heading-4" textType="primary">
-                  {t("timeline.weekLabel", { week: item.week })}
+                <FontedText variant='heading-4' textType='primary'>
+                  {t('timeline.weekLabel', { week: item.week })}
                 </FontedText>
                 {isPastWeek && (
                   <FontedText
-                    variant="caption"
-                    className={isDark ? "text-emerald-400" : "text-emerald-600"}
+                    variant='caption'
+                    className={isDark ? 'text-emerald-400' : 'text-emerald-600'}
                   >
-                    ✓ {t("timeline.completed")}
+                    ✓ {t('timeline.completed')}
                   </FontedText>
                 )}
               </View>
             </View>
 
             {/* Progress indicator */}
-            <View className="items-end">
-              <FontedText variant="caption" textType="muted">
+            <View className='items-end'>
+              <FontedText variant='caption' textType='muted'>
                 {item.week}/40
               </FontedText>
               <View
-                className="w-16 h-1 mt-1 rounded-full"
+                className='w-16 h-1 mt-1 rounded-full'
                 style={{
-                  backgroundColor: isDark ? "#374151" : "#f3f4f6",
+                  backgroundColor: isDark ? '#374151' : '#f3f4f6',
                 }}
               >
                 <View
-                  className="h-1 rounded-full"
+                  className='h-1 rounded-full'
                   style={{
                     width: `${(item.week / 40) * 100}%`,
                     backgroundColor: isCurrentWeek
                       ? isDark
-                        ? "#C2AADF"
-                        : "#9B85C4"
+                        ? '#C2AADF'
+                        : '#9B85C4'
                       : isPastWeek
-                      ? isDark
-                        ? "#059669"
-                        : "#10b981"
-                      : isDark
-                      ? "#6b7280"
-                      : "#9ca3af",
+                        ? isDark
+                          ? '#059669'
+                          : '#10b981'
+                        : isDark
+                          ? '#6b7280'
+                          : '#9ca3af',
                   }}
                 />
               </View>
@@ -240,14 +240,14 @@ const TimelineScreen: React.FC<Props> = () => {
 
           {/* Development preview */}
           <ThemedView
-            backgroundColor="surface-subtle"
-            className="p-3 rounded-xl"
+            backgroundColor='surface-subtle'
+            className='p-3 rounded-xl'
           >
             <FontedText
-              variant="body-small"
-              textType="secondary"
+              variant='body-small'
+              textType='secondary'
               numberOfLines={3}
-              className="leading-5"
+              className='leading-5'
             >
               {item.fetal_development}
             </FontedText>
@@ -255,19 +255,19 @@ const TimelineScreen: React.FC<Props> = () => {
 
           {/* View details button */}
           <View
-            className="pt-4 mt-4"
+            className='pt-4 mt-4'
             style={{
               borderTopWidth: 1,
-              borderTopColor: isDark ? "#374151" : "#E5E7EB",
+              borderTopColor: isDark ? '#374151' : '#E5E7EB',
             }}
           >
             <FontedText
-              variant="body-small"
+              variant='body-small'
               className={`text-center font-medium ${
-                isDark ? "text-purple-300" : "text-purple-600"
+                isDark ? 'text-purple-300' : 'text-purple-600'
               }`}
             >
-              {t("timeline.viewWeekDetails")} →
+              {t('timeline.viewWeekDetails')} →
             </FontedText>
           </View>
         </View>
@@ -282,46 +282,46 @@ const TimelineScreen: React.FC<Props> = () => {
 
   return (
     <SafeAreaWrapper>
-      <ThemedView className="flex-1">
+      <ThemedView className='flex-1'>
         {/* Header */}
-        <View className="px-6 pt-4 pb-6">
-          <View className="flex-row items-center justify-between mb-2">
-            <FontedText variant="heading-1" textType="primary">
-              {t("timeline.title")}
+        <View className='px-6 pt-4 pb-6'>
+          <View className='flex-row items-center justify-between mb-2'>
+            <FontedText variant='heading-1' textType='primary'>
+              {t('timeline.title')}
             </FontedText>
             <TouchableOpacity
-              className="px-4 py-2 rounded-xl"
+              className='px-4 py-2 rounded-xl'
               style={{
-                backgroundColor: isDark ? "#374151" : "#f3f4f6",
+                backgroundColor: isDark ? '#374151' : '#f3f4f6',
               }}
               onPress={handleClearCache}
               disabled={refreshing}
             >
               <FontedText
-                variant="body-small"
-                textType="primary"
-                className="font-medium"
+                variant='body-small'
+                textType='primary'
+                className='font-medium'
               >
-                {refreshing ? t("timeline.refreshing") : t("timeline.refresh")}
+                {refreshing ? t('timeline.refreshing') : t('timeline.refresh')}
               </FontedText>
             </TouchableOpacity>
           </View>
 
           {/* Statistics */}
-          <View className="flex-row items-center space-x-2">
-            <FontedText variant="body-small" textType="muted">
-              {t("timeline.weeksLoaded", {
+          <View className='flex-row items-center space-x-2'>
+            <FontedText variant='body-small' textType='muted'>
+              {t('timeline.weeksLoaded', {
                 total: allWeeks.length,
                 filtered: filteredWeeks.length,
               })}
             </FontedText>
             {currentWeek && (
               <>
-                <FontedText variant="body-small" textType="muted">
+                <FontedText variant='body-small' textType='muted'>
                   •
                 </FontedText>
-                <FontedText variant="body-small" textType="muted">
-                  {t("timeline.currentWeekStatus", { week: currentWeek })}
+                <FontedText variant='body-small' textType='muted'>
+                  {t('timeline.currentWeekStatus', { week: currentWeek })}
                 </FontedText>
               </>
             )}
@@ -329,77 +329,77 @@ const TimelineScreen: React.FC<Props> = () => {
         </View>
 
         {/* Trimester tabs */}
-        <View className="px-6 mb-6">
+        <View className='px-6 mb-6'>
           <View
-            className="flex-row overflow-hidden rounded-2xl"
+            className='flex-row overflow-hidden rounded-2xl'
             style={{
-              backgroundColor: isDark ? "#374151" : "#f3f4f6",
+              backgroundColor: isDark ? '#374151' : '#f3f4f6',
             }}
           >
-            {[1, 2, 3].map((tab) => {
+            {[1, 2, 3].map(tab => {
               const trimesterInfo = getTrimesterInfo(tab as 1 | 2 | 3);
               const isActive = activeTab === tab;
 
               return (
                 <Pressable
                   key={tab}
-                  className="flex-1 px-3 py-4"
+                  className='flex-1 px-3 py-4'
                   style={{
                     backgroundColor: isActive
                       ? isDark
-                        ? "#9B85C4"
-                        : "#C2AADF"
-                      : "transparent",
+                        ? '#9B85C4'
+                        : '#C2AADF'
+                      : 'transparent',
                   }}
                   onPress={() => handleTabChange(tab as 1 | 2 | 3)}
                 >
                   <FontedText
-                    variant="body-small"
+                    variant='body-small'
                     className={`text-center font-semibold mb-1 ${
                       isActive
-                        ? "text-white"
+                        ? 'text-white'
                         : isDark
-                        ? "text-gray-300"
-                        : "text-gray-600"
+                          ? 'text-gray-300'
+                          : 'text-gray-600'
                     }`}
                   >
-                    {tab === 1 && t("timeline.firstTrimester")}
-                    {tab === 2 && t("timeline.secondTrimester")}
-                    {tab === 3 && t("timeline.thirdTrimester")}
+                    {tab === 1 && t('timeline.firstTrimester')}
+                    {tab === 2 && t('timeline.secondTrimester')}
+                    {tab === 3 && t('timeline.thirdTrimester')}
                   </FontedText>
 
                   {/* Progress bar */}
                   <View
-                    className="h-1 mx-2 rounded-full"
+                    className='h-1 mx-2 rounded-full'
                     style={{
                       backgroundColor: isActive
-                        ? "rgba(255,255,255,0.3)"
+                        ? 'rgba(255,255,255,0.3)'
                         : isDark
-                        ? "#4b5563"
-                        : "#d1d5db",
+                          ? '#4b5563'
+                          : '#d1d5db',
                     }}
                   >
                     <View
-                      className="h-1 rounded-full"
+                      className='h-1 rounded-full'
                       style={{
                         width: `${trimesterInfo.progress}%`,
                         backgroundColor: isActive
-                          ? "white"
+                          ? 'white'
                           : isDark
-                          ? "#6b7280"
-                          : "#9ca3af",
+                            ? '#6b7280'
+                            : '#9ca3af',
                       }}
                     />
                   </View>
 
                   <FontedText
-                    variant="caption"
+                    variant='caption'
                     className={`text-center mt-1 ${
                       isActive
-                        ? "text-white opacity-90"
+                        ? 'text-white opacity-90'
                         : isDark
-                        ? "text-gray-400"
-                        : "text-gray-500"
+                          ? 'text-gray-400'
+                          : 'text-gray-500'
                     }`}
                   >
                     {trimesterInfo.completedWeeks}/{trimesterInfo.totalWeeks}
@@ -411,32 +411,32 @@ const TimelineScreen: React.FC<Props> = () => {
         </View>
 
         {loading || refreshing ? (
-          <View className="items-center justify-center flex-1">
+          <View className='items-center justify-center flex-1'>
             <ActivityIndicator
-              size="large"
-              color={isDark ? "#C2AADF" : "#9B85C4"}
+              size='large'
+              color={isDark ? '#C2AADF' : '#9B85C4'}
             />
             <FontedText
-              variant="body"
-              className="mt-4"
-              colorVariant="secondary"
+              variant='body'
+              className='mt-4'
+              colorVariant='secondary'
             >
-              {t("timeline.loading")}
+              {t('timeline.loading')}
             </FontedText>
           </View>
         ) : error ? (
-          <View className="items-center justify-center flex-1 px-6">
+          <View className='items-center justify-center flex-1 px-6'>
             <FontedText
-              variant="heading-3"
-              colorVariant="accent"
-              className="mb-4 text-center"
+              variant='heading-3'
+              colorVariant='accent'
+              className='mb-4 text-center'
             >
-              {t("common.errors.generic")}
+              {t('common.errors.generic')}
             </FontedText>
             <FontedText
-              variant="body"
-              colorVariant="secondary"
-              className="text-center"
+              variant='body'
+              colorVariant='secondary'
+              className='text-center'
             >
               {error}
             </FontedText>
@@ -445,7 +445,7 @@ const TimelineScreen: React.FC<Props> = () => {
           <FlatList
             data={filteredWeeks}
             renderItem={renderWeekItem}
-            keyExtractor={(item) => item.week.toString()}
+            keyExtractor={item => item.week.toString()}
             showsVerticalScrollIndicator={false}
             contentContainerStyle={{ paddingBottom: 20 }}
           />

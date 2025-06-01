@@ -1,9 +1,9 @@
-import React, { createContext, useContext, useEffect } from "react";
-import { setConnectionStatus, setPendingSyncCount } from "../redux/store";
+import React, { createContext, useContext, useEffect } from 'react';
+import { setConnectionStatus, setPendingSyncCount } from '../redux/store';
 
-import { useDispatch } from "react-redux";
-import { useNetworkStatus } from "../services/networkService";
-import syncQueueService from "../services/syncQueueService";
+import { useDispatch } from 'react-redux';
+import { useNetworkStatus } from '../services/networkService';
+import syncQueueService from '../services/syncQueueService';
 
 // Define the context type
 interface NetworkContextType {
@@ -47,7 +47,7 @@ export const NetworkProvider: React.FC<NetworkProviderProps> = ({
 
   // Set up sync queue listener
   useEffect(() => {
-    const unsubscribe = syncQueueService.addListener((queue) => {
+    const unsubscribe = syncQueueService.addListener(queue => {
       dispatch(setPendingSyncCount(queue.length));
     });
 

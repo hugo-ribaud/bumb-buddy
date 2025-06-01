@@ -1,4 +1,4 @@
-import supabase from "../config/supabaseConfig";
+import supabase from '../config/supabaseConfig';
 
 // Define types
 interface RealtimeSubscriptionParams {
@@ -20,25 +20,25 @@ const realtimeService = {
     try {
       // Enable realtime for this channel
       const subscription = supabase
-        .channel("public:users")
+        .channel('public:users')
         .on(
-          "postgres_changes",
-          { event: "INSERT", schema: "public", table: "users" },
-          (payload) => {
+          'postgres_changes',
+          { event: 'INSERT', schema: 'public', table: 'users' },
+          payload => {
             if (onInsert) onInsert(payload);
           }
         )
         .on(
-          "postgres_changes",
-          { event: "UPDATE", schema: "public", table: "users" },
-          (payload) => {
+          'postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'users' },
+          payload => {
             if (onUpdate) onUpdate(payload);
           }
         )
         .on(
-          "postgres_changes",
-          { event: "DELETE", schema: "public", table: "users" },
-          (payload) => {
+          'postgres_changes',
+          { event: 'DELETE', schema: 'public', table: 'users' },
+          payload => {
             if (onDelete) onDelete(payload);
           }
         )
@@ -47,7 +47,7 @@ const realtimeService = {
       // Return the subscription object so it can be unsubscribed later
       return subscription;
     } catch (error) {
-      console.error("Error setting up Users subscription:", error);
+      console.error('Error setting up Users subscription:', error);
       if (onError) onError(error);
       return null;
     }
@@ -59,7 +59,7 @@ const realtimeService = {
       try {
         supabase.removeChannel(subscription);
       } catch (error) {
-        console.error("Error unsubscribing from channel:", error);
+        console.error('Error unsubscribing from channel:', error);
       }
     }
   },

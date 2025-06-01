@@ -3,9 +3,9 @@
  */
 
 // Import all translation files
-import en from "./en.json";
-import es from "./es.json";
-import fr from "./fr.json";
+import en from './en.json';
+import es from './es.json';
+import fr from './fr.json';
 
 // Export the translations
 export { en, es, fr };
@@ -13,27 +13,27 @@ export { en, es, fr };
 // List of supported languages with their native names
 export const supportedLanguages = {
   en: {
-    name: "English",
-    nativeName: "English",
+    name: 'English',
+    nativeName: 'English',
     isRTL: false,
-    flag: "🇬🇧",
+    flag: '🇬🇧',
   },
   es: {
-    name: "Spanish",
-    nativeName: "Español",
+    name: 'Spanish',
+    nativeName: 'Español',
     isRTL: false,
-    flag: "🇪🇸",
+    flag: '🇪🇸',
   },
   fr: {
-    name: "French",
-    nativeName: "Français",
+    name: 'French',
+    nativeName: 'Français',
     isRTL: false,
-    flag: "🇫🇷",
+    flag: '🇫🇷',
   },
 };
 
 // RTL languages (for future support)
-export const rtlLanguages = ["ar", "he", "fa", "ur"];
+export const rtlLanguages = ['ar', 'he', 'fa', 'ur'];
 
 // Check if a language is RTL
 export const isRTL = (language: string): boolean => {
@@ -52,12 +52,12 @@ export const getLanguageName = (language: string): string => {
 export const getLanguageFlag = (language: string): string => {
   return (
     supportedLanguages[language as keyof typeof supportedLanguages]?.flag ||
-    "🌐"
+    '🌐'
   );
 };
 
 // Default language fallback
-export const defaultLanguage = "en";
+export const defaultLanguage = 'en';
 
 // Get language display info
 export const getLanguageInfo = (code: string) => {
@@ -68,6 +68,6 @@ export const getLanguageInfo = (code: string) => {
     name: code,
     nativeName: code,
     isRTL: isRTL(code),
-    flag: "🌐",
+    flag: '🌐',
   };
 };

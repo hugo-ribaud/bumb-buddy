@@ -5,17 +5,17 @@ import {
   FoodService,
   FoodWithCategory,
   SafetyRating,
-} from "food-types";
+} from 'food-types';
 
-import supabase from "../config/supabaseConfig";
+import supabase from '../config/supabaseConfig';
 
 // Enhanced food service with translation support
 const foodService: FoodService = {
   // Get all food categories with translations
-  getCategories: async (language: string = "en"): Promise<FoodCategory[]> => {
+  getCategories: async (language: string = 'en'): Promise<FoodCategory[]> => {
     try {
       const { data, error } = await supabase
-        .from("food_categories")
+        .from('food_categories')
         .select(
           `
           id,
@@ -27,21 +27,21 @@ const foodService: FoodService = {
           translations:food_categories_translations!inner(translations)
         `
         )
-        .eq("food_categories_translations.language", language)
-        .order("name");
+        .eq('food_categories_translations.language', language)
+        .order('name');
 
       if (error) {
-        console.error("Error fetching food categories:", error);
+        console.error('Error fetching food categories:', error);
         // Fallback to English if translation fails
-        if (language !== "en") {
-          return foodService.getCategories("en");
+        if (language !== 'en') {
+          return foodService.getCategories('en');
         }
         return [];
       }
 
       // Transform data to use translated content
       const transformedData =
-        data?.map((category) => ({
+        data?.map(category => ({
           ...category,
           name: category.translations?.[0]?.translations?.name || category.name,
           description:
@@ -52,20 +52,20 @@ const foodService: FoodService = {
 
       return transformedData;
     } catch (error) {
-      console.error("Unexpected error fetching food categories:", error);
+      console.error('Unexpected error fetching food categories:', error);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return foodService.getCategories("en");
+      if (language !== 'en') {
+        return foodService.getCategories('en');
       }
       return [];
     }
   },
 
   // Get all foods with translations
-  getAllFoods: async (language: string = "en"): Promise<Food[]> => {
+  getAllFoods: async (language: string = 'en'): Promise<Food[]> => {
     try {
       const { data, error } = await supabase
-        .from("foods")
+        .from('foods')
         .select(
           `
           id,
@@ -81,21 +81,21 @@ const foodService: FoodService = {
           translations:foods_translations!inner(translations)
         `
         )
-        .eq("foods_translations.language", language)
-        .order("name");
+        .eq('foods_translations.language', language)
+        .order('name');
 
       if (error) {
-        console.error("Error fetching foods:", error);
+        console.error('Error fetching foods:', error);
         // Fallback to English if translation fails
-        if (language !== "en") {
-          return foodService.getAllFoods("en");
+        if (language !== 'en') {
+          return foodService.getAllFoods('en');
         }
         return [];
       }
 
       // Transform data to use translated content
       const transformedData =
-        data?.map((food) => ({
+        data?.map(food => ({
           ...food,
           name: food.translations?.[0]?.translations?.name || food.name,
           description:
@@ -109,10 +109,10 @@ const foodService: FoodService = {
 
       return transformedData;
     } catch (error) {
-      console.error("Unexpected error fetching foods:", error);
+      console.error('Unexpected error fetching foods:', error);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return foodService.getAllFoods("en");
+      if (language !== 'en') {
+        return foodService.getAllFoods('en');
       }
       return [];
     }
@@ -121,11 +121,11 @@ const foodService: FoodService = {
   // Get foods by category with translations
   getFoodsByCategory: async (
     categoryId: string,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<Food[]> => {
     try {
       const { data, error } = await supabase
-        .from("foods")
+        .from('foods')
         .select(
           `
           id,
@@ -141,22 +141,22 @@ const foodService: FoodService = {
           translations:foods_translations!inner(translations)
         `
         )
-        .eq("category_id", categoryId)
-        .eq("foods_translations.language", language)
-        .order("name");
+        .eq('category_id', categoryId)
+        .eq('foods_translations.language', language)
+        .order('name');
 
       if (error) {
-        console.error("Error fetching foods by category:", error);
+        console.error('Error fetching foods by category:', error);
         // Fallback to English if translation fails
-        if (language !== "en") {
-          return foodService.getFoodsByCategory(categoryId, "en");
+        if (language !== 'en') {
+          return foodService.getFoodsByCategory(categoryId, 'en');
         }
         return [];
       }
 
       // Transform data to use translated content
       const transformedData =
-        data?.map((food) => ({
+        data?.map(food => ({
           ...food,
           name: food.translations?.[0]?.translations?.name || food.name,
           description:
@@ -170,10 +170,10 @@ const foodService: FoodService = {
 
       return transformedData;
     } catch (error) {
-      console.error("Unexpected error fetching foods by category:", error);
+      console.error('Unexpected error fetching foods by category:', error);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return foodService.getFoodsByCategory(categoryId, "en");
+      if (language !== 'en') {
+        return foodService.getFoodsByCategory(categoryId, 'en');
       }
       return [];
     }
@@ -182,11 +182,11 @@ const foodService: FoodService = {
   // Search foods by name with translations
   searchFoods: async (
     query: string,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<Food[]> => {
     try {
       const { data, error } = await supabase
-        .from("foods")
+        .from('foods')
         .select(
           `
           id,
@@ -202,24 +202,24 @@ const foodService: FoodService = {
           translations:foods_translations!inner(translations)
         `
         )
-        .eq("foods_translations.language", language)
+        .eq('foods_translations.language', language)
         .or(
           `name.ilike.%${query}%,foods_translations.translations->>name.ilike.%${query}%`
         )
-        .order("name");
+        .order('name');
 
       if (error) {
-        console.error("Error searching foods:", error);
+        console.error('Error searching foods:', error);
         // Fallback to English if translation fails
-        if (language !== "en") {
-          return foodService.searchFoods(query, "en");
+        if (language !== 'en') {
+          return foodService.searchFoods(query, 'en');
         }
         return [];
       }
 
       // Transform data to use translated content
       const transformedData =
-        data?.map((food) => ({
+        data?.map(food => ({
           ...food,
           name: food.translations?.[0]?.translations?.name || food.name,
           description:
@@ -233,10 +233,10 @@ const foodService: FoodService = {
 
       return transformedData;
     } catch (error) {
-      console.error("Unexpected error searching foods:", error);
+      console.error('Unexpected error searching foods:', error);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return foodService.searchFoods(query, "en");
+      if (language !== 'en') {
+        return foodService.searchFoods(query, 'en');
       }
       return [];
     }
@@ -245,11 +245,11 @@ const foodService: FoodService = {
   // Get foods by safety rating with translations
   getFoodsBySafety: async (
     safety: SafetyRating,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<Food[]> => {
     try {
       const { data, error } = await supabase
-        .from("foods")
+        .from('foods')
         .select(
           `
           id,
@@ -265,22 +265,22 @@ const foodService: FoodService = {
           translations:foods_translations!inner(translations)
         `
         )
-        .eq("safety_rating", safety)
-        .eq("foods_translations.language", language)
-        .order("name");
+        .eq('safety_rating', safety)
+        .eq('foods_translations.language', language)
+        .order('name');
 
       if (error) {
-        console.error("Error fetching foods by safety:", error);
+        console.error('Error fetching foods by safety:', error);
         // Fallback to English if translation fails
-        if (language !== "en") {
-          return foodService.getFoodsBySafety(safety, "en");
+        if (language !== 'en') {
+          return foodService.getFoodsBySafety(safety, 'en');
         }
         return [];
       }
 
       // Transform data to use translated content
       const transformedData =
-        data?.map((food) => ({
+        data?.map(food => ({
           ...food,
           name: food.translations?.[0]?.translations?.name || food.name,
           description:
@@ -294,10 +294,10 @@ const foodService: FoodService = {
 
       return transformedData;
     } catch (error) {
-      console.error("Unexpected error fetching foods by safety:", error);
+      console.error('Unexpected error fetching foods by safety:', error);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return foodService.getFoodsBySafety(safety, "en");
+      if (language !== 'en') {
+        return foodService.getFoodsBySafety(safety, 'en');
       }
       return [];
     }
@@ -305,11 +305,11 @@ const foodService: FoodService = {
 
   // Get foods with their categories (both translated)
   getFoodsWithCategory: async (
-    language: string = "en"
+    language: string = 'en'
   ): Promise<FoodWithCategory[]> => {
     try {
       const { data, error } = await supabase
-        .from("foods")
+        .from('foods')
         .select(
           `
           id,
@@ -334,22 +334,22 @@ const foodService: FoodService = {
           )
         `
         )
-        .eq("foods_translations.language", language)
-        .eq("food_categories.food_categories_translations.language", language)
-        .order("name");
+        .eq('foods_translations.language', language)
+        .eq('food_categories.food_categories_translations.language', language)
+        .order('name');
 
       if (error) {
-        console.error("Error fetching foods with categories:", error);
+        console.error('Error fetching foods with categories:', error);
         // Fallback to English if translation fails
-        if (language !== "en") {
-          return foodService.getFoodsWithCategory("en");
+        if (language !== 'en') {
+          return foodService.getFoodsWithCategory('en');
         }
         return [];
       }
 
       // Transform data to use translated content
       const transformedData =
-        data?.map((food) => ({
+        data?.map(food => ({
           ...food,
           name: food.translations?.[0]?.translations?.name || food.name,
           description:
@@ -378,10 +378,10 @@ const foodService: FoodService = {
 
       return transformedData as FoodWithCategory[];
     } catch (error) {
-      console.error("Unexpected error fetching foods with categories:", error);
+      console.error('Unexpected error fetching foods with categories:', error);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return foodService.getFoodsWithCategory("en");
+      if (language !== 'en') {
+        return foodService.getFoodsWithCategory('en');
       }
       return [];
     }
@@ -390,11 +390,11 @@ const foodService: FoodService = {
   // Filter foods with multiple criteria and translations
   filterFoods: async (
     filter: FoodFilter,
-    language: string = "en"
+    language: string = 'en'
   ): Promise<Food[]> => {
     try {
       let query = supabase
-        .from("foods")
+        .from('foods')
         .select(
           `
           id,
@@ -410,21 +410,21 @@ const foodService: FoodService = {
           translations:foods_translations!inner(translations)
         `
         )
-        .eq("foods_translations.language", language)
-        .order("name");
+        .eq('foods_translations.language', language)
+        .order('name');
 
       // Apply category filter if provided
       if (filter.category_id) {
-        query = query.eq("category_id", filter.category_id);
+        query = query.eq('category_id', filter.category_id);
       }
 
       // Apply safety rating filter if provided
       if (filter.safety_rating) {
-        query = query.eq("safety_rating", filter.safety_rating);
+        query = query.eq('safety_rating', filter.safety_rating);
       }
 
       // Apply search term filter if provided
-      if (filter.searchTerm && filter.searchTerm.trim() !== "") {
+      if (filter.searchTerm && filter.searchTerm.trim() !== '') {
         const searchTerm = filter.searchTerm.trim();
         query = query.or(
           `name.ilike.%${searchTerm}%,foods_translations.translations->>name.ilike.%${searchTerm}%`
@@ -434,17 +434,17 @@ const foodService: FoodService = {
       const { data, error } = await query;
 
       if (error) {
-        console.error("Error filtering foods:", error);
+        console.error('Error filtering foods:', error);
         // Fallback to English if translation fails
-        if (language !== "en") {
-          return foodService.filterFoods(filter, "en");
+        if (language !== 'en') {
+          return foodService.filterFoods(filter, 'en');
         }
         return [];
       }
 
       // Transform data to use translated content
       const transformedData =
-        data?.map((food) => ({
+        data?.map(food => ({
           ...food,
           name: food.translations?.[0]?.translations?.name || food.name,
           description:
@@ -458,10 +458,10 @@ const foodService: FoodService = {
 
       return transformedData;
     } catch (error) {
-      console.error("Unexpected error filtering foods:", error);
+      console.error('Unexpected error filtering foods:', error);
       // Fallback to English if translation fails
-      if (language !== "en") {
-        return foodService.filterFoods(filter, "en");
+      if (language !== 'en') {
+        return foodService.filterFoods(filter, 'en');
       }
       return [];
     }
@@ -471,11 +471,11 @@ const foodService: FoodService = {
   subscribeToFoods: (callback: (payload: any) => void) => {
     try {
       const subscription = supabase
-        .channel("public:foods")
+        .channel('public:foods')
         .on(
-          "postgres_changes",
-          { event: "*", schema: "public", table: "foods" },
-          (payload) => {
+          'postgres_changes',
+          { event: '*', schema: 'public', table: 'foods' },
+          payload => {
             callback(payload);
           }
         )
@@ -483,7 +483,7 @@ const foodService: FoodService = {
 
       return subscription;
     } catch (error) {
-      console.error("Error setting up Foods subscription:", error);
+      console.error('Error setting up Foods subscription:', error);
       return null;
     }
   },
@@ -494,7 +494,7 @@ const foodService: FoodService = {
       try {
         supabase.removeChannel(subscription);
       } catch (error) {
-        console.error("Error unsubscribing from foods channel:", error);
+        console.error('Error unsubscribing from foods channel:', error);
       }
     }
   },

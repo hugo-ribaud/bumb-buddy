@@ -114,11 +114,11 @@ export interface FetalSizeComparison {
 
 ```typescript
 // src/services/fetalSizeService.ts
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import { supabase } from "../config/supabaseConfig";
-import { FetalSizeComparison } from "../types/fetalSize";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { supabase } from '../config/supabaseConfig';
+import { FetalSizeComparison } from '../types/fetalSize';
 
-const FETAL_SIZE_CACHE_KEY = "fetalsize_data";
+const FETAL_SIZE_CACHE_KEY = 'fetalsize_data';
 const CACHE_EXPIRY = 24 * 60 * 60 * 1000; // 24 hours
 
 export const fetalSizeService = {
@@ -132,16 +132,16 @@ export const fetalSizeService = {
 
       // Fetch from database
       const { data, error } = await supabase
-        .from("fetal_size_comparisons")
-        .select("*")
-        .order("week");
+        .from('fetal_size_comparisons')
+        .select('*')
+        .order('week');
 
       if (error) {
         throw new Error(`Error fetching fetal size data: ${error.message}`);
       }
 
       // Transform to match interface
-      const sizeData: FetalSizeComparison[] = data.map((item) => ({
+      const sizeData: FetalSizeComparison[] = data.map(item => ({
         week: item.week,
         fruitName: item.fruit_name,
         sizeCm: item.size_cm,
@@ -157,7 +157,7 @@ export const fetalSizeService = {
 
       return sizeData;
     } catch (error) {
-      console.error("Error in getAllSizeComparisons:", error);
+      console.error('Error in getAllSizeComparisons:', error);
       throw error;
     }
   },
@@ -169,19 +169,19 @@ export const fetalSizeService = {
       // Check cache first
       const cachedData = await this.getCachedData();
       if (cachedData) {
-        const weekData = cachedData.find((item) => item.week === week);
+        const weekData = cachedData.find(item => item.week === week);
         if (weekData) return weekData;
       }
 
       // Fetch from database
       const { data, error } = await supabase
-        .from("fetal_size_comparisons")
-        .select("*")
-        .eq("week", week)
+        .from('fetal_size_comparisons')
+        .select('*')
+        .eq('week', week)
         .single();
 
       if (error) {
-        if (error.code === "PGRST116") {
+        if (error.code === 'PGRST116') {
           return null; // No data found
         }
         throw new Error(`Error fetching fetal size data: ${error.message}`);
@@ -201,7 +201,7 @@ export const fetalSizeService = {
 
       return sizeData;
     } catch (error) {
-      console.error("Error in getSizeComparisonByWeek:", error);
+      console.error('Error in getSizeComparisonByWeek:', error);
       throw error;
     }
   },
@@ -210,7 +210,7 @@ export const fetalSizeService = {
     try {
       await AsyncStorage.removeItem(FETAL_SIZE_CACHE_KEY);
     } catch (error) {
-      console.error("Error clearing fetal size cache:", error);
+      console.error('Error clearing fetal size cache:', error);
     }
   },
 
@@ -229,7 +229,7 @@ export const fetalSizeService = {
 
       return data as FetalSizeComparison[];
     } catch (error) {
-      console.error("Error reading from cache:", error);
+      console.error('Error reading from cache:', error);
       return null;
     }
   },
@@ -245,7 +245,7 @@ export const fetalSizeService = {
         JSON.stringify(cacheData)
       );
     } catch (error) {
-      console.error("Error writing to cache:", error);
+      console.error('Error writing to cache:', error);
     }
   },
 };

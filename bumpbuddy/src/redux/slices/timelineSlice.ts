@@ -1,6 +1,6 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { PregnancyWeek } from "timeline-types";
-import timelineService from "../../services/timelineService";
+import { createAsyncThunk, createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { PregnancyWeek } from 'timeline-types';
+import timelineService from '../../services/timelineService';
 
 // Define the state interface
 interface TimelineState {
@@ -24,21 +24,21 @@ const initialState: TimelineState = {
 
 // Async thunks
 export const fetchAllWeeks = createAsyncThunk(
-  "timeline/fetchAllWeeks",
-  async (language: string = "en", { rejectWithValue }) => {
+  'timeline/fetchAllWeeks',
+  async (language: string = 'en', { rejectWithValue }) => {
     try {
       const data = await timelineService.getAllWeeks(language);
       return data;
     } catch (error) {
-      return rejectWithValue("Failed to fetch pregnancy weeks data");
+      return rejectWithValue('Failed to fetch pregnancy weeks data');
     }
   }
 );
 
 export const fetchWeekData = createAsyncThunk(
-  "timeline/fetchWeekData",
+  'timeline/fetchWeekData',
   async (
-    { weekNumber, language = "en" }: { weekNumber: number; language?: string },
+    { weekNumber, language = 'en' }: { weekNumber: number; language?: string },
     { rejectWithValue }
   ) => {
     try {
@@ -54,14 +54,14 @@ export const fetchWeekData = createAsyncThunk(
 );
 
 export const fetchCurrentWeekData = createAsyncThunk(
-  "timeline/fetchCurrentWeekData",
+  'timeline/fetchCurrentWeekData',
   async (
-    { dueDate, language = "en" }: { dueDate: string | null; language?: string },
+    { dueDate, language = 'en' }: { dueDate: string | null; language?: string },
     { dispatch, rejectWithValue }
   ) => {
     try {
       if (!dueDate) {
-        return rejectWithValue("Due date not set");
+        return rejectWithValue('Due date not set');
       }
 
       const currentWeek = timelineService.calculateCurrentWeek(dueDate);
@@ -74,17 +74,17 @@ export const fetchCurrentWeekData = createAsyncThunk(
         }
         return data;
       } else {
-        return rejectWithValue("Invalid pregnancy week");
+        return rejectWithValue('Invalid pregnancy week');
       }
     } catch (error) {
-      return rejectWithValue("Failed to fetch current week data");
+      return rejectWithValue('Failed to fetch current week data');
     }
   }
 );
 
 // Create the slice
 const timelineSlice = createSlice({
-  name: "timeline",
+  name: 'timeline',
   initialState,
   reducers: {
     setCurrentWeek: (state, action: PayloadAction<number>) => {
@@ -93,15 +93,15 @@ const timelineSlice = createSlice({
     selectWeek: (state, action: PayloadAction<number>) => {
       state.selectedWeek = action.payload;
     },
-    clearSelection: (state) => {
+    clearSelection: state => {
       state.selectedWeek = null;
       state.weekData = null;
     },
   },
-  extraReducers: (builder) => {
+  extraReducers: builder => {
     builder
       // Fetch all weeks
-      .addCase(fetchAllWeeks.pending, (state) => {
+      .addCase(fetchAllWeeks.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -115,7 +115,7 @@ const timelineSlice = createSlice({
       })
 
       // Fetch week data
-      .addCase(fetchWeekData.pending, (state) => {
+      .addCase(fetchWeekData.pending, state => {
         state.loading = true;
         state.error = null;
       })
@@ -129,7 +129,7 @@ const timelineSlice = createSlice({
       })
 
       // Fetch current week data
-      .addCase(fetchCurrentWeekData.pending, (state) => {
+      .addCase(fetchCurrentWeekData.pending, state => {
         state.loading = true;
         state.error = null;
       })

@@ -9,9 +9,12 @@
     "web": "expo start --web",
     "lint": "bun eslint .",
     "lint:fix": "bun eslint . --fix",
+    "format": "bun prettier --write .",
+    "format:check": "bun prettier --check .",
     "type-check": "bun tsc --noEmit",
     "test": "bun test",
-    "clean": "rm -rf node_modules && bun install"
+    "clean": "rm -rf node_modules && bun install",
+    "dev:check": "bun run type-check && bun run lint && bun run format:check"
   },
   "dependencies": {
     "@expo-google-fonts/comfortaa": "^0.3.0",
@@ -56,9 +59,12 @@
     "@typescript-eslint/eslint-plugin": "^8.32.0",
     "@typescript-eslint/parser": "^8.32.0",
     "eslint": "^9.26.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.2.1",
     "eslint-plugin-react": "^7.37.5",
     "eslint-plugin-react-hooks": "^5.2.0",
     "eslint-plugin-react-native": "^5.0.0",
+    "prettier": "^3.4.2",
     "typescript": "~5.8.3"
   },
   "private": true,

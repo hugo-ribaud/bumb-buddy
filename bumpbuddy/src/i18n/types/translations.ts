@@ -155,5 +155,5 @@ export type TranslationKey = string;
 
 // Function to check if a language is RTL
 export const isRTL = (language: string): boolean => {
-  return ["ar", "he", "fa", "ur"].includes(language);
+  return ['ar', 'he', 'fa', 'ur'].includes(language);
 };

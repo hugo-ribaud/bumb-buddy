@@ -129,14 +129,14 @@ bunx expo install i18next react-i18next i18next-react-native-language-detector r
 
 ```typescript
 // src/i18n/index.ts
-import i18n from "i18next";
-import { initReactI18next } from "react-i18next";
-import RNLanguageDetector from "i18next-react-native-language-detector";
-import * as Localization from "expo-localization";
-import { getLocales } from "react-native-localize";
+import i18n from 'i18next';
+import { initReactI18next } from 'react-i18next';
+import RNLanguageDetector from 'i18next-react-native-language-detector';
+import * as Localization from 'expo-localization';
+import { getLocales } from 'react-native-localize';
 
 // Import translations
-import { en, es, fr } from "./languages";
+import { en, es, fr } from './languages';
 
 const resources = {
   en: { translation: en },
@@ -149,7 +149,7 @@ i18n
   .use(initReactI18next)
   .init({
     resources,
-    fallbackLng: "en",
+    fallbackLng: 'en',
     debug: __DEV__,
 
     interpolation: {
@@ -168,10 +168,10 @@ export default i18n;
 
 ```tsx
 // Example of i18n usage in a component
-import React from "react";
-import { View, Text, Button } from "react-native";
-import { useTranslation } from "react-i18next";
-import { formatDate } from "../i18n/formatters/dateFormatter";
+import React from 'react';
+import { View, Text, Button } from 'react-native';
+import { useTranslation } from 'react-i18next';
+import { formatDate } from '../i18n/formatters/dateFormatter';
 
 const ProfileScreen = () => {
   const { t } = useTranslation();
@@ -179,11 +179,11 @@ const ProfileScreen = () => {
 
   return (
     <View>
-      <Text>{t("profile.title")}</Text>
+      <Text>{t('profile.title')}</Text>
       <Text>
-        {t("profile.today")}: {formatDate(today)}
+        {t('profile.today')}: {formatDate(today)}
       </Text>
-      <Button title={t("common.buttons.save")} onPress={() => {}} />
+      <Button title={t('common.buttons.save')} onPress={() => {}} />
     </View>
   );
 };
@@ -193,11 +193,11 @@ const ProfileScreen = () => {
 
 ```tsx
 // src/contexts/LanguageContext.tsx
-import React, { createContext, useState, useContext, useEffect } from "react";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import i18n from "../i18n";
+import React, { createContext, useState, useContext, useEffect } from 'react';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import i18n from '../i18n';
 
-const LANGUAGE_KEY = "bumpbuddy_language";
+const LANGUAGE_KEY = 'bumpbuddy_language';
 
 type LanguageContextType = {
   language: string;
@@ -206,13 +206,13 @@ type LanguageContextType = {
 };
 
 const LanguageContext = createContext<LanguageContextType>({
-  language: "en",
+  language: 'en',
   setLanguage: async () => {},
   isRTL: false,
 });
 
 export const LanguageProvider: React.FC = ({ children }) => {
-  const [language, setLanguageState] = useState(i18n.language || "en");
+  const [language, setLanguageState] = useState(i18n.language || 'en');
   const [isRTL, setIsRTL] = useState(false);
 
   useEffect(() => {
@@ -224,7 +224,7 @@ export const LanguageProvider: React.FC = ({ children }) => {
           await changeLanguage(savedLanguage);
         }
       } catch (error) {
-        console.error("Failed to load language:", error);
+        console.error('Failed to load language:', error);
       }
     };
 
@@ -235,10 +235,10 @@ export const LanguageProvider: React.FC = ({ children }) => {
     try {
       await i18n.changeLanguage(lang);
       setLanguageState(lang);
-      setIsRTL(["ar", "he"].includes(lang)); // RTL languages
+      setIsRTL(['ar', 'he'].includes(lang)); // RTL languages
       await AsyncStorage.setItem(LANGUAGE_KEY, lang);
     } catch (error) {
-      console.error("Failed to change language:", error);
+      console.error('Failed to change language:', error);
     }
   };
 
