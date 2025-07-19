@@ -104,22 +104,6 @@ export interface Translations {
     alternativesLabel: string;
     nutritionalInfoLabel: string;
   };
-  healthTracker: {
-    title: string;
-    symptomsTitle: string;
-    kickCountTitle: string;
-    contractionsTitle: string;
-    weightTitle: string;
-    addEntryButton: string;
-    dateLabel: string;
-    timeLabel: string;
-    notesLabel: string;
-    severityLabel: string;
-    durationLabel: string;
-    frequencyLabel: string;
-    startTrackingButton: string;
-    stopTrackingButton: string;
-  };
   appointments: {
     title: string;
     upcomingTitle: string;

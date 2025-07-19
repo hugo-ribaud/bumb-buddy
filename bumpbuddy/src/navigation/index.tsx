@@ -19,7 +19,6 @@ import { RootState } from "../redux/store";
 import AppointmentsScreen from "../screens/AppointmentsScreen";
 import AuthScreen from "../screens/auth/AuthScreen";
 import FoodGuideScreen from "../screens/FoodGuideScreen";
-import HealthTrackerScreen from "../screens/HealthTrackerScreen";
 import HomeScreen from "../screens/HomeScreen";
 import ProfileScreen from "../screens/ProfileScreen";
 import TimelineScreen from "../screens/TimelineScreen";
@@ -36,7 +35,6 @@ export type MainTabParamList = {
   Home: undefined;
   Timeline: undefined;
   FoodGuide: undefined;
-  HealthTracker: undefined;
   Appointments: undefined;
   Profile: undefined;
 };
@@ -94,8 +92,6 @@ const MainTabNavigator = () => {
             iconName = focused ? "calendar" : "calendar-outline";
           } else if (route.name === "FoodGuide") {
             iconName = focused ? "restaurant" : "restaurant-outline";
-          } else if (route.name === "HealthTracker") {
-            iconName = focused ? "heart" : "heart-outline";
           } else if (route.name === "Appointments") {
             iconName = focused ? "calendar" : "calendar-outline";
           } else if (route.name === "Profile") {
@@ -127,11 +123,6 @@ const MainTabNavigator = () => {
         name="FoodGuide"
         component={FoodGuideScreen}
         options={{ title: "Food Guide" }}
-      />
-      <Tab.Screen
-        name="HealthTracker"
-        component={HealthTrackerScreen}
-        options={{ title: "Health" }}
       />
       <Tab.Screen name="Appointments" component={AppointmentsScreen} />
       <Tab.Screen name="Profile" component={ProfileScreen} />

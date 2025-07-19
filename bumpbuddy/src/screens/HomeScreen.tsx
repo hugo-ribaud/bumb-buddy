@@ -55,17 +55,11 @@ const HomeScreen = () => {
   }, [dispatch, pregnancyWeek, language, user?.dueDate]);
 
   // Calculate trimester
-  let trimester = t("home.trimesterLabel", {
-    trimester: t("timeline.firstTrimester"),
-  });
+  let trimester = t("timeline.firstTrimester");
   if (pregnancyWeek > 13 && pregnancyWeek <= 26) {
-    trimester = t("home.trimesterLabel", {
-      trimester: t("timeline.secondTrimester"),
-    });
+    trimester = t("timeline.secondTrimester");
   } else if (pregnancyWeek > 26) {
-    trimester = t("home.trimesterLabel", {
-      trimester: t("timeline.thirdTrimester"),
-    });
+    trimester = t("timeline.thirdTrimester");
   }
 
   // Calculate progress percentage (out of 40 weeks)
@@ -85,83 +79,87 @@ const HomeScreen = () => {
   return (
     <SafeAreaWrapper>
       <ThemedView backgroundColor="background" className="flex-1">
-        <ScrollView className="flex-1">
-          <ThemedView backgroundColor="background" className="flex-1 p-5">
-            <View className="flex-row items-center justify-between mb-5">
-              <View>
-                <FontedText variant="heading-2" className="font-bold">
-                  {t("home.welcome", { name: userName })}
+        <ScrollView className="flex-1" showsVerticalScrollIndicator={false}>
+          {/* Hero Section with Personalized Greeting */}
+          <ThemedView backgroundColor="background" className="px-6 pt-8 pb-4">
+            <View className="flex-row items-center justify-between mb-6">
+              <View className="flex-1">
+                <FontedText variant="heading-1" textType="primary" className="font-light text-3xl mb-2">
+                  Good {new Date().getHours() < 12 ? 'morning' : new Date().getHours() < 17 ? 'afternoon' : 'evening'}
+                </FontedText>
+                <FontedText variant="heading-2" textType="primary" className="font-semibold mb-3">
+                  {userName}
                 </FontedText>
                 <FontedText
                   textType="secondary"
-                  variant="body-small"
-                  className="mt-1.5"
+                  variant="body"
+                  className="opacity-80"
                 >
-                  {t("home.journeyTitle")}
+                  Week {pregnancyWeek} • {trimester}
                 </FontedText>
               </View>
               <ThemeToggle />
             </View>
+          </ThemedView>
 
+          {/* Today's Journey Card */}
+          <View className="px-6 mb-6">
             <ThemedView
               backgroundColor="surface"
-              className="p-5 mb-4 shadow-sm rounded-xl"
+              className="p-6 rounded-2xl shadow-lg border border-opacity-10"
             >
-              <View className="flex-row justify-between items-center mb-2.5">
+              <FontedText
+                variant="heading-3"
+                fontFamily="comfortaa"
+                className="mb-4 text-center"
+              >
+                Today's Journey
+              </FontedText>
+              
+              <View className="items-center mb-4">
                 <FontedText
-                  variant="heading-3"
+                  variant="heading-2"
                   fontFamily="comfortaa"
                   colorVariant="primary"
+                  className="text-center mb-2"
                 >
-                  {t("home.weekTitle", { week: pregnancyWeek })}
+                  Week {pregnancyWeek}
                 </FontedText>
                 <FontedText
                   textType="secondary"
-                  variant="caption"
-                  className="font-medium"
+                  variant="body"
+                  className="text-center opacity-70"
                 >
-                  {trimester}
+                  {Math.round(progressPercentage)}% of your pregnancy journey
                 </FontedText>
               </View>
 
-              <View className="h-3 bg-gray-200 dark:bg-gray-700 rounded-md my-2.5 overflow-hidden">
-                <View
-                  className="h-full rounded-md bg-primary dark:bg-primary-dark"
+              <ThemedView backgroundColor="surface-subtle" className="h-2 rounded-full overflow-hidden">
+                <ThemedView
+                  backgroundColor="primary"
+                  className="h-full rounded-full"
                   style={{ width: `${progressPercentage}%` }}
                 />
-              </View>
-              <FontedText
-                textType="secondary"
-                variant="caption"
-                className="text-right"
-              >
-                {t("home.progressLabel", {
-                  percent: progressPercentage.toFixed(0),
-                })}
-              </FontedText>
+              </ThemedView>
             </ThemedView>
+          </View>
 
+          {/* Baby's Development Card */}
+          <View className="px-6 mb-6">
             <ThemedView
               backgroundColor="surface"
-              className="p-5 mb-4 shadow-sm rounded-xl"
+              className="p-6 rounded-2xl shadow-lg"
             >
               <FontedText
                 variant="heading-4"
                 fontFamily="comfortaa"
-                colorVariant="primary"
-                className="mb-4"
+                className="mb-4 text-center"
               >
-                {t("home.developmentTitle", { week: pregnancyWeek })}
+                Your Baby This Week
               </FontedText>
 
               {fetalSize && (
-                <View className="mt-2 mb-4">
-                  <FontedText
-                    variant="body"
-                    className="font-semibold mt-1.5 mb-2.5"
-                  >
-                    {t("fetalSize.thisWeekSize")}
-                  </FontedText>
+                <View className="items-center mb-6">
                   <FetalSizeComparison
                     weekNumber={pregnancyWeek}
                     itemName={fetalSize.name}
@@ -175,112 +173,175 @@ const HomeScreen = () => {
               )}
 
               {timelineLoading && (
-                <FontedText variant="body-small" textType="secondary">
-                  {t("timeline.loading")}
-                </FontedText>
+                <View className="items-center py-4">
+                  <FontedText variant="body" textType="secondary" className="opacity-70">
+                    {t("timeline.loading")}
+                  </FontedText>
+                </View>
               )}
 
               {timelineError && (
-                <FontedText
-                  variant="body-small"
-                  textType="secondary"
-                  className="text-red-500"
-                >
-                  {timelineError}
-                </FontedText>
+                <View className="items-center py-4">
+                  <FontedText
+                    variant="body"
+                    className="text-red-500 text-center"
+                  >
+                    {timelineError}
+                  </FontedText>
+                </View>
               )}
 
               {weekData && weekData.fetal_development && (
-                <View>
+                <ThemedView backgroundColor="surface-elevated" className="p-4 rounded-xl border border-blue-200 dark:border-blue-800">
                   <FontedText
                     variant="body"
-                    className="font-semibold mt-1.5 mb-2.5"
+                    textType="primary"
+                    className="font-semibold mb-3 text-center"
                   >
-                    {t("timeline.development")}
+                    Development Highlights
                   </FontedText>
                   {splitIntoBulletPoints(weekData.fetal_development).map(
                     (highlight, index) => (
                       <FontedText
                         key={index}
                         variant="body-small"
-                        className="mb-2 leading-5"
+                        textType="secondary"
+                        className="mb-2 leading-6"
                       >
                         • {highlight}
                       </FontedText>
                     )
                   )}
-                </View>
+                </ThemedView>
               )}
             </ThemedView>
+          </View>
 
-            {weekData && weekData.maternal_changes && (
+          {/* Your Body This Week Card */}
+          {weekData && weekData.maternal_changes && (
+            <View className="px-6 mb-6">
               <ThemedView
                 backgroundColor="surface"
-                className="p-5 mb-4 shadow-sm rounded-xl"
+                className="p-6 rounded-2xl shadow-lg"
               >
                 <FontedText
                   variant="heading-4"
                   fontFamily="comfortaa"
-                  colorVariant="secondary"
-                  className="mb-4"
+                  className="mb-4 text-center"
                 >
-                  {t("home.bodyChangesTitle")}
+                  Your Body This Week
                 </FontedText>
 
-                {splitIntoBulletPoints(weekData.maternal_changes).map(
-                  (change, index) => (
-                    <FontedText
-                      key={index}
-                      variant="body-small"
-                      className="mb-2 leading-5"
-                    >
-                      • {change}
-                    </FontedText>
-                  )
-                )}
+                <ThemedView backgroundColor="surface-elevated" className="p-4 rounded-xl border border-pink-200 dark:border-pink-800">
+                  {splitIntoBulletPoints(weekData.maternal_changes).map(
+                    (change, index) => (
+                      <FontedText
+                        key={index}
+                        variant="body-small"
+                        textType="secondary"
+                        className="mb-2 leading-6"
+                      >
+                        • {change}
+                      </FontedText>
+                    )
+                  )}
+                </ThemedView>
               </ThemedView>
-            )}
+            </View>
+          )}
 
-            {weekData && weekData.nutrition_advice && (
+          {/* Nutrition This Week Card */}
+          {weekData && weekData.nutrition_advice && (
+            <View className="px-6 mb-6">
               <ThemedView
                 backgroundColor="surface"
-                className="p-5 mb-4 shadow-sm rounded-xl"
+                className="p-6 rounded-2xl shadow-lg"
               >
                 <FontedText
                   variant="heading-4"
                   fontFamily="comfortaa"
-                  colorVariant="secondary"
-                  className="mb-4"
+                  className="mb-4 text-center"
                 >
-                  {t("home.nutritionTipsTitle")}
+                  Nutrition This Week
                 </FontedText>
 
-                {splitIntoBulletPoints(weekData.nutrition_advice).map(
-                  (tip, index) => (
-                    <FontedText
-                      key={index}
-                      variant="body-small"
-                      className="mb-2 leading-5"
-                    >
-                      • {tip}
-                    </FontedText>
-                  )
-                )}
+                <ThemedView backgroundColor="surface-elevated" className="p-4 rounded-xl border border-green-200 dark:border-green-800">
+                  {splitIntoBulletPoints(weekData.nutrition_advice).map(
+                    (tip, index) => (
+                      <FontedText
+                        key={index}
+                        variant="body-small"
+                        textType="secondary"
+                        className="mb-2 leading-6"
+                      >
+                        • {tip}
+                      </FontedText>
+                    )
+                  )}
+                </ThemedView>
               </ThemedView>
-            )}
+            </View>
+          )}
 
-            <TouchableOpacity className="items-center p-4 mb-4 bg-accent dark:bg-accent-dark rounded-xl">
-              <FontedText className="text-base font-bold text-white">
-                {t("home.trackSymptomsButton")}
-              </FontedText>
-            </TouchableOpacity>
+          {/* Quick Actions */}
+          <View className="px-6 mb-8">
+            <FontedText
+              variant="heading-4"
+              fontFamily="comfortaa"
+              textType="secondary"
+              className="mb-4 text-center"
+            >
+              Quick Actions
+            </FontedText>
+            
+            <View className="space-y-3">
+              <TouchableOpacity>
+                <ThemedView
+                  backgroundColor="surface"
+                  className="p-4 rounded-2xl shadow-md border border-purple-100 dark:border-purple-800"
+                >
+                  <FontedText textType="primary" className="text-center font-medium">
+                    {t("home.trackSymptomsButton")}
+                  </FontedText>
+                </ThemedView>
+              </TouchableOpacity>
 
-            <TouchableOpacity className="items-center p-4 mb-4 bg-accent dark:bg-accent-dark rounded-xl">
-              <FontedText className="text-base font-bold text-white">
-                {t("home.foodGuideButton")}
+              <TouchableOpacity>
+                <ThemedView
+                  backgroundColor="surface"
+                  className="p-4 rounded-2xl shadow-md border border-green-100 dark:border-green-800"
+                >
+                  <FontedText textType="primary" className="text-center font-medium">
+                    {t("home.foodGuideButton")}
+                  </FontedText>
+                </ThemedView>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Daily Reflection Card - Calm Style */}
+          <View className="px-6 mb-8">
+            <ThemedView
+              backgroundColor="surface"
+              className="p-6 rounded-2xl shadow-lg border border-indigo-100 dark:border-indigo-800"
+            >
+              <FontedText
+                variant="heading-4"
+                fontFamily="comfortaa"
+                className="mb-3 text-center"
+              >
+                Today's Moment
               </FontedText>
-            </TouchableOpacity>
-          </ThemedView>
+              <FontedText
+                variant="body"
+                textType="secondary"
+                className="text-center leading-6"
+              >
+                Take a moment to connect with your baby. Place your hand on your belly and breathe deeply. 
+                You're creating life, and that's extraordinary.
+              </FontedText>
+            </ThemedView>
+          </View>
         </ScrollView>
       </ThemedView>
     </SafeAreaWrapper>
