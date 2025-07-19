@@ -5,9 +5,10 @@ import {
   FoodService,
   FoodWithCategory,
   SafetyRating,
-} from "food-types";
+} from "../types/food";
 
 import supabase from "../config/supabaseConfig";
+import { logger } from "../utils/logger";
 
 // Enhanced food service with translation support
 const foodService: FoodService = {
@@ -468,7 +469,7 @@ const foodService: FoodService = {
   },
 
   // Set up realtime subscription for foods table
-  subscribeToFoods: (callback: (payload: any) => void) => {
+  subscribeToFoods: (callback: (payload: { new: Food; old: Food | null; eventType: 'INSERT' | 'UPDATE' | 'DELETE' }) => void) => {
     try {
       const subscription = supabase
         .channel("public:foods")
@@ -483,7 +484,7 @@ const foodService: FoodService = {
 
       return subscription;
     } catch (error) {
-      console.error("Error setting up Foods subscription:", error);
+      logger.error("Error setting up Foods subscription:", error);
       return null;
     }
   },

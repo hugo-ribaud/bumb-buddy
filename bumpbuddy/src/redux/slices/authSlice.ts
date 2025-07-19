@@ -51,21 +51,14 @@ const authSlice = createSlice({
     authSuccess: (
       state,
       action: PayloadAction<{
-        user: DatabaseUser;
+        user: User;
         session: any;
       }>
     ) => {
       state.isLoading = false;
       state.isAuthenticated = true;
-      // Map DB fields to our User interface
-      state.user = {
-        id: action.payload.user.id,
-        email: action.payload.user.email,
-        name: action.payload.user.first_name,
-        dueDate: action.payload.user.due_date,
-        pregnancyWeek: action.payload.user.pregnancy_week,
-        createdAt: action.payload.user.created_at,
-      };
+      // Direct assignment since payload is already User type
+      state.user = action.payload.user;
       state.session = action.payload.session;
       state.error = null;
     },

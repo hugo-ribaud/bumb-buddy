@@ -16,17 +16,6 @@
         "--access-token",
         "sbp_1e8be0808d7533220e955934338bbf27681ebbb0"
       ]
-    },
-    "github": {
-      "command": "docker",
-      "args": [
-        "run",
-        "-i",
-        "--rm",
-        "-e",
-        "GITHUB_PERSONAL_ACCESS_TOKEN=${env:GITHUB_PERSONAL_ACCESS_TOKEN}",
-        "ghcr.io/github/github-mcp-server"
-      ]
     }
   }
 }

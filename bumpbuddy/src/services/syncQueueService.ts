@@ -3,6 +3,7 @@ import { useCallback, useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { v4 as uuidv4 } from "uuid";
 import networkService from "./networkService";
+import { logger } from "../utils/logger";
 
 // Queue storage key
 const QUEUE_STORAGE_KEY = "bumpbuddy:syncQueue";
@@ -78,7 +79,7 @@ export class SyncQueueService {
       // Set up network status listener
       networkService.addListener(this.handleNetworkChange.bind(this));
     } catch (error) {
-      console.error("Failed to initialize sync queue:", error);
+      logger.error("Failed to initialize sync queue:", error);
     }
   }
 
@@ -160,7 +161,7 @@ export class SyncQueueService {
     try {
       await AsyncStorage.setItem(QUEUE_STORAGE_KEY, JSON.stringify(this.queue));
     } catch (error) {
-      console.error("Failed to persist sync queue:", error);
+      logger.error("Failed to persist sync queue:", error);
     }
   }
 
@@ -194,17 +195,17 @@ export class SyncQueueService {
               this.queue = this.queue.filter((op) => op.id !== operation.id);
             } else if (operation.retryCount >= this.maxRetries) {
               // Remove from queue if max retries reached
-              console.warn(
+              logger.warn(
                 `Operation ${operation.id} reached max retries and will be dropped`
               );
               this.queue = this.queue.filter((op) => op.id !== operation.id);
             }
           } catch (error) {
-            console.error(`Error processing operation ${operation.id}:`, error);
+            logger.error(`Error processing operation ${operation.id}:`, error);
             // Operation will remain in queue for retry
           }
         } else {
-          console.warn(
+          logger.warn(
             `No handler found for entity type ${operation.entityType}`
           );
           // Remove unhandled operations

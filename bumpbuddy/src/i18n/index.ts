@@ -10,6 +10,7 @@ import { defaultLanguage, en, es, fr, supportedLanguages } from "./languages";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import i18next from "i18next";
 import { initReactI18next } from "react-i18next";
+import { logger } from "../utils/logger";
 
 // Import translations
 
@@ -23,15 +24,15 @@ let reactNativeLocalize: {
 try {
   reactNativeLocalize = require("react-native-localize");
 } catch (error) {
-  console.warn(
+  logger.warn(
     "react-native-localize not available, falling back to expo-localization"
   );
   reactNativeLocalize = null;
 }
 
-// Define custom detector type
+// Define custom detector type compatible with i18next
 const languageDetector = {
-  type: "languageDetector" as any,
+  type: "languageDetector" as const,
   async: true,
   detect: async (callback: (lng: string) => void) => {
     try {
@@ -56,12 +57,13 @@ const languageDetector = {
             return callback(language);
           }
         } catch (error) {
-          console.warn("Error using react-native-localize:", error);
+          logger.warn("Error using react-native-localize:", error);
         }
       }
 
       // Fallback to Expo's localization
-      const locale = Localization.locale;
+      const locales = Localization.getLocales();
+      const locale = locales[0]?.languageCode || "en";
       const language = locale.split("-")[0];
       return callback(
         Object.keys(supportedLanguages).includes(language)
@@ -69,15 +71,18 @@ const languageDetector = {
           : defaultLanguage
       );
     } catch (error) {
-      console.error("Error detecting language:", error);
+      logger.error("Error detecting language:", error);
       callback(defaultLanguage);
     }
+  },
+  init: () => {
+    // Initialization logic if needed
   },
   cacheUserLanguage: async (language: string) => {
     try {
       await AsyncStorage.setItem(LANGUAGE_STORAGE_KEY, language);
     } catch (error) {
-      console.error("Error caching language:", error);
+      logger.error("Error caching language:", error);
     }
   },
 };

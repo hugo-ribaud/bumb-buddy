@@ -1,4 +1,5 @@
 import supabase from "../config/supabaseConfig";
+import { logger } from "../utils/logger";
 
 // Define types
 interface RealtimeSubscriptionParams {
@@ -47,7 +48,7 @@ const realtimeService = {
       // Return the subscription object so it can be unsubscribed later
       return subscription;
     } catch (error) {
-      console.error("Error setting up Users subscription:", error);
+      logger.error("Error setting up Users subscription:", error);
       if (onError) onError(error);
       return null;
     }
@@ -59,7 +60,7 @@ const realtimeService = {
       try {
         supabase.removeChannel(subscription);
       } catch (error) {
-        console.error("Error unsubscribing from channel:", error);
+        logger.error("Error unsubscribing from channel:", error);
       }
     }
   },

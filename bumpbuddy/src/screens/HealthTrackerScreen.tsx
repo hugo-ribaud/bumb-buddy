@@ -188,7 +188,7 @@ const HealthTrackerScreen = () => {
   const [contractionIntensity, setContractionIntensity] = useState(3);
   const [contractionNotes, setContractionNotes] = useState("");
   const [contractionModalVisible, setContractionModalVisible] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const timerRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const [timerSeconds, setTimerSeconds] = useState(0);
 
   // Blood pressure tracking state

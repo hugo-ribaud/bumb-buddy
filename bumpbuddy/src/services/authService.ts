@@ -11,6 +11,11 @@ interface SignInParams {
   password: string;
 }
 
+interface AuthError {
+  message: string;
+  code?: string;
+}
+
 interface UpdateProfileParams {
   id: string;
   name?: string;
@@ -35,8 +40,9 @@ const authService = {
 
       if (error) throw error;
       return { data, error: null };
-    } catch (error: any) {
-      return { data: null, error: error.message || "Failed to sign up" };
+    } catch (error: unknown) {
+      const authError = error as AuthError;
+      return { data: null, error: authError.message || "Failed to sign up" };
     }
   },
 
@@ -50,8 +56,9 @@ const authService = {
 
       if (error) throw error;
       return { data, error: null };
-    } catch (error: any) {
-      return { data: null, error: error.message || "Failed to sign in" };
+    } catch (error: unknown) {
+      const authError = error as AuthError;
+      return { data: null, error: authError.message || "Failed to sign in" };
     }
   },
 
@@ -61,8 +68,9 @@ const authService = {
       const { error } = await supabase.auth.signOut();
       if (error) throw error;
       return { error: null };
-    } catch (error: any) {
-      return { error: error.message || "Failed to sign out" };
+    } catch (error: unknown) {
+      const authError = error as AuthError;
+      return { error: authError.message || "Failed to sign out" };
     }
   },
 
@@ -72,8 +80,9 @@ const authService = {
       const { data, error } = await supabase.auth.getSession();
       if (error) throw error;
       return { data, error: null };
-    } catch (error: any) {
-      return { data: null, error: error.message || "Failed to get session" };
+    } catch (error: unknown) {
+      const authError = error as AuthError;
+      return { data: null, error: authError.message || "Failed to get session" };
     }
   },
 
@@ -86,8 +95,9 @@ const authService = {
 
       if (error) throw error;
       return { data, error: null };
-    } catch (error: any) {
-      return { data: null, error: error.message || "Failed to reset password" };
+    } catch (error: unknown) {
+      const authError = error as AuthError;
+      return { data: null, error: authError.message || "Failed to reset password" };
     }
   },
 
@@ -102,10 +112,11 @@ const authService = {
 
       if (error) throw error;
       return { data, error: null };
-    } catch (error: any) {
+    } catch (error: unknown) {
+      const authError = error as AuthError;
       return {
         data: null,
-        error: error.message || "Failed to get user profile",
+        error: authError.message || "Failed to get user profile",
       };
     }
   },
@@ -163,8 +174,9 @@ const authService = {
       }
 
       return { data: currentUser, error: null };
-    } catch (error: any) {
-      return { data: null, error: error.message || "Failed to update profile" };
+    } catch (error: unknown) {
+      const authError = error as AuthError;
+      return { data: null, error: authError.message || "Failed to update profile" };
     }
   },
 };

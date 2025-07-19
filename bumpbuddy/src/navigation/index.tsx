@@ -158,7 +158,7 @@ const RootNavigator = () => {
         const { data, error } = await authService.getSession();
 
         if (error || !data?.session) {
-          dispatch(authFailure(error?.message || "No active session"));
+          dispatch(authFailure(typeof error === 'string' ? error : error?.message || "No active session"));
           return;
         }
 
@@ -181,7 +181,7 @@ const RootNavigator = () => {
                 user: {
                   id: userId,
                   email: data.session.user.email || "",
-                  created_at:
+                  createdAt:
                     data.session.user.created_at || new Date().toISOString(),
                 },
                 session: data.session,

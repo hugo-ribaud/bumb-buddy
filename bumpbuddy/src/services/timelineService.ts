@@ -3,6 +3,7 @@ import { PregnancyWeek, TimelineService } from "timeline-types";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import supabase from "../config/supabaseConfig";
 import { calculatePregnancyWeek } from "../utils/pregnancyCalculations";
+import { logger } from "../utils/logger";
 
 // Keys for AsyncStorage (now include language)
 const TIMELINE_DATA_KEY = "timeline_data";
@@ -26,7 +27,7 @@ const timelineService: TimelineService = {
         .single();
 
       if (weekError || !weekData) {
-        console.error(`Error fetching week ${weekNumber}:`, weekError);
+        logger.error(`Error fetching week ${weekNumber}:`, weekError);
         return null;
       }
 
@@ -70,7 +71,7 @@ const timelineService: TimelineService = {
 
       return transformedData as PregnancyWeek;
     } catch (error) {
-      console.error("Unexpected error fetching week info:", error);
+      logger.error("Unexpected error fetching week info:", error);
       return null;
     }
   },
@@ -104,7 +105,7 @@ const timelineService: TimelineService = {
         .order("week");
 
       if (weeksError || !allWeeksData) {
-        console.error(`Error fetching pregnancy weeks:`, weeksError);
+        logger.error(`Error fetching pregnancy weeks:`, weeksError);
         // If we have cached data, use it as fallback
         if (cachedData) {
           const parsedData = JSON.parse(cachedData) as PregnancyWeek[];
@@ -171,7 +172,7 @@ const timelineService: TimelineService = {
 
       return transformedData as PregnancyWeek[];
     } catch (error) {
-      console.error(
+      logger.error(
         `Unexpected error fetching pregnancy weeks for ${language}:`,
         error
       );
@@ -213,7 +214,7 @@ const timelineService: TimelineService = {
         );
       }
     } catch (error) {
-      console.error("Error fetching trimester weeks:", error);
+      logger.error("Error fetching trimester weeks:", error);
       return [];
     }
   },

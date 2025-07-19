@@ -1,7 +1,8 @@
-declare module "food-types" {
-  export type SafetyRating = "safe" | "caution" | "avoid";
+import { RealtimeChannel } from '@supabase/supabase-js';
 
-  export interface FoodCategory {
+export type SafetyRating = "safe" | "caution" | "avoid";
+
+export interface FoodCategory {
     id: string;
     name: string;
     description: string | null;
@@ -43,7 +44,6 @@ declare module "food-types" {
     getFoodsBySafety(safety: SafetyRating, language?: string): Promise<Food[]>;
     getFoodsWithCategory(language?: string): Promise<FoodWithCategory[]>;
     filterFoods(filter: FoodFilter, language?: string): Promise<Food[]>;
-    subscribeToFoods(callback: (payload: any) => void): any;
-    unsubscribe(subscription: any): void;
+    subscribeToFoods(callback: (payload: { new: Food; old: Food | null; eventType: 'INSERT' | 'UPDATE' | 'DELETE' }) => void): RealtimeChannel | null;
+    unsubscribe(subscription: RealtimeChannel): void;
   }
-}

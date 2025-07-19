@@ -1,4 +1,4 @@
-import { Food, FoodCategory, SafetyRating } from "food-types";
+import { Food, FoodCategory, SafetyRating } from "../types/food";
 import React, { useEffect, useState } from "react";
 import {
   ActivityIndicator,

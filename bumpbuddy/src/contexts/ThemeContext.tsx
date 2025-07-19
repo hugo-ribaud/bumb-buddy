@@ -5,6 +5,7 @@ import { usePreferences } from "./PreferencesContext";
 
 interface ThemeContextProps {
   isDark: boolean;
+  isDarkMode: boolean;
   toggleTheme: () => Promise<void>;
 }
 
@@ -54,6 +55,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
 
   const contextValue: ThemeContextProps = {
     isDark,
+    isDarkMode: isDark,
     toggleTheme,
   };
 
